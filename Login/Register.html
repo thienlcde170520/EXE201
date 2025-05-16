@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký - Serenity Solution</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f7fdfc;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-section {
+  flex: 1;
+  background-color: #b2e1dd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.illustration {
+  max-width: 80%;
+  height: auto;
+}
+
+.caption {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.right-section {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 60px;
+}
+
+.brand {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin: 10px 0 30px;
+  color: #4b5563;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.form input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.submit-btn {
+  padding: 12px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #0284c7;
+}
+
+.login-link {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #0ea5e9;
+  text-decoration: none;
+}
+
+</style>
+<body>
+  <div class="container">
+    <div class="left-section">
+      <img src="https://i.pinimg.com/736x/aa/22/01/aa220101e1e4cca9eb9b248d693dad8a.jpg" alt="mental health" class="illustration" />
+      <p class="caption">Đăng ký ngay – Khám phá sức mạnh của trí tuệ cảm xúc</p>
+    </div>
+    <div class="right-section">
+      <h1><span class="brand">Serenity</span> Solution</h1>
+      <p class="subtitle">Website giúp sức khỏe tâm thần bạn trở nên tốt hơn</p>
+      <form class="form">
+        <label>Email</label>
+        <input type="email" placeholder="example@gmail.com" required />
+
+        <label>Địa chỉ</label>
+        <input type="text" placeholder="Số 2, Quận X, HCM" required />
+
+        <label>SĐT</label>
+        <input type="tel" placeholder="09XXXXXXXX" required />
+
+        <label>Mật khẩu</label>
+        <input type="password" required />
+
+        <label>Xác nhận mật khẩu</label>
+        <input type="password" required />
+
+        <label>Giới tính</label>
+        <input type="text" placeholder="Nam/Nữ/Khác" />
+
+        <button type="submit" class="submit-btn">Đăng Ký</button>
+        <p class="login-link">Quay lại <a href="http://127.0.0.1:5500/Serenity%20Solution/Login/Login.html">Đăng nhập</a></p>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
