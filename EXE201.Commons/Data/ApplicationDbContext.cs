@@ -18,15 +18,10 @@ namespace EXE201.Commons.Data
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
-        public virtual DbSet<Book> Books { get; set; }
-        public virtual DbSet<BookRating> BookRatings { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderBookDetail> OrderBookDetails { get; set; }
-        public virtual DbSet<OrderPodcastDetail> OrderPodcastDetails { get; set; }
-        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Podcast> Podcasts { get; set; }
         public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
         public virtual DbSet<Psychologist> Psychologists { get; set; }

@@ -13,7 +13,7 @@ namespace EXE201.Commons.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         [Required]
         public int TestId { get; set; }
         public int Result_Summary { get; set; }

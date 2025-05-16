@@ -17,12 +17,10 @@ namespace EXE201.Commons.Models
         public string Title { get; set; }
         [StringLength(500, ErrorMessage = "Description can't exceed 500 characters.")]
         public string Description { get; set; }
+        public string? audio_url { get; set; }
+        public string? thumbnail_url { get; set; }
         [Required]
-        public string audio_url { get; set; }
-        [Required]
-        public string thumbnail_url { get; set; }
-        [Required]
-        public string CreateBy { get; set; }
+        public string? CreateBy { get; set; }
         [Required]
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]

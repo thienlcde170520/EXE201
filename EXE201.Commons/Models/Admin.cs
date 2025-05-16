@@ -10,6 +10,7 @@ namespace EXE201.Commons.Models
     {
         public string AdminRole { get; set; } = "Manager";
         public string AccessLevel { get; set; } = "Full";
+        public double Balance { get; set; } = 0;
 
         public override string GetInfo() => $"Admin: {Name}, Role: Admin, Access: {AccessLevel}";
         public virtual ICollection<Order> OrdersProcessed { get; set; } = new List<Order>();
