@@ -18,18 +18,18 @@ namespace EXE201.Commons.Models
 
 
         //Foregin key
-        public int? BookID { get; set; }
+        public int? PodcastID { get; set; }
         public string? UserId { get; set; }
         public int? ParentCommentId { get; set; }
 
         //Relation
-        [ForeignKey("BookID")]
-        public Book Book { get; set; }
+        [ForeignKey("PodcastID")]
+        public virtual Podcast? Podcast { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User? User { get; set; }
         [ForeignKey("ParentCommentId")]
 
-        public Comment ParentComment { get; set; }
+        public Comment? ParentComment { get; set; }
         // Navigation property
         public virtual ICollection<Comment> Replies { get; set; } = new List<Comment>();
     }

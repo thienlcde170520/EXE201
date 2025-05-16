@@ -12,7 +12,7 @@ namespace EXE201.Commons.Models
     {
         [Key]
         public int Id { get; set; }
-        public string UserID { get; set; }
+        public string? UserID { get; set; }
         public int PodcastID { get; set; }
         [Range(1, 5)]
         public int score { get; set; }

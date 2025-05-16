@@ -12,8 +12,8 @@ namespace EXE201.Commons.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
         public DateTime created_at { get; set; } = DateTime.UtcNow;
         public virtual ICollection<UserTestResult> UserTestResults { get; set; } = new List<UserTestResult>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
