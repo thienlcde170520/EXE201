@@ -24,10 +24,10 @@ namespace EXE201.Commons.Models
         public decimal price { get; set; }
 
         // Navigation Properties
-        [ForeignKey("OrderId")]
+        [ForeignKey("OrderID")]
         public virtual Order? Order { get; set; }
 
-        [ForeignKey("BookId")]
+        [ForeignKey("BookID")]
         public virtual Book? Book { get; set; }
     }
 }

@@ -15,17 +15,17 @@ namespace EXE201.Commons.Models
         [Required]
         public int OrderID { get; set; }
         [Required]
-        public int BookID { get; set; }
+        public int PodcastID { get; set; }
         
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal price { get; set; }
 
         // Navigation Properties
-        [ForeignKey("OrderId")]
+        [ForeignKey("OrderID")]
         public virtual Order? Order { get; set; }
 
-        [ForeignKey("BookId")]
+        [ForeignKey("PodcastID")]
         public virtual Podcast? Podcast { get; set; }
     }
 }

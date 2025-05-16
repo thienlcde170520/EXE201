@@ -31,7 +31,7 @@ namespace EXE201.Commons.Models
         public string Status { get; set; } = "Pending"; // Pending, Completed, Canceled
 
         [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
 
         [ForeignKey("AdminId")]
         public virtual Admin? Admin { get; set; }

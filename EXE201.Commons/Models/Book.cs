@@ -31,5 +31,6 @@ namespace EXE201.Commons.Models
         public int category_id { get; set; }
         [ForeignKey("CategoryId")]
         public virtual Category? Category { get; set; }
+        public virtual ICollection<BookRating> BookRatings { get; set; } = new List<BookRating>();
     }
 }
