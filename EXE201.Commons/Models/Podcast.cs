@@ -22,12 +22,13 @@ namespace EXE201.Commons.Models
         [Required]
         public string thumbnail_url { get; set; }
         [Required]
-        public int CreateBy { get; set; }
+        public string CreateBy { get; set; }
         [Required]
-        public int category_id { get; set; }
+        public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public virtual Category? Category { get; set; }
         [ForeignKey("CreateBy")]
         public virtual User? User { get; set; }
+        public virtual ICollection<PodcastRating> PodcastRatings { get; set; } = new List<PodcastRating>();
     }
 }

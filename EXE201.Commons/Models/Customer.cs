@@ -26,5 +26,7 @@ namespace EXE201.Commons.Models
         public DateTime JoinDate { get; set; } = DateTime.UtcNow;
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<UserTestResult> UserTestResults { get; set; } = new List<UserTestResult>();
+       
     }
 }

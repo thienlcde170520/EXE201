@@ -15,22 +15,43 @@ namespace EXE201.Commons.Data
             : base(options)
         {
         }
-        public DbSet<Admin> Admins { get; set; }
-        public DbSet<ApplicationRole> ApplicationRoles { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Book> Books { get; set; }
-        public DbSet<BookRating> BookRatings { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderBookDetail> OrderBookDetails { get; set; }
-        public DbSet<OrderPodcastDetail> OrderPodcastDetails { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Podcast> Podcasts { get; set; }
-        public DbSet<PodcastRating> PodcastRatings { get; set; }
-        public DbSet<Psychologist> Psychologists { get; set; }
-        public DbSet<User> ApplicationUsers { get; set; }
+        public virtual DbSet<Admin> Admins { get; set; }
+        public virtual DbSet<ApplicationRole> ApplicationRoles { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookRating> BookRatings { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderBookDetail> OrderBookDetails { get; set; }
+        public virtual DbSet<OrderPodcastDetail> OrderPodcastDetails { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<Podcast> Podcasts { get; set; }
+        public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
+        public virtual DbSet<Psychologist> Psychologists { get; set; }
+        public virtual DbSet<User> ApplicationUsers { get; set; }
+        public virtual DbSet<UserTestResult> UserTestResults { get; set; }
+        public virtual DbSet<PsychTest> PsychTests { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // PodcastRating -> User (cascade delete)
+            modelBuilder.Entity<PodcastRating>()
+                .HasOne(pr => pr.User)
+                .WithMany(u => u.PodcastRatings)
+                .HasForeignKey(pr => pr.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // PodcastRating -> Podcast (no cascade delete)
+            modelBuilder.Entity<PodcastRating>()
+                .HasOne(pr => pr.Podcast)
+                .WithMany(p => p.PodcastRatings)
+                .HasForeignKey(pr => pr.PodcastID)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
 
     }
 }

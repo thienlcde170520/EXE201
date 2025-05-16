@@ -18,9 +18,9 @@ namespace EXE201.Commons.Models
         public int score { get; set; }
 
         //Relation
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        [ForeignKey("UserID")]
+        public virtual User? User { get; set; }
         [ForeignKey("BookID")]
-        public Podcast Podcast { get; set; }
+        public virtual Book? Book { get; set; }
     }
 }
