@@ -1,31 +1,67 @@
 using EXE201.Commons.Data;
 using EXE201.Commons.Models;
+using EXE201.Repository.Interfaces;
+using EXE201.Repository.Repositories;
+using EXE201.Services.Hubs;
+using EXE201.Services.Interfaces;
+using EXE201.Services.Models;
+using EXE201.Services.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serenity_Solution.Seeders;
 
 
-            var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = Environment.GetEnvironmentVariable("DefaultConnection")
-                ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("DefaultConnection")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+//add service and repository
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 
-            builder.Services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddSignalR();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // Log ra console
+builder.Logging.AddDebug();   // Log vào Debug Window
+
+builder.Services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<ApplicationDbContext>()
                         .AddDefaultTokenProviders();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization(); // Ensure authorization is added
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
-            var app = builder.Build();
+var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
+}
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -34,10 +70,12 @@ using Microsoft.EntityFrameworkCore;
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+app.MapHub<NotificationHub>("/notificationHub");
 
-            app.UseRouting();
 
-            app.UseAuthorization();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",

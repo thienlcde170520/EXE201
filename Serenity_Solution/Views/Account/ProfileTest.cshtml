@@ -1,0 +1,121 @@
+﻿@model EXE201.Commons.Models.Customer
+
+<h2>Thông tin khách hàng</h2>
+
+<section>
+    <h3>Thông tin cơ bản (User)</h3>
+    <dl class="row">
+        <dt class="col-sm-3">Tên đăng nhập (UserName)</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+
+        <dt class="col-sm-3">Họ tên</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Số điện thoại</dt>
+        <dd class="col-sm-9">@Model.Phone</dd>
+
+        <dt class="col-sm-3">Địa chỉ</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+
+        <dt class="col-sm-3">Ảnh đại diện</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <img src="@Model.ProfilePicture" alt="Ảnh đại diện" style="max-width:150px;" />
+            }
+            else
+            {
+                <span>Chưa có ảnh đại diện</span>
+            }
+        </dd>
+    </dl>
+</section>
+
+<section>
+    <h3>Thông tin khách hàng (Customer)</h3>
+    <dl class="row">
+        <dt class="col-sm-3">Họ và tên đầy đủ</dt>
+        <dd class="col-sm-9">@Model.FullName</dd>
+
+        <dt class="col-sm-3">Ngày sinh</dt>
+        <dd class="col-sm-9">@Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật"</dd>
+
+        <dt class="col-sm-3">Giới tính</dt>
+        <dd class="col-sm-9">@Model.Gender</dd>
+
+        <dt class="col-sm-3">Ảnh đại diện URL</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+            {
+                <img src="@Model.ProfilePictureUrl" alt="Ảnh đại diện URL" style="max-width:150px;" />
+            }
+            else
+            {
+                <span>Chưa có ảnh đại diện URL</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Điểm tích lũy</dt>
+        <dd class="col-sm-9">@Model.LoyaltyPoints</dd>
+
+        <dt class="col-sm-3">Loại thành viên</dt>
+        <dd class="col-sm-9">@Model.MembershipType</dd>
+
+        <dt class="col-sm-3">Ngày tham gia</dt>
+        <dd class="col-sm-9">@Model.JoinDate.ToString("dd/MM/yyyy")</dd>
+    </dl>
+</section>
+
+<section>
+    <h3>Đơn hàng (Orders)</h3>
+    @if (Model.Orders != null && Model.Orders.Any())
+    {
+        <ul>
+            @foreach (var order in Model.Orders)
+            {
+                <li>@order.ToString()</li> <!-- Thay .ToString() bằng thuộc tính cụ thể như OrderNumber, Ngày, etc -->
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Không có đơn hàng nào.</p>
+    }
+</section>
+
+<section>
+    <h3>Lịch hẹn (Appointments)</h3>
+    @if (Model.Appointments != null && Model.Appointments.Any())
+    {
+        <ul>
+            @foreach (var appointment in Model.Appointments)
+            {
+                <li>@appointment.ToString()</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Không có lịch hẹn nào.</p>
+    }
+</section>
+
+<section>
+    <h3>Kết quả kiểm tra (User Test Results)</h3>
+    @if (Model.UserTestResults != null && Model.UserTestResults.Any())
+    {
+        <ul>
+            @foreach (var result in Model.UserTestResults)
+            {
+                <li>@result.ToString()</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Chưa có kết quả kiểm tra.</p>
+    }
+</section>
