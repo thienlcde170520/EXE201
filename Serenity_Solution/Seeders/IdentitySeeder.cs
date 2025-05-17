@@ -10,7 +10,7 @@ namespace Serenity_Solution.Seeders
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
 
-            string[] roleNames = { "Admin", "Staff", "Customer" };
+            string[] roleNames = { "Admin", "Psychologist", "Customer" };
 
             foreach (var roleName in roleNames)
             {

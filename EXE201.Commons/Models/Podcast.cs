@@ -21,6 +21,8 @@ namespace EXE201.Commons.Models
         public string? thumbnail_url { get; set; }
         [Required]
         public string? CreateBy { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; } = 0;
         [Required]
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
