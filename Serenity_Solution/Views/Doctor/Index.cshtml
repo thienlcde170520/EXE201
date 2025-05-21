@@ -1,23 +1,45 @@
 ﻿@{
     ViewData["Title"] = "Doctor Page";
+    Layout = null;
 }
 <header>
    <header class="site-header">
   <div class="header-container">
     <div class="logo">
-      <img src="https://imgur.com/2zMnItW" alt="Logo">
+      <img src="@Url.Content("~/image/Logo/LogoSere.jpg")" alt="Logo">
       <span><strong>Serenity</strong> Solution</span>
     </div>
     <nav class="main-nav">
-      <a href="http://127.0.0.1:5500/Serenity%20Solution/HomePage/Index.html">Trang chủ</a>
-      <a href="http://127.0.0.1:5500/Serenity%20Solution/BooksPage/Index.html">Tủ sách</a>
-      <a href="http://127.0.0.1:5500/Serenity%20Solution/Podcast/Index.html#">Podcast</a>
-      <a href="#">Kiểm tra tâm lý</a>
-      <a href="#" class="active">Danh sách bác sĩ</a>
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Trang chủ</a>
+
+                <a class="nav-link text-dark" asp-controller="Podcast" asp-action="Index">Podcast</a>
+                <a class="nav-link text-dark" asp-controller="Test" asp-action="Index">Kiểm tra tâm lý</a>
+                <a asp-controller="Doctor" asp-action="Index" class="active">Danh sách bác sĩ</a>
     </nav>
     <div class="auth-buttons">
-      <a href="http://127.0.0.1:5500/Serenity%20Solution/Login/Login.html" class="login-link">Đăng Nhập</a>
-      <a href="http://127.0.0.1:5500/Serenity%20Solution/Login/Register.html" class="signup-btn">Đăng Ký</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="AdminDashboard" asp-action="ManageUser" class="btn-default btn-highlighted me-2">Dashboard</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                    else if (User.IsInRole("Psychologist"))
+                    {
+                        <a asp-controller="Account" asp-action="PsychologistProfile" class="btn-default btn-highlighted me-2">Profile</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                    else if (User.IsInRole("Customer"))
+                    {
+                        <a asp-controller="Account" asp-action="CustomerProfile" class="btn-default btn-highlighted me-2">Profile</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="login-link">Đăng Nhập</a>
+                    <a asp-controller="Account" asp-action="Register" class="signup-btn">Đăng Ký</a>
+                }
     </div>
   </div>
 </header>

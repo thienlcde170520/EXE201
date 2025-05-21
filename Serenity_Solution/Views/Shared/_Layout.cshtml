@@ -1,4 +1,143 @@
 ﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Serenity Solution</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/HomePage.css")" />
+    <!-- FontIcons (ví dụ: https://fontisto.com hoặc fonticon.io) -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="@Url.Content("~/image/Logo/LogoSere.jpg")" alt="Logo">
+                <span><strong>Serenity</strong> Solution</span>
+            </div>
+            <nav class="main-nav">
+                <a asp-controller="Home" asp-action="Index" class="active">Trang chủ</a>
+                <a class="nav-link text-dark" asp-controller="Podcast" asp-action="Index">Podcast</a>
+                <a class="nav-link text-dark" asp-controller="Test" asp-action="Index">Kiểm tra tâm lý</a>
+                <a class="nav-link text-dark" asp-controller="Doctor" asp-action="Index">Danh sách bác sĩ</a>
+            </nav>
+            <div class="auth-buttons">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="AdminDashboard" asp-action="ManageUser" class="btn-default btn-highlighted me-2">Dashboard</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                    else if (User.IsInRole("Psychologist"))
+                    {
+                        <a asp-controller="Account" asp-action="PsychologistProfile" class="btn-default btn-highlighted me-2">Profile</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                    else if (User.IsInRole("Customer"))
+                    {
+                        <a asp-controller="Account" asp-action="CustomerProfile" class="btn-default btn-highlighted me-2">Profile</a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn-default btn-highlighted">Logout</a>
+                    }
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="login-link">Đăng Nhập</a>
+                    <a asp-controller="Account" asp-action="Register" class="signup-btn">Đăng Ký</a>
+                }
+                
+            </div>
+        </div>
+    </header>
+    @* <div class="container">
+        <main role="main" class="pb-3"> *@
+    @RenderBody()
+    @*  </main>
+    </div> *@
+
+    <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column-1">
+        <h2 class="logo"><span>Serenity</span> <strong>Solution</strong></h2>
+        <p>
+          Chăm sóc sức khỏe tâm thần đề cập đến những nỗ lực mà các chuyên gia y tế thực hiện để phục hồi sức khỏe thể chất và tinh thần của chúng ta. Thuật ngữ này cũng bao gồm việc cung cấp các dịch vụ để duy trì sức khỏe cảm xúc. Chúng tôi gọi những người và tổ chức cung cấp các dịch vụ này là 'nhà cung cấp dịch vụ chăm sóc sức khỏe'.
+        </p>
+      </div>
+      <div class="footer-column">
+        <h3>Overview</h3>
+        <ul>
+          <li><a href="#">BookShop</a></li>
+          <li><a href="#">Podcast and Music</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="#">Blogs & Feeds</a></li>
+          <li><a href="#">Privacy Police</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+ <h3>Social Media</h3>
+<div class="social-icons">
+  <a href="https://www.facebook.com/" target="_blank" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://www.instagram.com/" target="_blank" title="Instagram">
+    <i class="fab fa-instagram"></i>
+  </a>
+  <a href="https://www.twitter.com/" target="_blank" title="Twitter">
+    <i class="fab fa-twitter"></i>
+  </a>
+</div>
+
+</div>
+    </div>
+
+    <hr />
+    <div class="copyright">
+      Copyright Serenity Solution 2025
+    </div>
+  </footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -51,3 +190,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+ *@
