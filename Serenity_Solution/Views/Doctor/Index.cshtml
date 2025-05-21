@@ -1,5 +1,496 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Doctor Page";
 }
+<header>
+   <header class="site-header">
+  <div class="header-container">
+    <div class="logo">
+      <img src="https://imgur.com/2zMnItW" alt="Logo">
+      <span><strong>Serenity</strong> Solution</span>
+    </div>
+    <nav class="main-nav">
+      <a href="http://127.0.0.1:5500/Serenity%20Solution/HomePage/Index.html">Trang chủ</a>
+      <a href="http://127.0.0.1:5500/Serenity%20Solution/BooksPage/Index.html">Tủ sách</a>
+      <a href="http://127.0.0.1:5500/Serenity%20Solution/Podcast/Index.html#">Podcast</a>
+      <a href="#">Kiểm tra tâm lý</a>
+      <a href="#" class="active">Danh sách bác sĩ</a>
+    </nav>
+    <div class="auth-buttons">
+      <a href="http://127.0.0.1:5500/Serenity%20Solution/Login/Login.html" class="login-link">Đăng Nhập</a>
+      <a href="http://127.0.0.1:5500/Serenity%20Solution/Login/Register.html" class="signup-btn">Đăng Ký</a>
+    </div>
+  </div>
+</header>
+
+
+<div class="search-section">
+  <div class="search-container">
+    <div class="search-tabs">
+      <div class="tab active">
+        <h3>Đặt câu hỏi</h3>
+        <p>Đặt câu hỏi với chúng tôi</p>
+        <div class="underline"></div>
+      </div>
+      <div class="tab">
+        <h3>Kiểm tra sức khỏe nhanh</h3>
+        <p>Kiểm tra nhanh tâm lý của bạn</p>
+      </div>
+    </div>
+    <div class="search-box">
+      <i class="search-icon">&#128269;</i>
+      <input type="text" placeholder="Search" />
+    </div>
+  </div>
+</div>
+  </header>
+
+  <main>
+    <h2>Bác sĩ dành cho bạn</h2>
+    <div class="filters">
+      <button>Bộ lọc</button>
+      <select>
+        <option>Mới nhất</option>
+        <option>Kinh nghiệm</option>
+        <option>Giá thấp đến cao</option>
+      </select>
+    </div>
+
+   <div class="doctor-card">
+    <div class="doctor-info">
+      <img src="https://via.placeholder.com/80" alt="Kim Nguyễn" class="doctor-avatar" />
+      <div class="doctor-details">
+        <h3 class="doctor-name">Kim Nguyễn</h3>
+        <p class="doctor-specialty">Chuyên gia tâm lý</p>
+        <p class="doctor-location">📍TP Đà Nẵng</p>
+        <p class="doctor-experience">🗓️ Hơn 5 năm kinh nghiệm</p>
+        <p class="doctor-price">📞 Gọi điện: <strong>80.000 VND/15 phút</strong></p>
+        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>600.000 VND/60 phút</strong></p>
+      </div>
+    </div>
+    <button class="contact-button">Liên hệ ngay</button>
+  </div>
+
+  <!-- Doctor Card 2 -->
+  <div class="doctor-card">
+    <div class="doctor-info">
+      <img src="https://via.placeholder.com/80" alt="Nguyễn Khắc Dũng" class="doctor-avatar" />
+      <div class="doctor-details">
+        <h3 class="doctor-name">Nguyễn Khắc Dũng</h3>
+        <p class="doctor-specialty">Chuyên gia tâm lý</p>
+        <p class="doctor-location">📍TP Đà Nẵng</p>
+        <p class="doctor-experience">🗓️ Hơn 10 năm kinh nghiệm</p>
+        <p class="doctor-price">📞 Gọi điện: <strong>200.000 VND/15 phút</strong></p>
+        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>1.100.000 VND/60 phút</strong></p>
+      </div>
+    </div>
+    <button class="contact-button">Liên hệ ngay</button>
+  </div>
+
+   
+
+    <div class="pagination">
+      <button>&laquo;</button>
+      <button class="active">1</button>
+      <button>2</button>
+      <button>&raquo;</button>
+    </div>
+  </main>
+
+   <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column-1">
+        <h2 class="logo"><span>Serenity</span> <strong>Solution</strong></h2>
+        <p>
+          Chăm sóc sức khỏe tâm thần đề cập đến những nỗ lực mà các chuyên gia y tế thực hiện để phục hồi sức khỏe thể chất và tinh thần của chúng ta. Thuật ngữ này cũng bao gồm việc cung cấp các dịch vụ để duy trì sức khỏe cảm xúc. Chúng tôi gọi những người và tổ chức cung cấp các dịch vụ này là 'nhà cung cấp dịch vụ chăm sóc sức khỏe'.
+        </p>
+      </div>
+      <div class="footer-column">
+        <h3>Overview</h3>
+        <ul>
+          <li><a href="#">BookShop</a></li>
+          <li><a href="#">Podcast and Music</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="#">Blogs & Feeds</a></li>
+          <li><a href="#">Privacy Police</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+ <h3>Social Media</h3>
+<div class="social-icons">
+  <a href="https://www.facebook.com/" target="_blank" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://www.instagram.com/" target="_blank" title="Instagram">
+    <i class="fab fa-instagram"></i>
+  </a>
+  <a href="https://www.twitter.com/" target="_blank" title="Twitter">
+    <i class="fab fa-twitter"></i>
+  </a>
+</div>
+
+</div>
+    </div>
+
+    <hr />
+    <div class="copyright">
+      Copyright  Serenity Solution 2025
+    </div>
+  </footer>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    .site-header {
+        background-color: white;
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .header-container {
+        width: 90%;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .logo span {
+            font-size: 20px;
+            color: #1e3a8a;
+        }
+
+            .logo span strong {
+                color: #1e40af; /* Darker blue for "Serenity" */
+            }
+
+    .main-nav {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+
+        .main-nav a {
+            text-decoration: none;
+            color: #111;
+            font-weight: 500;
+            position: relative;
+        }
+
+            .main-nav a.active {
+                color: #0f5e72;
+                font-weight: bold;
+            }
+
+                .main-nav a.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -4px;
+                    left: 0;
+                    height: 3px;
+                    width: 100%;
+                    background-color: #0f5e72;
+                    border-radius: 2px;
+                }
+
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .login-link {
+        color: #1e3a8a;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .signup-btn {
+        background-color: #93c5fd;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+
+        .signup-btn:hover {
+            background-color: #60a5fa;
+        }
+
+
+    .search-section {
+        background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQa3_zuvcqTyOXXSYmZXFyNqtLh8rnOwo5_A&s') no-repeat center center;
+        background-size: cover;
+        padding: 80px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .search-container {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 40px;
+        width: 70%;
+        max-width: 1000px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-tabs {
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 20px;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        cursor: pointer;
+        padding: 10px;
+        position: relative;
+    }
+
+        .tab h3 {
+            margin: 0;
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .tab p {
+            color: #6b7280;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .tab.active::after {
+            content: "";
+            display: block;
+            height: 3px;
+            width: 60%;
+            background-color: #14b8b8;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        margin-top: 30px;
+        border: 2px solid #0f172a;
+        border-radius: 50px;
+        padding: 10px 20px;
+        height: 50px;
+    }
+
+    .search-icon {
+        font-size: 20px;
+        color: #1e3a8a;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-box input {
+        border: none;
+        outline: none;
+        font-size: 16px;
+        width: 100%;
+    }
+
+
+    .tab {
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        background: #eee;
+    }
+
+        .tab.active {
+            background: #f2f3f3;
+            color: #fff;
+        }
+
+    .search-bar input {
+        margin-top: 10px;
+        padding: 10px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    h2 {
+        padding: 20px;
+    }
+
+    .filters {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+
+    .doctor-card {
+        border-bottom: 1px solid #ddd;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .doctor-info {
+        display: flex;
+        gap: 20px;
+    }
+
+    .doctor-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .doctor-details {
+        flex: 1;
+    }
+
+    .doctor-name {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .doctor-specialty,
+    .doctor-location,
+    .doctor-experience,
+    .doctor-price {
+        margin: 4px 0;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .contact-button {
+        align-self: flex-start;
+        background-color: #7f9c96;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transition: background-color 0.3s;
+    }
+
+        .contact-button:hover {
+            background-color: #5e7b74;
+        }
+
+    .footer {
+        background-color: #f9fbfc;
+        padding: 40px 60px;
+        border-top: 3px solid #1a2fa1;
+    }
+
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: space-between;
+    }
+
+    .footer-column {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .logo span {
+        font-weight: bold;
+        font-size: 24px;
+        color: #002379;
+    }
+
+    .logo strong {
+        font-size: 24px;
+        color: #3e7c7f;
+    }
+
+    .footer-column h3 {
+        font-size: 18px;
+        color: #3e7c7f;
+        margin-bottom: 10px;
+    }
+
+    .footer-column ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+
+            .footer-column ul li a {
+                text-decoration: none;
+                color: #111;
+                font-weight: 500;
+            }
+
+    .footer-column p {
+        font-size: 14px;
+        color: #222;
+        line-height: 1.5;
+    }
+
+    .social-icons a {
+        margin-right: 10px;
+        font-size: 18px;
+        color: #111;
+        text-decoration: none;
+    }
+
+    hr {
+        margin: 30px 0 15px;
+        border: none;
+        border-top: 1px solid #ddd;
+    }
+
+    .copyright {
+        text-align: center;
+        font-size: 14px;
+        color: #111;
+        margin-bottom: 20px;
+    }
+</style>
