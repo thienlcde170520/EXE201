@@ -1,8 +1,95 @@
-﻿@{
+﻿@model  Serenity_Solution.Models.ContactViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="search-section">
+    <div class="search-container">
+        <div class="search-tabs">
+            <div class="tab active">
+                <h3>Đặt câu hỏi</h3>
+                <p>Đặt câu hỏi với chúng tôi</p>
+                <div class="underline"></div>
+            </div>
+            <div class="tab">
+                <h3>Kiểm tra sức khỏe nhanh</h3>
+                <p>Kiểm tra nhanh tâm lý của bạn</p>
+            </div>
+        </div>
+        @* <div class="search-box">
+            <i class="search-icon">&#128269;</i>
+            <input type="text" placeholder="Search" />
+        </div> *@
+    </div>
 </div>
+
+
+<section class="doctor-section">
+  <h2>Danh sách <span>Bác sĩ</span></h2>
+  <p class="description">Chăm sóc sức khỏe giúp mọi người duy trì sức khỏe tốt và phòng ngừa bệnh tật...</p>
+
+  <div class="slider-controls">
+    <button id="prevBtn">←</button>
+    <button id="nextBtn">→</button>
+  </div>
+
+  <div class="doctor-list-wrapper">
+    <div class="doctor-list" id="doctorList">
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fb16adc5b-7f4c-4536-94f7-ff992b35f935.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Kim Nguyễn">
+        <h4><strong>Kim Nguyễn</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Ffb4d2f5b-10cf-459c-85c0-90ed10f3df86.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Lê Văn Thắng">
+        <h4><strong>Lê Văn Thắng</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F3e9735ff-22dc-4552-a62e-332c1c57b260.jpeg%3Fformat%3Dwebp&w=1920&q=75" alt="Hà Lê">
+        <h4><strong>Hà Lê</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý, hướng nghiệp</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F1310b339-3c76-4e15-acd5-ce1437cc1841.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Hải Uyên">
+        <h4><strong>Nguyễn Hải Uyên</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F40077437-045d-4641-a94d-a3f22ac53c6b.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Dung Lê">
+        <h4><strong>Dung Lê</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F4f4874ff-8640-4b08-a87c-f518983cb41c.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Phương Bùi">
+        <h4><strong>Phương Bùi</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <div class="doctor-card">
+        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fef29f845-0b22-4a34-a99b-fc839505d21a.jpg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Khắc Dũng">
+        <h4><strong>Nguyễn Khắc Dũng</strong></h4>
+        <p>Chuyên gia Tư vấn tâm lý</p>
+        <button class="contact-btn">Liên hệ</button>
+      </div>
+      <!-- Thêm nhiều bác sĩ nếu muốn -->
+    </div>
+  </div>
+</section>
+
+<section class="contact-form">
+    <div class="container">
+        <h2>📩 Tương tác với chúng tôi</h2>
+        <form asp-action="Contact" asp-controller="SendRequest" method="post" class="form">
+            <input type="text" placeholder="Họ tên">
+            <input type="email" placeholder="Email">
+            <textarea placeholder="Nội dung"></textarea>
+            <button>Gửi</button>
+        </form>
+    </div>
+</section>

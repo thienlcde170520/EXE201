@@ -79,6 +79,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapHub<NotificationHub>("/notificationHub");
 
+app.UseStaticFiles();
+
 
 app.UseRouting();
 app.UseSession();//them

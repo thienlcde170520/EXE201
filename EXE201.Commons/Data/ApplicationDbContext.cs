@@ -29,6 +29,7 @@ namespace EXE201.Commons.Data
         public virtual DbSet<UserTestResult> UserTestResults { get; set; }
         public virtual DbSet<PsychTest> PsychTests { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
