@@ -16,7 +16,8 @@ namespace EXE201.Services.Interfaces
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<IdentityResult> DeleteUserAsync(User user);
         Task<IdentityResult> RegisterAsync(User user, string password);
-        Task<SignInResult> LoginAsync(string email, string password);
+        //Task<SignInResult> LoginAsync(string email, string password);
+        Task<SignInResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
         Task<string> GetCurrentUserIdAsync();
         Task<Customer?> GetCurrentCustomerAsync();
