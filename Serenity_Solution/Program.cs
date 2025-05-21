@@ -1,4 +1,4 @@
-using EXE201.Commons.Data;
+﻿using EXE201.Commons.Data;
 using EXE201.Commons.Models;
 using EXE201.Repository.Interfaces;
 using EXE201.Repository.Repositories;
@@ -35,7 +35,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSignalR();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(); // Log ra console
-builder.Logging.AddDebug();   // Log v�o Debug Window
+builder.Logging.AddDebug();   // Log vào Debug Window
 
 builder.Services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -45,12 +45,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(14); // giữ đăng nhập 14 ngày
+        options.SlidingExpiration = true;
     });
 
 builder.Services.AddAuthorization(); // Ensure authorization is added
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+});
 
 var app = builder.Build();
 
@@ -62,24 +69,25 @@ using (var scope = app.Services.CreateScope())
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.MapHub<NotificationHub>("/notificationHub");
 
 
 app.UseRouting();
+app.UseSession();//them
 app.UseAuthentication();
 app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.Run();
+app.Run();
  

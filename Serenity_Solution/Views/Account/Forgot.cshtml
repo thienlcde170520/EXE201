@@ -1,0 +1,161 @@
+﻿@model ForgotPasswordViewModel
+
+<div class="login-container">
+    <div class="login-left">
+        <h1><span class="brand">Serenity</span> Solution</h1>
+        <p class="subtitle">Website giúp sức khỏe tâm thần bạn trở nên tốt hơn</p>
+        <p>Vui lòng nhập email của bạn để đặt lại mật khẩu</p>
+
+        <form asp-action="Forgot" asp-controller="Account" method="post" class="login-form">
+
+            @* Hiển thị thông báo lỗi *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary-errors" style="color: red; margin-bottom: 15px;">
+                    <ul>
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <label>Email</label>
+            <input type="email" name="Email" placeholder="example@gmail.com" required />
+
+            <div class="buttons">
+                <button type="submit" class="btn-primary">Gửi yêu cầu</button>
+                <a asp-controller="Account" asp-action="Login" class="btn-outline">Quay lại đăng nhập</a>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="login-right">
+        <img src="https://i.pinimg.com/736x/8c/45/81/8c45816eae00c1a5e0b6ac7bb9c87eca.jpg" alt="forgot password illustration" />
+        <p>Nhập email để bắt đầu quá trình đặt lại mật khẩu</p>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+        background-color: #f0fdfd;
+    }
+
+    .login-container {
+        display: flex;
+        height: 100vh;
+    }
+
+    .login-left {
+        flex: 1;
+        padding: 60px 80px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .brand {
+        color: #3b82f6;
+        font-weight: bold;
+    }
+
+    .subtitle {
+        margin: 10px 0 20px;
+        color: #4b5563;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .login-form label {
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .login-form input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    .options {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        font-size: 14px;
+    }
+
+        .options a {
+            text-decoration: none;
+            color: #0284c7;
+        }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        padding: 10px 20px;
+        background-color: #0ea5e9;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-outline {
+        padding: 10px 20px;
+        border: 1px solid #0ea5e9;
+        color: #0ea5e9;
+        background: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .login-google {
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+        .login-google a {
+            color: #0ea5e9;
+            text-decoration: none;
+        }
+
+    .login-right {
+        flex: 1;
+        background-color: #b2e1dd;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        text-align: center;
+    }
+
+        .login-right img {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .login-right p {
+            color: #333;
+            font-size: 16px;
+        }
+</style>

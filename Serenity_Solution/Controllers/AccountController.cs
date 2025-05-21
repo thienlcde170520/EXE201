@@ -2,11 +2,14 @@
 using EXE201.Commons.Models;
 using EXE201.Services.Interfaces;
 using Humanizer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Serenity_Solution.Models;
+using System.Security.Claims;
 
 namespace Serenity_Solution.Controllers
 {
@@ -88,9 +91,15 @@ namespace Serenity_Solution.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _accountService.LoginAsync(viewModel.Email.Trim(), viewModel.Password.Trim());
+                //var result = await _accountService.LoginAsync(viewModel.Email.Trim(), viewModel.Password.Trim());
+                
+                var result = await _accountService.LoginAsync(
+                    viewModel.Email.Trim(),
+                    viewModel.Password.Trim(),
+                    viewModel.RememberMe
+                );
                 if (result.Succeeded)
-                {
+                {                   
                     return RedirectToAction("Index", "Home");
                 }
 

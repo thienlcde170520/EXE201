@@ -49,9 +49,9 @@ namespace EXE201.Services.Services
             return await _accountRepository.RegisterAsync(user, password);
         }
 
-        public async Task<SignInResult> LoginAsync(string email, string password)
+        public async Task<SignInResult> LoginAsync(string email, string password, bool rememberMe)
         {
-            return await _accountRepository.LoginAsync(email, password);
+            return await _accountRepository.LoginAsync(email, password, rememberMe);
         }
 
         public async Task LogoutAsync()

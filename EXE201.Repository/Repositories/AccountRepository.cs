@@ -63,7 +63,7 @@ namespace EXE201.Repository.Repositories
             }
             return result;
         }
-
+        /*
         public async Task<SignInResult> LoginAsync(string email, string password)
         {
             //var user = await _userManager.FindByEmailAsync(email);
@@ -72,7 +72,17 @@ namespace EXE201.Repository.Repositories
 
             return await _signInManager.PasswordSignInAsync(user, password, false, false);
         }
+        */
+        
+        public async Task<SignInResult> LoginAsync(string email, string password, bool rememberMe)
+        {
+            //var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return SignInResult.Failed;
 
+            return await _signInManager.PasswordSignInAsync(user, password, rememberMe, lockoutOnFailure: false);
+        }
+        
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
