@@ -1,22 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "Doctor Page";
+    ViewData["Title"] = "Test Page";
     Layout = null;
 }
 <header>
-   <header class="site-header">
-  <div class="header-container">
-    <div class="logo">
-      <img src="@Url.Content("~/image/Logo/LogoSere.jpg")" alt="Logo">
-      <span><strong>Serenity</strong> Solution</span>
-    </div>
-    <nav class="main-nav">
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="@Url.Content("~/image/Logo/LogoSere.jpg")" alt="Logo">
+                <span><strong>Serenity</strong> Solution</span>
+            </div>
+            <nav class="main-nav">
                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Trang chủ</a>
 
-                <a class="nav-link text-dark" asp-controller="Podcast" asp-action="Index">Podcast</a>
-                <a class="nav-link text-dark" asp-controller="Test" asp-action="Index">Kiểm tra tâm lý</a>
-                <a asp-controller="Doctor" asp-action="Index" class="active">Danh sách bác sĩ</a>
-    </nav>
-    <div class="auth-buttons">
+                <a class="nav-link text-dark" asp-controller="Podcast" asp-action="Index">Podcast</a>   
+                <a asp-controller="Test" asp-action="Index" class="active">Kiểm tra tâm lý</a>
+                <a class="nav-link text-dark" asp-controller="Doctor" asp-action="Index">Danh sách bác sĩ</a>
+            </nav>
+            <div class="auth-buttons">
                 @if (User.Identity.IsAuthenticated)
                 {
                     @if (User.IsInRole("Admin"))
@@ -40,139 +40,114 @@
                     <a asp-controller="Account" asp-action="Login" class="login-link">Đăng Nhập</a>
                     <a asp-controller="Account" asp-action="Register" class="signup-btn">Đăng Ký</a>
                 }
+            </div>
+        </div>
+    </header>
+
+
+    <div class="search-section">
+        <div class="search-container">
+            <div class="search-tabs">
+                <div class="tab active">
+                    <h3>Đặt câu hỏi</h3>
+                    <p>Đặt câu hỏi với chúng tôi</p>
+                    <div class="underline"></div>
+                </div>
+                <div class="tab">
+                    <h3>Kiểm tra sức khỏe nhanh</h3>
+                    <p>Kiểm tra nhanh tâm lý của bạn</p>
+                </div>
+            </div>
+            <div class="search-box">
+                <i class="search-icon">&#128269;</i>
+                <input type="text" placeholder="Search" />
+            </div>
+        </div>
     </div>
-  </div>
 </header>
 
-
-<div class="search-section">
-  <div class="search-container">
-    <div class="search-tabs">
-      <div class="tab active">
-        <h3>Đặt câu hỏi</h3>
-        <p>Đặt câu hỏi với chúng tôi</p>
-        <div class="underline"></div>
-      </div>
-      <div class="tab">
-        <h3>Kiểm tra sức khỏe nhanh</h3>
-        <p>Kiểm tra nhanh tâm lý của bạn</p>
-      </div>
+<section class="content-section">
+    <div class="stats">
+        <div class="stat-box">
+            <h2>21</h2>
+            <p>Câu hỏi trắc nghiệm</p>
+        </div>
+        <div class="stat-box">
+            <h2>5 phút</h2>
+            <p>Thời gian</p>
+        </div>
     </div>
-    <div class="search-box">
-      <i class="search-icon">&#128269;</i>
-      <input type="text" placeholder="Search" />
+    <div class="description">
+        <h3>Bài đánh giá (trắc nghiệm) DASS 21 là một thang đo gồm 21 câu hỏi, giúp xác định mức độ rối loạn lo âu, trầm cảm và căng thẳng – một vấn đề khá phổ biến trong cộng đồng hiện nay. Bài trắc nghiệm này thường được sử dụng để đánh giá trạng thái tâm lý của những người đang gặp khó khăn trong cuộc sống, chẳng hạn như mất việc, trải qua chấn thương hoặc đối mặt với những tình huống đầy thách thức.</h3>
+        <h4>MỤC ĐÍCH CỦA BÀI TEST:</h4>
+        <ul>
+            <li>Tự kiểm tra tình trạng sức khỏe tinh thần của bản thân</li>
+            <li>Dự đoán sức khỏe tinh thần và lên kế hoạch thăm khám phù hợp.</li>
+            <li>Cung cấp thông tin hỗ trợ quá trình tư vấn với bác sĩ hoặc chuyên gia.</li>
+        </ul>
+        <h4>HƯỚNG DẪN HIỆU QUẢ:</h4>
+        <p>Hãy đọc kỹ từng câu hỏi và chọn đáp án phản ánh chính xác nhất trạng thái của bạn trong 1 tuần qua. Không có câu trả lời đúng hay sai, và bạn không cần mất quá nhiều thời gian cho một câu hỏi nào.</p>
+        <h4>LƯU Ý:</h4>
+        <p>Kết quả bài trắc nghiệm này chỉ mang tính chất tham khảo, không thể thay thế chẩn đoán y khoa từ bác sĩ tâm thần hoặc chuyên gia tâm lý.</p>
+        <button class="start-btn">BẮT ĐẦU</button>
     </div>
-  </div>
-</div>
-  </header>
+</section>
 
-  <main>
-    <h2>Bác sĩ dành cho bạn</h2>
-    <div class="filters">
-      <button>Bộ lọc</button>
-      <select>
-        <option>Mới nhất</option>
-        <option>Kinh nghiệm</option>
-        <option>Giá thấp đến cao</option>
-      </select>
-    </div>
-
-   <div class="doctor-card">
-    <div class="doctor-info">
-      <img src="~/image/Doctor/Kim_Nguyen.png" alt="Kim Nguyễn" class="doctor-avatar" />
-      <div class="doctor-details">
-        <h3 class="doctor-name">Kim Nguyễn</h3>
-        <p class="doctor-specialty">Chuyên gia tâm lý</p>
-        <p class="doctor-location">📍TP Đà Nẵng</p>
-        <p class="doctor-experience">🗓️ Hơn 5 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>80.000 VND/15 phút</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>600.000 VND/60 phút</strong></p>
-      </div>
-    </div>
-    <button class="contact-button">Liên hệ ngay</button>
-  </div>
-
-  <!-- Doctor Card 2 -->
-  <div class="doctor-card">
-    <div class="doctor-info">
-      <img src="~/image/Doctor/Nguyen_Khac_Dung.png" alt="Nguyễn Khắc Dũng" class="doctor-avatar" />
-      <div class="doctor-details">
-        <h3 class="doctor-name">Nguyễn Khắc Dũng</h3>
-        <p class="doctor-specialty">Chuyên gia tâm lý</p>
-        <p class="doctor-location">📍TP Đà Nẵng</p>
-        <p class="doctor-experience">🗓️ Hơn 10 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>200.000 VND/15 phút</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>1.100.000 VND/60 phút</strong></p>
-      </div>
-    </div>
-    <button class="contact-button">Liên hệ ngay</button>
-  </div>
-
-   
-
-    <div class="pagination">
-      <button>&laquo;</button>
-      <button class="active">1</button>
-      <button>2</button>
-      <button>&raquo;</button>
-    </div>
-  </main>
-
-   <footer class="footer">
+<footer class="footer">
     <div class="footer-container">
-      <div class="footer-column-1">
-        <h2 class="logo"><span>Serenity</span> <strong>Solution</strong></h2>
-        <p>
-          Chăm sóc sức khỏe tâm thần đề cập đến những nỗ lực mà các chuyên gia y tế thực hiện để phục hồi sức khỏe thể chất và tinh thần của chúng ta. Thuật ngữ này cũng bao gồm việc cung cấp các dịch vụ để duy trì sức khỏe cảm xúc. Chúng tôi gọi những người và tổ chức cung cấp các dịch vụ này là 'nhà cung cấp dịch vụ chăm sóc sức khỏe'.
-        </p>
-      </div>
-      <div class="footer-column">
-        <h3>Overview</h3>
-        <ul>
-          <li><a href="#">BookShop</a></li>
-          <li><a href="#">Podcast and Music</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Company</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Services</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Explore</h3>
-        <ul>
-          <li><a href="#">Blogs & Feeds</a></li>
-          <li><a href="#">Privacy Police</a></li>
-          <li><a href="#">Cookies</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
- <h3>Social Media</h3>
-<div class="social-icons">
-  <a href="https://www.facebook.com/" target="_blank" title="Facebook">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-  <a href="https://www.instagram.com/" target="_blank" title="Instagram">
-    <i class="fab fa-instagram"></i>
-  </a>
-  <a href="https://www.twitter.com/" target="_blank" title="Twitter">
-    <i class="fab fa-twitter"></i>
-  </a>
-</div>
+        <div class="footer-column-1">
+            <h2 class="logo"><span>Serenity</span> <strong>Solution</strong></h2>
+            <p>
+                Chăm sóc sức khỏe tâm thần đề cập đến những nỗ lực mà các chuyên gia y tế thực hiện để phục hồi sức khỏe thể chất và tinh thần của chúng ta. Thuật ngữ này cũng bao gồm việc cung cấp các dịch vụ để duy trì sức khỏe cảm xúc. Chúng tôi gọi những người và tổ chức cung cấp các dịch vụ này là 'nhà cung cấp dịch vụ chăm sóc sức khỏe'.
+            </p>
+        </div>
+        <div class="footer-column">
+            <h3>Overview</h3>
+            <ul>
+                <li><a href="#">BookShop</a></li>
+                <li><a href="#">Podcast and Music</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About us</a></li>
+                <li><a href="#">Services</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Explore</h3>
+            <ul>
+                <li><a href="#">Blogs & Feeds</a></li>
+                <li><a href="#">Privacy Police</a></li>
+                <li><a href="#">Cookies</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Social Media</h3>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.twitter.com/" target="_blank" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
 
-</div>
+        </div>
     </div>
 
     <hr />
     <div class="copyright">
-      Copyright  Serenity Solution 2025
+        Copyright  Serenity Solution 2025
     </div>
-  </footer>
+</footer>
 
-<style>
+ <style>
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -374,69 +349,83 @@
         border-radius: 5px;
     }
 
-    h2 {
+    .content-section {
+        max-width: 1200px;
+        margin: 50px auto;
         padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .filters {
+    .stats {
         display: flex;
-        justify-content: space-between;
-        padding: 0 20px;
+        justify-content: space-around;
+        margin-bottom: 30px;
     }
 
-    .doctor-card {
-        border-bottom: 1px solid #ddd;
-        padding: 20px 0;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+    .stat-box {
+        background-color: #e6f0fa;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 45%;
     }
 
-    .doctor-info {
-        display: flex;
-        gap: 20px;
-    }
+        .stat-box h2 {
+            font-size: 48px;
+            color: #4a90e2;
+        }
 
-    .doctor-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+        .stat-box p {
+            font-size: 18px;
+            color: #333;
+        }
 
-    .doctor-details {
-        flex: 1;
-    }
-
-    .doctor-name {
-        margin: 0;
+    .description h3 {
         font-size: 20px;
-        font-weight: bold;
-    }
-
-    .doctor-specialty,
-    .doctor-location,
-    .doctor-experience,
-    .doctor-price {
-        margin: 4px 0;
-        font-size: 14px;
         color: #333;
+        margin-bottom: 20px;
+        line-height: 1.6;
     }
 
-    .contact-button {
-        align-self: flex-start;
-        background-color: #7f9c96;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
+    .description h4 {
+        font-size: 18px;
+        color: #4a90e2;
+        margin: 20px 0 10px;
+    }
+
+    .description ul {
+        list-style: disc;
+        padding-left: 20px;
+        margin-bottom: 20px;
+    }
+
+        .description ul li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+    .description p {
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .start-btn {
+        background-color: #f5a623;
+        color: #fff;
         border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
         cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        transition: background-color 0.3s;
+        display: block;
+        margin: 20px auto;
     }
 
-        .contact-button:hover {
-            background-color: #5e7b74;
+        .start-btn:hover {
+            background-color: #e69500;
         }
 
     .footer {
@@ -515,4 +504,4 @@
         color: #111;
         margin-bottom: 20px;
     }
-</style>
+ </style>

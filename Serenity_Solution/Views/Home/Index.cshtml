@@ -22,7 +22,81 @@
         </div> *@
     </div>
 </div>
+<div class="podcast-section">
+    <h2 class="section-title">Podcast</h2>
 
+    <div class="podcast-feature">
+        <img src="~/image/Podcast/Main_Podcast.png" alt="Podcast Cover" class="podcast-img" />
+
+        <div class="podcast-content">
+            <h3 class="podcast-title">Hãy sống theo cách mình muốn</h3>
+            <div class="controls">
+                <button>
+                    <i class="fi fi-rs-rewind"></i>
+                </button>
+                <button id="playBtn">
+                    <i class="fi fi-rs-play"></i>
+                </button>
+                <button>
+                    <i class="fi fi-rs-forward"></i>
+                </button>
+                <span class="rating">4.6 ★ (295)</span>
+            </div>
+
+            <script>
+                const playBtn = document.getElementById('playBtn');
+                const playIcon = playBtn.querySelector('i');
+                let isPlaying = false;
+
+                playBtn.addEventListener('click', () => {
+                  isPlaying = !isPlaying;
+                  playIcon.className = isPlaying ? 'fi fi-rs-pause' : 'fi fi-rs-play';
+                });
+            </script>
+
+
+
+            <p class="description">
+                Xin chào các bạn, mình là Trang và là founder của dự án viết Chữa Lành. Liệu pháp viết – Writing therapy là phương pháp sử dụng công cụ giấy và bút để có thể bày cảm xúc. Mình bắt đầu hành trình qua các khóa viết và dần cảm nhận được tinh thần tốt lên...
+            </p>
+        </div>
+    </div>
+
+    <div class="podcast-list-header">
+        <a href="https://localhost:7029/Podcast/index">Xem tất cả</a>
+    </div>
+
+    <div class="podcast-list">
+        <div class="podcast-card">
+            <img src="~/image/Podcast/TimDenChuaLanhNhungBeTac.png" />
+            <p>Tim đến chữa lành nhưng vẫn bế tắc</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/GiaiPhapA.png" />
+            <p>Giải pháp A không thể giải quyết vấn đề B</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/NhungLoiMonCu.png" />
+            <p>Những lời mòn cuộc sống</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/ThayViBangKhoan.png" />
+            <p>Thay vì băng khoăn</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/VietChuaLanh.png" />
+            <p>Vết chữa Lành</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/VuotQuaKhoKhan.png" />
+            <p>Vược qua khó khăn</p>
+        </div>
+        <div class="podcast-card">
+            <img src="~/image/Podcast/Main_Podcast.png" />
+            <p>Hãy sống theo cách mình muốn</p>
+        </div>
+    </div>
+</div>
 
 <section class="doctor-section">
   <h2>Danh sách <span>Bác sĩ</span></h2>
@@ -36,43 +110,43 @@
   <div class="doctor-list-wrapper">
     <div class="doctor-list" id="doctorList">
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fb16adc5b-7f4c-4536-94f7-ff992b35f935.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Kim Nguyễn">
+        <img src="~/image/Doctor/Kim_Nguyen.png" alt="Kim Nguyễn">
         <h4><strong>Kim Nguyễn</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Ffb4d2f5b-10cf-459c-85c0-90ed10f3df86.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Lê Văn Thắng">
+        <img src="~/image/Doctor/Van_Thang.png" alt="Lê Văn Thắng">
         <h4><strong>Lê Văn Thắng</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F3e9735ff-22dc-4552-a62e-332c1c57b260.jpeg%3Fformat%3Dwebp&w=1920&q=75" alt="Hà Lê">
+        <img src="~/image/Doctor/Ha_Le.png" alt="Hà Lê">
         <h4><strong>Hà Lê</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý, hướng nghiệp</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F1310b339-3c76-4e15-acd5-ce1437cc1841.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Hải Uyên">
+        <img src="~/image/Doctor/Hai_Uyen.png" alt="Nguyễn Hải Uyên">
         <h4><strong>Nguyễn Hải Uyên</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F40077437-045d-4641-a94d-a3f22ac53c6b.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Dung Lê">
+        <img src="~/image/Doctor/Dung_Le.png" alt="Dung Lê">
         <h4><strong>Dung Lê</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F4f4874ff-8640-4b08-a87c-f518983cb41c.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Phương Bùi">
+        <img src="~/image/Doctor/Phuong_Bui.png" alt="Phương Bùi">
         <h4><strong>Phương Bùi</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
       </div>
       <div class="doctor-card">
-        <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fef29f845-0b22-4a34-a99b-fc839505d21a.jpg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Khắc Dũng">
+        <img src="~/image/Doctor/Nguyen_Khac_Dung.png" alt="Nguyễn Khắc Dũng">
         <h4><strong>Nguyễn Khắc Dũng</strong></h4>
         <p>Chuyên gia Tư vấn tâm lý</p>
         <button class="contact-btn">Liên hệ</button>
@@ -93,3 +167,6 @@
         </form>
     </div>
 </section>
+@section Tapcommand {
+    <!-- Để trống nếu không cần nội dung -->
+}

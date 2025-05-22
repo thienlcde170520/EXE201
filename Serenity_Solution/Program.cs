@@ -1,7 +1,9 @@
 ﻿using EXE201.Commons.Data;
 using EXE201.Commons.Models;
+using EXE201.Repository;
 using EXE201.Repository.Interfaces;
 using EXE201.Repository.Repositories;
+using EXE201.Services;
 using EXE201.Services.Hubs;
 using EXE201.Services.Interfaces;
 using EXE201.Services.Models;
@@ -13,8 +15,9 @@ using Serenity_Solution.Seeders;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
+builder.Services.AddScoped<IPodcastRepository, PodcastRepository>();
+builder.Services.AddScoped<IPodcastService, PodcastService>();
+// Add services to the container.
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 

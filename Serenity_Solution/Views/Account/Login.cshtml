@@ -1,4 +1,8 @@
 ﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div class="login-container">
     <div class="login-left">
@@ -46,7 +50,9 @@
         <p>Hành trình tâm lý của bạn bắt đầu tại đây – Đăng nhập ngay!</p>
     </div>
 </div>
-
+@section Tapcommand {
+    <!-- Để trống nếu không cần nội dung -->
+}
 @section Scripts {
     <script>
 
