@@ -2,3 +2,64 @@
     ViewData["Title"] = "Doctor";
 }
 
+<div class="container">
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="nav-link">Hồ Sơ</a>
+            <a href="#" class="nav-link">Sự Nghiệp</a>
+        </nav>
+    </header>
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-details">
+            <img src="Dung_Le.png" alt="Profile Picture" class="profile-pic">
+            <h1>Dung Lê</h1>
+            <p class="role">Hồ sơ nhân viên</p>
+            <ul>
+                <li><span class="icon">👤</span> Chức vụ: Chuyền viên</li>
+                <li><span class="icon">🏢</span> Kinh nghiệm: 5 năm</li>
+                <li><span class="icon">💼</span> Công ty: CÔNG TY PHẦN MỀM CÔNG NGHỆ YOOT</li>
+                <li><span class="icon">📍</span> Nơi ở: TP. HỒ CHÍ MINH</li>
+            </ul>
+            <div class="tabs">
+                <button class="tab active">Giới thiệu</button>
+                <button class="tab">Kinh nghiệm</button>
+                <button class="tab">Bằng cấp</button>
+            </div>
+            <div class="intro-section">
+                <div class="intro">
+                    <h3>Giới thiệu chuyển gia Kim Nguyên</h3>
+                    <p>Chuyển gia làm việc Nguyệt Thị Kim</p>
+                </div>
+                <div class="intro">
+                    <h3>Kinh nghiệm làm việc chuyển gia Kim Nguyên</h3>
+                </div>
+                <div class="introintro">
+                    <h3>Bằng cấp</h3>
+                </div>
+                <div class="intro">
+                    <h3>Chuyên gia khác</h3>
+                </div>
+            </div>
+        </div>
+        <div class="order-section">
+            <div class="order-box">
+                <p><span class="icon">🔒</span> Gói một phút: 800.000 VNĐ/60 Phút</p>
+                <button class="order-button">Đặt lịch ngay</button>
+            </div>
+        </div>
+    </div>
+    <section class="contact-form">
+        <div class="container">
+            <h2>📩 Tương tác với chúng tôi</h2>
+            <form asp-action="Contact" asp-controller="SendRequest" method="post" class="form">
+                <input type="text" placeholder="Họ tên">
+                <input type="email" placeholder="Email">
+                <textarea placeholder="Nội dung"></textarea>
+                <button>Gửi</button>
+            </form>
+        </div>
+    </section>
+</div>
