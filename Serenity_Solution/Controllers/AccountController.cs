@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Serenity_Solution.Models;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Serenity_Solution.Controllers
 {
@@ -134,21 +135,52 @@ namespace Serenity_Solution.Controllers
         {
             var user = await _accountService.GetUserByIdAsync(id);
             if (user == null) return NotFound();
-            return View(user);
+
+            var customer = user as Customer; // Ép kiểu về Customer
+
+            var viewModel = new CustomerViewModel
+            {
+                Id = customer.Id,
+                FullName = customer.FullName,
+                Email = customer.Email,
+                Phone = customer.PhoneNumber,
+                Address = customer.Address,
+                DateOfBirth = customer.DateOfBirth,
+                Gender = customer.Gender,
+                ProfilePictureUrl = customer.ProfilePictureUrl
+            };
+
+            return View(viewModel);
         }
 
         // Edit user - Post (Save changes)
         [HttpPost]
-        public async Task<IActionResult> Edit(User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, CustomerViewModel model)
         {
-            if (!ModelState.IsValid) return View(user);
+            if (string.IsNullOrEmpty(id)) return NotFound();
+            if (!ModelState.IsValid) return View(model);
 
-            var result = await _accountService.UpdateUserAsync(user);
-            if (result.Succeeded)
+            var customer = await _userManager.Users
+                .OfType<Customer>() // Lọc User chỉ lấy Staff
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+
+            customer.FullName = model.FullName;
+            customer.Email = model.Email;
+            customer.PhoneNumber = model.Phone;
+            customer.Address = model.Address;
+            customer.DateOfBirth = model.DateOfBirth;
+            customer.Gender = model.Gender;
+            customer.ProfilePictureUrl = model.ProfilePictureUrl;
+
+            var updateResult = await _userManager.UpdateAsync(customer);
+
+            if (updateResult.Succeeded)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(CustomerProfile));
             }
-            return View(user);
+            return View(model);
         }
 
         // Delete user - Get confirmation page
@@ -184,13 +216,11 @@ namespace Serenity_Solution.Controllers
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
+                Phone = user.PhoneNumber,
                 DateOfBirth = user.DateOfBirth,
                 Gender = user.Gender,
                 Address = user.Address,
-                ProfilePictureUrl = user.ProfilePictureUrl,
-                LoyaltyPoints = user.LoyaltyPoints,
-                MembershipType = user.MembershipType,
-                JoinDate = user.JoinDate,
+                ProfilePictureUrl = user.ProfilePictureUrl,              
             };
 
             return View(customerViewModel);
