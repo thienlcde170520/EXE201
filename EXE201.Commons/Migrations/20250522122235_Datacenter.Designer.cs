@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXE201.Commons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250516065526_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250522122235_Datacenter")]
+    partial class Datacenter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,25 +34,20 @@ namespace EXE201.Commons.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Client_ID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PsychologistId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<decimal?>("Price")
+                        .IsRequired()
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Psychologist_ID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Scheduled_time")
                         .HasColumnType("datetime2");
@@ -64,83 +59,11 @@ namespace EXE201.Commons.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("Client_ID");
 
-                    b.HasIndex("PsychologistId");
+                    b.HasIndex("Psychologist_ID");
 
                     b.ToTable("Appointments");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.Book", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("category_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("cover_image_url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("stock_quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.BookRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("score")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("BookRatings");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Category", b =>
@@ -169,9 +92,6 @@ namespace EXE201.Commons.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommetId"));
 
-                    b.Property<int?>("BookID")
-                        .HasColumnType("int");
-
                     b.Property<string>("CommentContent")
                         .HasColumnType("nvarchar(max)");
 
@@ -181,18 +101,52 @@ namespace EXE201.Commons.Migrations
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PodcastID")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CommetId");
 
-                    b.HasIndex("BookID");
-
                     b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("PodcastID");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
@@ -212,10 +166,8 @@ namespace EXE201.Commons.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("PodcastID")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -226,92 +178,9 @@ namespace EXE201.Commons.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.OrderBookDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookID");
-
-                    b.HasIndex("OrderID");
-
-                    b.ToTable("OrderBookDetails");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.OrderPodcastDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PodcastID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderID");
-
                     b.HasIndex("PodcastID");
 
-                    b.ToTable("OrderPodcastDetails");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Podcast", b =>
@@ -334,17 +203,18 @@ namespace EXE201.Commons.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("audio_url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("thumbnail_url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -368,7 +238,6 @@ namespace EXE201.Commons.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("score")
@@ -392,7 +261,6 @@ namespace EXE201.Commons.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -454,7 +322,6 @@ namespace EXE201.Commons.Migrations
                         .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -711,6 +578,9 @@ namespace EXE201.Commons.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
                     b.HasDiscriminator().HasValue("Admin");
                 });
 
@@ -758,6 +628,9 @@ namespace EXE201.Commons.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasDiscriminator().HasValue("Psychologist");
                 });
 
@@ -770,67 +643,52 @@ namespace EXE201.Commons.Migrations
 
             modelBuilder.Entity("EXE201.Commons.Models.Appointment", b =>
                 {
-                    b.HasOne("EXE201.Commons.Models.Customer", null)
+                    b.HasOne("EXE201.Commons.Models.Customer", "Customer")
                         .WithMany("Appointments")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("Client_ID");
 
-                    b.HasOne("EXE201.Commons.Models.Psychologist", null)
+                    b.HasOne("EXE201.Commons.Models.Psychologist", "Psychologist")
                         .WithMany("Appointments")
-                        .HasForeignKey("PsychologistId");
-                });
+                        .HasForeignKey("Psychologist_ID");
 
-            modelBuilder.Entity("EXE201.Commons.Models.Book", b =>
-                {
-                    b.HasOne("EXE201.Commons.Models.Category", "Category")
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryId");
+                    b.Navigation("Customer");
 
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.BookRating", b =>
-                {
-                    b.HasOne("EXE201.Commons.Models.Book", "Book")
-                        .WithMany("BookRatings")
-                        .HasForeignKey("BookID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EXE201.Commons.Models.User", "User")
-                        .WithMany("BookRatings")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("User");
+                    b.Navigation("Psychologist");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Comment", b =>
                 {
-                    b.HasOne("EXE201.Commons.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookID");
-
                     b.HasOne("EXE201.Commons.Models.Comment", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentId");
+
+                    b.HasOne("EXE201.Commons.Models.Podcast", "Podcast")
+                        .WithMany()
+                        .HasForeignKey("PodcastID");
 
                     b.HasOne("EXE201.Commons.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Book");
-
                     b.Navigation("ParentComment");
+
+                    b.Navigation("Podcast");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.HasOne("EXE201.Commons.Models.User", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
                 {
-                    b.HasOne("EXE201.Commons.Models.Admin", "Admin")
+                    b.HasOne("EXE201.Commons.Models.Admin", null)
                         .WithMany("OrdersProcessed")
                         .HasForeignKey("AdminId");
 
@@ -838,58 +696,13 @@ namespace EXE201.Commons.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId");
 
-                    b.Navigation("Admin");
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.OrderBookDetail", b =>
-                {
-                    b.HasOne("EXE201.Commons.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EXE201.Commons.Models.Order", "Order")
-                        .WithMany("OrderBookDetails")
-                        .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.OrderPodcastDetail", b =>
-                {
-                    b.HasOne("EXE201.Commons.Models.Order", "Order")
-                        .WithMany("OrderPodcastDetails")
-                        .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EXE201.Commons.Models.Podcast", "Podcast")
                         .WithMany()
-                        .HasForeignKey("PodcastID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PodcastID");
 
-                    b.Navigation("Order");
+                    b.Navigation("Customer");
 
                     b.Navigation("Podcast");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.Payment", b =>
-                {
-                    b.HasOne("EXE201.Commons.Models.Order", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("EXE201.Commons.Models.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Podcast", b =>
@@ -922,8 +735,7 @@ namespace EXE201.Commons.Migrations
                     b.HasOne("EXE201.Commons.Models.User", "User")
                         .WithMany("PodcastRatings")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Podcast");
 
@@ -1015,30 +827,14 @@ namespace EXE201.Commons.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EXE201.Commons.Models.Book", b =>
-                {
-                    b.Navigation("BookRatings");
-                });
-
             modelBuilder.Entity("EXE201.Commons.Models.Category", b =>
                 {
-                    b.Navigation("Books");
-
                     b.Navigation("Podcasts");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
-                {
-                    b.Navigation("OrderBookDetails");
-
-                    b.Navigation("OrderPodcastDetails");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Podcast", b =>
@@ -1055,7 +851,7 @@ namespace EXE201.Commons.Migrations
 
             modelBuilder.Entity("EXE201.Commons.Models.User", b =>
                 {
-                    b.Navigation("BookRatings");
+                    b.Navigation("Contacts");
 
                     b.Navigation("PodcastRatings");
 
