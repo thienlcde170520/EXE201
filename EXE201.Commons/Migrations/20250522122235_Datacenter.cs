@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EXE201.Commons.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Datacenter : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,13 +32,13 @@ namespace EXE201.Commons.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     AdminRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessLevel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Balance = table.Column<double>(type: "float", nullable: true),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -48,8 +48,10 @@ namespace EXE201.Commons.Migrations
                     Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Experience = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -87,7 +89,7 @@ namespace EXE201.Commons.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -122,26 +124,25 @@ namespace EXE201.Commons.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Client_ID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Psychologist_ID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Client_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Psychologist_ID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Scheduled_time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PsychologistId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_AspNetUsers_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Appointments_AspNetUsers_Client_ID",
+                        column: x => x.Client_ID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Appointments_AspNetUsers_PsychologistId",
-                        column: x => x.PsychologistId,
+                        name: "FK_Appointments_AspNetUsers_Psychologist_ID",
+                        column: x => x.Psychologist_ID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -238,54 +239,23 @@ namespace EXE201.Commons.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Contacts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_AdminId",
-                        column: x => x.AdminId,
+                        name: "FK_Contacts_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Books",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    stock_quantity = table.Column<int>(type: "int", nullable: false),
-                    cover_image_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    category_id = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Books", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Books_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
                         principalColumn: "Id");
                 });
 
@@ -297,9 +267,10 @@ namespace EXE201.Commons.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    audio_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    thumbnail_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    audio_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    thumbnail_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateBy = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -369,55 +340,6 @@ namespace EXE201.Commons.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    AmountPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BookRatings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: false),
-                    score = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookRatings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BookRatings_AspNetUsers_UserID",
-                        column: x => x.UserID,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BookRatings_Books_BookID",
-                        column: x => x.BookID,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -425,7 +347,7 @@ namespace EXE201.Commons.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CommentContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateComment = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: true),
+                    PodcastID = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ParentCommentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -438,70 +360,47 @@ namespace EXE201.Commons.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comments_Books_BookID",
-                        column: x => x.BookID,
-                        principalTable: "Books",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Comments_Comments_ParentCommentId",
                         column: x => x.ParentCommentId,
                         principalTable: "Comments",
                         principalColumn: "CommetId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderBookDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: false),
-                    quantity = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderBookDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderBookDetails_Books_BookID",
-                        column: x => x.BookID,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderBookDetails_Orders_OrderID",
-                        column: x => x.OrderID,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderPodcastDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    PodcastID = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderPodcastDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderPodcastDetails_Orders_OrderID",
-                        column: x => x.OrderID,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderPodcastDetails_Podcasts_PodcastID",
+                        name: "FK_Comments_Podcasts_PodcastID",
                         column: x => x.PodcastID,
                         principalTable: "Podcasts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PodcastID = table.Column<int>(type: "int", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_Podcasts_PodcastID",
+                        column: x => x.PodcastID,
+                        principalTable: "Podcasts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -510,7 +409,7 @@ namespace EXE201.Commons.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PodcastID = table.Column<int>(type: "int", nullable: false),
                     score = table.Column<int>(type: "int", nullable: false)
                 },
@@ -532,14 +431,14 @@ namespace EXE201.Commons.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_CustomerId",
+                name: "IX_Appointments_Client_ID",
                 table: "Appointments",
-                column: "CustomerId");
+                column: "Client_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PsychologistId",
+                name: "IX_Appointments_Psychologist_ID",
                 table: "Appointments",
-                column: "PsychologistId");
+                column: "Psychologist_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -586,29 +485,14 @@ namespace EXE201.Commons.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookRatings_BookID",
-                table: "BookRatings",
-                column: "BookID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookRatings_UserID",
-                table: "BookRatings",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_CategoryId",
-                table: "Books",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_BookID",
-                table: "Comments",
-                column: "BookID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comments_ParentCommentId",
                 table: "Comments",
                 column: "ParentCommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_PodcastID",
+                table: "Comments",
+                column: "PodcastID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
@@ -616,24 +500,9 @@ namespace EXE201.Commons.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderBookDetails_BookID",
-                table: "OrderBookDetails",
-                column: "BookID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderBookDetails_OrderID",
-                table: "OrderBookDetails",
-                column: "OrderID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderPodcastDetails_OrderID",
-                table: "OrderPodcastDetails",
-                column: "OrderID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderPodcastDetails_PodcastID",
-                table: "OrderPodcastDetails",
-                column: "PodcastID");
+                name: "IX_Contacts_UserId",
+                table: "Contacts",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_AdminId",
@@ -646,10 +515,9 @@ namespace EXE201.Commons.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_OrderId",
-                table: "Payments",
-                column: "OrderId",
-                unique: true);
+                name: "IX_Orders_PodcastID",
+                table: "Orders",
+                column: "PodcastID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PodcastRatings_PodcastID",
@@ -709,19 +577,13 @@ namespace EXE201.Commons.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BookRatings");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "OrderBookDetails");
+                name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "OrderPodcastDetails");
-
-            migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "PodcastRatings");
@@ -734,12 +596,6 @@ namespace EXE201.Commons.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Books");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Podcasts");
