@@ -234,18 +234,16 @@ namespace Serenity_Solution.Controllers
                 return RedirectToAction("Login", "Account");
 
 
-            // Lấy lương gần nhất của nhân viên dựa theo tháng mới nhất
-            //var salary = await _context.Salaries
-            //    .Where(s => s.StaffId == user.Id)
-            //    .OrderByDescending(s => s.PayDate)
-            //    .FirstOrDefaultAsync();
-
-
             var model = new PsychologistViewModel
             {
+                Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                
+                Degree = user.Degree,
+                Description = user.Description,
+                Experience = user.Experience,
+                Price = user.Price,
+                ProfilePictureUrl = user.ProfilePictureUrl,
             };
 
             return View(model);

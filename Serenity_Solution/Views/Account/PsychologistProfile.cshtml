@@ -1,6 +1,6 @@
-﻿@model CustomerViewModel
+﻿@model PsychologistViewModel
 @{
-    ViewBag.Title = "Customer Profile";
+    ViewBag.Title = "Psychologist Profile";
 }
 
 <style>
@@ -108,32 +108,32 @@
             box-shadow: 0 10px 25px rgba(82, 124, 136, 0.4);
             color: white;
         }
-/* 
-    media (max-width: 768px) {
-        .profile-card
+    /*
+        media (max-width: 768px) {
+            .profile-card
 
-    {
-        margin: 1rem;
-        padding: 2rem 1.5rem;
-    }
+        {
+            margin: 1rem;
+            padding: 2rem 1.5rem;
+        }
 
-    .profile-picture {
-        width: 150px;
-        height: 150px;
-    }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+        }
 
-    .info-row {
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-    }
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
 
-    .info-label {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
+        .info-label {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
 
-    } */
+        } */
 </style>
 
 <div class="profile-container">
@@ -160,7 +160,7 @@
                         <i class="fas fa-user info-icon"></i>
                         Họ và Tên
                     </div>
-                    <div class="info-value">@Model.FullName</div>
+                    <div class="info-value">@Model.Name</div>
                 </div>
 
                 <div class="info-row">
@@ -171,41 +171,10 @@
                     <div class="info-value">@Model.Email</div>
                 </div>
 
-                <div class="info-row">
-                    <div class="info-label">
-                        <i class="fas fa-phone info-icon"></i>
-                        SĐT
-                    </div>
-                    <div class="info-value">@Model.Phone</div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-label">
-                        <i class="fas fa-map-marker-alt info-icon"></i>
-                        Địa chỉ
-                    </div>
-                    <div class="info-value">@Model.Address</div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-label">
-                        <i class="fas fa-venus-mars info-icon"></i>
-                        Giới tính
-                    </div>
-                    <div class="info-value">@Model.Gender</div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-label">
-                        <i class="fas fa-birthday-cake info-icon"></i>
-                        Ngày sinh
-                    </div>
-                    <div class="info-value">@Model.DateOfBirth?.ToString("dd/MM/yyyy")</div>
-                </div>
-            </div>
+                
 
             <!-- Edit Button -->
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit" >
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
                 <i class="fas fa-edit me-2"></i>
                 Chỉnh sửa thông tin
             </a>
@@ -223,6 +192,3 @@
 
 <!-- Bootstrap (ensure you have Bootstrap included in your layout) -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
-
