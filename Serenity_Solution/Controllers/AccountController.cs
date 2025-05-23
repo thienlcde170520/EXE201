@@ -104,7 +104,12 @@ namespace Serenity_Solution.Controllers
                     viewModel.RememberMe
                 );
                 if (result.Succeeded)
-                {                   
+                {
+                    var user = await _userManager.FindByEmailAsync(viewModel.Email.Trim());
+                    if (user.Name == "System Admin")
+                    {
+                        return RedirectToAction("Index", "Manager");
+                    }
                     return RedirectToAction("Index", "Home");
                 }
 

@@ -1,0 +1,66 @@
+﻿@model List<CustomerViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutManager.cshtml";
+    ViewData["Title"] = "Upgrade Requests";
+    var EmailCus = ViewBag.StaffIds as Dictionary<string, string>;
+}
+@{
+    
+}
+
+<h2 class="mb-4">Yêu cầu nâng cấp từ khách hàng</h2>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Chứng chỉ</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            
+            <tr>
+                <td>@customer.FullName</td>
+                <td>@customer.Email</td>
+                <td>
+                    <a href="@customer.CertificateUrl" target="_blank">Xem chứng chỉ</a>
+                </td>
+                <td>
+                    <form asp-controller="Manager" asp-action="ApproveUpgrade" method="post" style="display:inline;">
+                        <input type="hidden" name="email" value="@customer.Email" />
+                        <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('Bạn có chắc chắn muốn CHẤP NHẬN nâng cấp?');">
+                            Chấp nhận
+                        </button>
+                    </form>
+
+                    <form asp-controller="Manager" asp-action="RejectUpgrade" method="post" style="display:inline;">
+                        <input type="hidden" name="email" value="@customer.Email" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Bạn có chắc chắn muốn TỪ CHỐI nâng cấp?');">
+                            Từ chối
+                        </button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Phân trang -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == (int)ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="UpgradeRequest" asp-route-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
