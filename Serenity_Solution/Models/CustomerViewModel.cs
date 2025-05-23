@@ -10,5 +10,7 @@
         public string Gender { get; set; }
         public string Address { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public string? CertificateUrl { get; set; }
+
     }
 }

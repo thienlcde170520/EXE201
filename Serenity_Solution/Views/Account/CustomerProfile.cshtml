@@ -204,6 +204,20 @@
                 </div>
             </div>
 
+            @if (!string.IsNullOrEmpty(Model.CertificateUrl))
+            {
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-certificate info-icon"></i>
+                        Chứng chỉ
+                    </div>
+                    <div class="info-value">
+                        <a href="@Model.CertificateUrl" target="_blank">Xem chứng chỉ</a>
+                    </div>
+                </div>
+            }
+
+
             <!-- Edit Button -->
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit" >
                 <i class="fas fa-edit me-2"></i>
@@ -217,6 +231,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Font Awesome for icons (add to your layout if not already included) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

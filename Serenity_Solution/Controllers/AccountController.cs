@@ -11,11 +11,14 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Serenity_Solution.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 
 namespace Serenity_Solution.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly Cloudinary _cloudinary;
         private readonly IAccountService _accountService;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -23,8 +26,9 @@ namespace Serenity_Solution.Controllers
 
         private readonly IEmailService _emailService;
         public AccountController(UserManager<User> userManager, IAccountService accountService, IEmailService emailService, SignInManager<User> signInManager,
-            ApplicationDbContext context)
+            ApplicationDbContext context, Cloudinary cloudinary)
         {
+            _cloudinary = cloudinary;
             _accountService = accountService;
             _userManager = userManager;
             _emailService = emailService;
@@ -220,7 +224,8 @@ namespace Serenity_Solution.Controllers
                 DateOfBirth = user.DateOfBirth,
                 Gender = user.Gender,
                 Address = user.Address,
-                ProfilePictureUrl = user.ProfilePictureUrl,              
+                ProfilePictureUrl = user.ProfilePictureUrl,  
+                CertificateUrl = user.CertificateUrl
             };
 
             return View(customerViewModel);
@@ -241,6 +246,7 @@ namespace Serenity_Solution.Controllers
                 Email = user.Email,
                 Degree = user.Degree,
                 Description = user.Description,
+                Address = user.Address,
                 Experience = user.Experience,
                 Price = user.Price,
                 ProfilePictureUrl = user.ProfilePictureUrl,
@@ -361,6 +367,71 @@ namespace Serenity_Solution.Controllers
             var user = await _accountService.GetUserByIdAsync(userId);
             if (user == null) return NotFound();
             return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult UpdateLevel(string id)
+        {
+            var model = new CertificateUploadViewModel
+            {
+                CustomerId = id
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateLevel(CertificateUploadViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            //var customer = await _context.Customers.FindAsync(model.CustomerId);
+            var user = await _accountService.GetUserByIdAsync(model.CustomerId);
+            var customer = user as Customer; // Ép kiểu về Customer 
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            if (model.CertificateFile != null && model.CertificateFile.Length > 0)
+            {
+                using var stream = model.CertificateFile.OpenReadStream();
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(model.CertificateFile.FileName, stream),
+                    PublicId = $"certificates/customer_{model.CustomerId}_{DateTime.UtcNow.Ticks}",
+                    Folder = "certificates"
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                if (uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ModelState.AddModelError("", $"Lỗi khi tải chứng chỉ lên Cloudinary: {uploadResult.Error?.Message}");
+                }
+
+
+                if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    customer.CertificateUrl = uploadResult.SecureUrl.ToString();
+                    _context.Update(customer);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Chứng chỉ đã được tải lên thành công.";
+                    return RedirectToAction("Profile", new { id = model.CustomerId });
+                }
+
+                ModelState.AddModelError("", "Lỗi khi tải chứng chỉ lên Cloudinary.");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Vui lòng chọn tệp chứng chỉ để tải lên.");
+            }
+
+            return View(model);
         }
     }
 }

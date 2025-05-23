@@ -12,6 +12,7 @@ namespace EXE201.Commons.Models
         public DateTime? DateOfBirth { get; set; }
         public string Gender { get; set; } = "Unspecified"; // Male, Female, Other
         public string ProfilePictureUrl { get; set; } = string.Empty;
+        public string? CertificateUrl { get; set; }
         public int LoyaltyPoints { get; set; } = 0;
         public string MembershipType
         {
