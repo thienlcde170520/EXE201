@@ -35,7 +35,7 @@
                         <div class="dropdown-menu" id="userDropdown">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a asp-controller="AdminDashboard" asp-action="ManageUser" class="dropdown-item">Dashboard</a>
+                                <a asp-controller="Manager" asp-action="Index" class="dropdown-item">Dashboard</a>
                             }
                             else if (User.IsInRole("Psychologist"))
                             {

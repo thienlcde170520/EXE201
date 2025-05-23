@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Manager\" />
     <Folder Include="wwwroot\image\Degree\" />
   </ItemGroup>
 
