@@ -1,4 +1,4 @@
-﻿@model CustomerViewModel
+﻿@model EditCustomerViewModel
 @{
     ViewBag.Title = "Edit";
 }
@@ -34,6 +34,7 @@
         border-radius: 50%;
         object-fit: cover;
         border: 3px solid #ccc;
+        margin: auto 90px;
     }
 
     .upload-overlay {
@@ -127,7 +128,7 @@
 
 </style>
 
-        <form id="editProfileForm" asp-action="Edit" asp-controller="Customer"  method="post" enctype="multipart/form-data">
+        <form id="editProfileForm" asp-action="Edit" asp-controller="Account"  method="post" enctype="multipart/form-data">
 
             @if (!ViewData.ModelState.IsValid)
             {
@@ -154,7 +155,7 @@
                     </div>
                 </div>
                 <input type="file" id="profilePictureFile" name="ProfilePictureFile" class="file-input" accept="image/*" onchange="previewProfilePicture(this)">
-                <small class="text-muted mt-2 d-block">Click to change profile picture</small>
+                @* <small class="text-muted mt-2 d-block">Click to change profile picture</small> *@
             </div>
             <input type="hidden" id="Id" name="Id" value="@Model.Id" />
 
@@ -229,3 +230,18 @@
                 </a>
             </div>
         </form>
+
+
+<script>
+    function previewProfilePicture(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

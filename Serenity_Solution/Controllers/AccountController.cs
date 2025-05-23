@@ -147,7 +147,7 @@ namespace Serenity_Solution.Controllers
 
             var customer = user as Customer; // Ép kiểu về Customer
 
-            var viewModel = new CustomerViewModel
+            var viewModel = new EditCustomerViewModel
             {
                 Id = customer.Id,
                 FullName = customer.FullName,
@@ -165,7 +165,7 @@ namespace Serenity_Solution.Controllers
         // Edit user - Post (Save changes)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, CustomerViewModel model)
+        public async Task<IActionResult> Edit(string id, EditCustomerViewModel model)
         {
             if (string.IsNullOrEmpty(id)) return NotFound();
             if (!ModelState.IsValid) return View(model);
@@ -174,6 +174,7 @@ namespace Serenity_Solution.Controllers
                 .OfType<Customer>() // Lọc User chỉ lấy Staff
                 .FirstOrDefaultAsync(u => u.Id == id);
 
+            if (customer == null) return NotFound();
 
             customer.FullName = model.FullName;
             customer.Email = model.Email;
@@ -181,13 +182,47 @@ namespace Serenity_Solution.Controllers
             customer.Address = model.Address;
             customer.DateOfBirth = model.DateOfBirth;
             customer.Gender = model.Gender;
-            customer.ProfilePictureUrl = model.ProfilePictureUrl;
+            //customer.ProfilePictureUrl = model.ProfilePictureUrl;
+            // Xử lý upload ảnh lên Cloudinary
+
+            
+            if (model.ProfilePictureFile != null && model.ProfilePictureFile.Length > 0)
+            {
+                using var stream = model.ProfilePictureFile.OpenReadStream();
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(model.ProfilePictureFile.FileName, stream),
+                    PublicId = $"profile_pictures/customer_{id}_{DateTime.UtcNow.Ticks}",
+                    Folder = "profile_pictures"
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    customer.ProfilePictureUrl = uploadResult.SecureUrl.ToString();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Lỗi khi tải ảnh đại diện lên Cloudinary.");
+                    return View(model);
+                }
+            }
+            
+
 
             var updateResult = await _userManager.UpdateAsync(customer);
 
             if (updateResult.Succeeded)
             {
                 return RedirectToAction(nameof(CustomerProfile));
+            }
+
+            // Nếu có lỗi
+            foreach (var error in updateResult.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
             }
             return View(model);
         }
@@ -426,7 +461,7 @@ namespace Serenity_Solution.Controllers
                     await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "Chứng chỉ đã được tải lên thành công.";
-                    return RedirectToAction("Profile", new { id = model.CustomerId });
+                    return RedirectToAction("CustomerProfile", new { id = model.CustomerId });
                 }
 
                 ModelState.AddModelError("", "Lỗi khi tải chứng chỉ lên Cloudinary.");
