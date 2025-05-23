@@ -31,30 +31,56 @@
         <div class="podcast-content">
             <h3 class="podcast-title">Hãy sống theo cách mình muốn</h3>
             <div class="controls">
-                <button>
+                <button id="rewindBtn">
                     <i class="fi fi-rs-rewind"></i>
                 </button>
                 <button id="playBtn">
                     <i class="fi fi-rs-play"></i>
                 </button>
-                <button>
+                <button id="forwardBtn">
                     <i class="fi fi-rs-forward"></i>
                 </button>
                 <span class="rating">4.6 ★ (295)</span>
             </div>
 
+            <!-- Thêm thẻ audio -->
+            <audio id="podcastAudio" src="<iframe style=" border-radius:12px" src="https://open.spotify.com/embed/episode/3ZrhIlrLduCWenvFMBDSsA?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>"></audio>
+
             <script>
                 const playBtn = document.getElementById('playBtn');
                 const playIcon = playBtn.querySelector('i');
+                const audio = document.getElementById('podcastAudio');
+                const rewindBtn = document.getElementById('rewindBtn');
+                const forwardBtn = document.getElementById('forwardBtn');
                 let isPlaying = false;
 
+                // Xử lý nút Play/Pause
                 playBtn.addEventListener('click', () => {
-                  isPlaying = !isPlaying;
-                  playIcon.className = isPlaying ? 'fi fi-rs-pause' : 'fi fi-rs-play';
+                    isPlaying = !isPlaying;
+                    playIcon.className = isPlaying ? 'fi fi-rs-pause' : 'fi fi-rs-play';
+                    if (isPlaying) {
+                        audio.play();
+                    } else {
+                        audio.pause();
+                    }
+                });
+
+                // Xử lý nút Rewind (tua lại 10 giây)
+                rewindBtn.addEventListener('click', () => {
+                    audio.currentTime = Math.max(0, audio.currentTime - 10);
+                });
+
+                // Xử lý nút Forward (tua tới 10 giây)
+                forwardBtn.addEventListener('click', () => {
+                    audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+                });
+
+                // Tự động cập nhật biểu tượng khi audio kết thúc
+                audio.addEventListener('ended', () => {
+                    isPlaying = false;
+                    playIcon.className = 'fi fi-rs-play';
                 });
             </script>
-
-
 
             <p class="description">
                 Xin chào các bạn, mình là Trang và là founder của dự án viết Chữa Lành. Liệu pháp viết – Writing therapy là phương pháp sử dụng công cụ giấy và bút để có thể bày cảm xúc. Mình bắt đầu hành trình qua các khóa viết và dần cảm nhận được tinh thần tốt lên...
