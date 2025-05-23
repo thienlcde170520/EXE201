@@ -162,7 +162,7 @@
             <div class="form-group">
                 <label class="form-label" for="fullName">
                     <i class="fas fa-user info-icon"></i>
-                    Full Name
+            Họ và Tên
                 </label>
                 <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FullName" required>
             </div>
@@ -180,7 +180,7 @@
             <div class="form-group">
                 <label class="form-label" for="phone">
                     <i class="fas fa-phone info-icon"></i>
-                    Phone
+                    SĐT
                 </label>
                 <input type="tel" class="form-control" id="phone" name="Phone" value="@Model.Phone">
             </div>
@@ -189,7 +189,7 @@
             <div class="form-group">
                 <label class="form-label" for="address">
                     <i class="fas fa-map-marker-alt info-icon"></i>
-                    Address
+                    Địa chỉ
                 </label>
                 <textarea class="form-control" id="address" name="Address" rows="3">@Model.Address</textarea>
             </div>
@@ -198,7 +198,7 @@
             <div class="form-group">
                 <label class="form-label" for="gender">
                     <i class="fas fa-venus-mars info-icon"></i>
-                    Gender
+                    Giới tính
                 </label>
                 <select class="form-select" id="gender" name="Gender">
                     <option value="Male" selected="@(Model.Gender == "Male" ? "selected" : null)">Male</option>
@@ -212,7 +212,7 @@
             <div class="form-group">
                 <label class="form-label" for="dateOfBirth">
                     <i class="fas fa-birthday-cake info-icon"></i>
-                    Date of Birth
+                    Ngày sinh
                 </label>
                 <input type="date" class="form-control" id="dateOfBirth" name="DateOfBirth" value="@Model.DateOfBirth?.ToString("yyyy-MM-dd")">
             </div>
@@ -221,11 +221,11 @@
             <div class="btn-group">
         <button asp-route-id="@Model.Id" type="submit" class="btn-save">
                     <i class="fas fa-save me-2"></i>
-                    Save Changes
+                    Lưu
                 </button>
         <a asp-action="CustomerProfile" type="button" class="btn-cancel">
                     <i class="fas fa-times me-2"></i>
-                    Cancel
+                    Thoát
                 </a>
             </div>
         </form>

@@ -2,12 +2,14 @@
 {
     public class PsychologistViewModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Degree { get; set; }
-        public string Description { get; set; }
-        public decimal Experience { get; set; }
+        public string? Description { get; set; }
+        public string Experience { get; set; }
         public decimal Price { get; set; }
+        public string? ProfilePictureUrl { get; set; }
         /*
          [Required]
         public string Degree { get; set; } = string.Empty;
