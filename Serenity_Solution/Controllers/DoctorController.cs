@@ -8,5 +8,9 @@ namespace Serenity_Solution.Controllers
         {
             return View();
         }
+        public IActionResult Details()
+        {
+            return View();
+        }
     }
 }

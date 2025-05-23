@@ -4,6 +4,7 @@ using EXE201.Commons.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXE201.Commons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523115026_AddData")]
+    partial class AddData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -585,9 +588,6 @@ namespace EXE201.Commons.Migrations
                 {
                     b.HasBaseType("EXE201.Commons.Models.User");
 
-                    b.Property<string>("CertificateUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -645,17 +645,17 @@ namespace EXE201.Commons.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ae3856f6-1f0e-44d5-884f-e29a70adb447",
+                            Id = "c1b68810-e4d9-43e4-a2b3-cb15c1ed3da4",
                             AccessFailedCount = 0,
                             Address = "HCM, Việt Nam",
-                            ConcurrencyStamp = "8fa4e83c-3359-43e5-a689-0bfb8c2e3113",
+                            ConcurrencyStamp = "2eb2c2f6-ca4c-465c-a946-4fb6252e6f9b",
                             Email = "Thang123@gamil.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Lê Văn Thắng",
                             Phone = "123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e49e7715-5f78-47f0-82a6-1550693583c7",
+                            SecurityStamp = "acc3a7f0-5ac6-4557-9747-49ba29626236",
                             TwoFactorEnabled = false,
                             UserName = "Lê Văn Thắng",
                             Degree = "~image/Degree/cunhantamly.jpg",
@@ -666,17 +666,17 @@ namespace EXE201.Commons.Migrations
                         },
                         new
                         {
-                            Id = "4d1310f1-855b-4be1-93be-e2aaaee741f3",
+                            Id = "4a0c8e83-3844-4be4-9f77-9b87443abc21",
                             AccessFailedCount = 0,
                             Address = "Hà Nội, Việt Nam",
-                            ConcurrencyStamp = "1e1f9a58-2017-4cc8-8909-c611f75d4c82",
+                            ConcurrencyStamp = "28d4da1f-9f97-477e-8295-539427f26517",
                             Email = "Dungle123@gamil.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Dung Lê",
                             Phone = "0987654321",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "562b70fa-c629-4604-828b-d2deb69270ad",
+                            SecurityStamp = "b67a5195-8c32-4018-a6d5-5d222f22f90d",
                             TwoFactorEnabled = false,
                             UserName = "Dung Lê",
                             Degree = "~image/Degree/cunhantamly.jpg",
@@ -687,17 +687,17 @@ namespace EXE201.Commons.Migrations
                         },
                         new
                         {
-                            Id = "aaa37047-eb43-45f1-84e0-1dd60f498b61",
+                            Id = "9e31d33a-f266-4320-b7b2-df2fcb3dfe1a",
                             AccessFailedCount = 0,
                             Address = "Đà Nẵng, Việt Nam",
-                            ConcurrencyStamp = "4d183d0d-2a0e-47fb-af88-f8e3e18c7a83",
+                            ConcurrencyStamp = "e8af0820-78fb-451d-9d38-731d2d7182a6",
                             Email = "HaLe123@gamil.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Hà Lê",
                             Phone = "0912345678",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fd8f6d06-a59e-4bf9-8021-9cd3bdbcfaad",
+                            SecurityStamp = "95028aa7-118f-4f34-9cbf-243b73d0d74c",
                             TwoFactorEnabled = false,
                             UserName = "Hà Lê",
                             Degree = "~image/Degree/cunhantamly.jpg",
@@ -708,17 +708,17 @@ namespace EXE201.Commons.Migrations
                         },
                         new
                         {
-                            Id = "28a557ab-010d-4e49-9e48-7a6bef3fd1a1",
+                            Id = "067bf495-ca7f-4812-97a8-5d61d0229190",
                             AccessFailedCount = 0,
                             Address = "Cần Thơ, Việt Nam",
-                            ConcurrencyStamp = "53707ca2-fee4-434b-9706-720ef68d22a6",
+                            ConcurrencyStamp = "e1ef7f83-f993-4b5d-aa89-a085c4fee7e6",
                             Email = "KimNguyen123@gamil.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Kim Nguyễn",
                             Phone = "0933555777",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6d4cf21a-22ff-44bb-91aa-de0af25c9567",
+                            SecurityStamp = "b928d1fa-1ae2-4d4b-b186-4ce73181df67",
                             TwoFactorEnabled = false,
                             UserName = "Kim Nguyễn",
                             Degree = "~image/Degree/cunhantamly.jpg",
@@ -726,27 +726,6 @@ namespace EXE201.Commons.Migrations
                             Experience = "6 years",
                             Price = 750000m,
                             ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
-                        },
-                        new
-                        {
-                            Id = "04a83a10-81ca-4043-b1f5-5b219e333880",
-                            AccessFailedCount = 0,
-                            Address = "Đà Nẵng, Việt Nam",
-                            ConcurrencyStamp = "77f662fa-4cf1-4f47-9b38-6c7942186194",
-                            Email = "thienlc2105@gamil.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            Name = "Thien Le",
-                            Phone = "0933555777",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "7011c39a-af2b-40bf-a06e-06ba78352399",
-                            TwoFactorEnabled = false,
-                            UserName = "Thien Le",
-                            Degree = "~image/Degree/cunhantamly.jpg",
-                            Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
-                            Experience = "6 years",
-                            Price = 750000m,
-                            ProfilePictureUrl = "~image/Doctor/download.jfif"
                         });
                 });
 

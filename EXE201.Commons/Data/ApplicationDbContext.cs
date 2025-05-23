@@ -46,8 +46,78 @@ namespace EXE201.Commons.Data
                 .HasOne(pr => pr.Podcast)
                 .WithMany(p => p.PodcastRatings)
                 .HasForeignKey(pr => pr.PodcastID)
-                .OnDelete(DeleteBehavior.Restrict);           
-                
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<Psychologist>().HasData(
+                new Psychologist
+                {
+                    UserName = "Lê Văn Thắng",
+                    Email = "Thang123@gamil.com",
+                    Name = "Lê Văn Thắng",
+                    Phone = "123456789",
+                    Address = "HCM, Việt Nam",
+                    Degree = "~image/Degree/cunhantamly.jpg",
+                    Description = "Nhà tâm lý học có nhiều năm kinh nghiệm trong ngành.",
+                    Experience = "10 years",
+                    Price = 1000000,
+                    ProfilePictureUrl = "~image/Doctor/Van_Thang.png"
+                },
+                new Psychologist
+                {
+                    UserName = "Dung Lê",
+                    Email = "Dungle123@gamil.com",
+                    Name = "Dung Lê",
+                    Phone = "0987654321",
+                    Address = "Hà Nội, Việt Nam",
+                    Degree = "~image/Degree/cunhantamly.jpg",
+                    Description = "Chuyên gia tư vấn tâm lý hôn nhân và gia đình.",
+                    Experience = "7 years",
+                    Price = 850000,
+                    ProfilePictureUrl = "~image/Doctor/Dung_Le.png"
+                },
+
+                new Psychologist
+                {
+                    UserName = "Hà Lê",
+                    Email = "HaLe123@gamil.com",
+                    Name = "Hà Lê",
+                    Phone = "0912345678",
+                    Address = "Đà Nẵng, Việt Nam",
+                    Degree = "~image/Degree/cunhantamly.jpg",
+                    Description = "Tiến sĩ tâm lý học, chuyên về điều trị trầm cảm và rối loạn lo âu.",
+                    Experience = "12 years",
+                    Price = 1200000,
+                    ProfilePictureUrl = "~image/Doctor/Ha_Le.png"
+                },
+
+                new Psychologist
+                {
+                    UserName = "Kim Nguyễn",
+                    Email = "KimNguyen123@gamil.com",
+                    Name = "Kim Nguyễn",
+                    Phone = "0933555777",
+                    Address = "Cần Thơ, Việt Nam",
+                    Degree = "~image/Degree/cunhantamly.jpg",
+                    Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                    Experience = "6 years",
+                    Price = 750000,
+                    ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
+                },
+                new Psychologist
+                {
+                    UserName = "Thien Le",
+                    Email = "thienlc2105@gamil.com",
+                    Name = "Thien Le",
+                    Phone = "0933555777",
+                    Address = "Đà Nẵng, Việt Nam",
+                    Degree = "~image/Degree/cunhantamly.jpg",
+                    Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                    Experience = "6 years",
+                    Price = 750000,
+                    ProfilePictureUrl = "~image/Doctor/download.jfif"
+                }
+            );            
         }
 
     }

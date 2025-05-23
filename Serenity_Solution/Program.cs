@@ -1,4 +1,5 @@
-﻿using EXE201.Commons.Data;
+﻿using CloudinaryDotNet;
+using EXE201.Commons.Data;
 using EXE201.Commons.Models;
 using EXE201.Repository.Interfaces;
 using EXE201.Repository.Repositories;
@@ -9,7 +10,9 @@ using EXE201.Services.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serenity_Solution.Seeders;
+using Serenity_Solution.Unity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +33,14 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+builder.Services.AddSingleton(provider =>
+{
+    var config = provider.GetRequiredService<IOptions<CloudinarySettings>>().Value;
+    var account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
+    return new Cloudinary(account);
+});
 
 
 builder.Services.AddSignalR();
