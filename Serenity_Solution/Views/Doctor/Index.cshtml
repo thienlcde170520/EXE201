@@ -16,31 +16,40 @@
                 <a class="nav-link text-dark" asp-controller="Test" asp-action="Index">Kiểm tra tâm lý</a>
                 <a asp-controller="Doctor" asp-action="Index" class="active">Danh sách bác sĩ</a>
     </nav>
-    <div class="auth-buttons">
+            <div class="auth-buttons">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <button class="btn-default btn-highlighted me-2" onclick="window.location.href='@Url.Action("ManageUser", "AdminDashboard")'">Dashboard</button>
-                        <button class="btn-default btn-highlighted" onclick="window.location.href='@Url.Action("Logout", "Account")'">Logout</button>
-                    }
-                    else if (User.IsInRole("Psychologist"))
-                    {
-                        <button class="btn-default btn-highlighted me-2" onclick="window.location.href='@Url.Action("PsychologistProfile", "Account")'">Profile</button>
-                        <button class="btn-default btn-highlighted" onclick="window.location.href='@Url.Action("Logout", "Account")'">Logout</button>
-                    }
-                    else if (User.IsInRole("Customer"))
-                    {
-                        <button class="btn-default btn-highlighted me-2" onclick="window.location.href='@Url.Action("CustomerProfile", "Account")'">Profile</button>
-                        <button class="btn-default btn-highlighted" onclick="window.location.href='@Url.Action("Logout", "Account")'">Logout</button>
-                    }
+
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" onclick="toggleDropdown()">
+                            <i class="fas fa-user-circle"></i> Hello, @User.Identity.Name
+                            <i class="fas fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="AdminDashboard" asp-action="ManageUser" class="dropdown-item">Dashboard</a>
+                            }
+                            else if (User.IsInRole("Psychologist"))
+                            {
+                                <a asp-controller="Account" asp-action="PsychologistProfile" class="dropdown-item">Profile</a>
+                            }
+                            else if (User.IsInRole("Customer"))
+                            {
+                                <a asp-controller="Account" asp-action="CustomerProfile" class="dropdown-item">Profile</a>
+                            }
+                            <div class="dropdown-divider"></div>
+                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+
                 }
                 else
                 {
                     <a asp-controller="Account" asp-action="Login" class="login-link">Đăng Nhập</a>
                     <a asp-controller="Account" asp-action="Register" class="signup-btn">Đăng Ký</a>
                 }
-    </div>
+            </div>
   </div>
 </header>
 
@@ -79,14 +88,16 @@
 
    <div class="doctor-card">
     <div class="doctor-info">
-      <img src="~/image/Doctor/Kim_Nguyen.png" alt="Kim Nguyễn" class="doctor-avatar" />
+
+            <img src="@Url.Content("~/image/Doctor/Kim_Ngan.png")" alt="Kim Nguyễn" class="doctor-avatar" />
+
       <div class="doctor-details">
         <h3 class="doctor-name">Kim Nguyễn</h3>
         <p class="doctor-specialty">Chuyên gia tâm lý</p>
         <p class="doctor-location">📍TP Đà Nẵng</p>
         <p class="doctor-experience">🗓️ Hơn 5 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>80.000 VND/15 phút</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>600.000 VND/60 phút</strong></p>
+        <p class="doctor-price">📞 Gọi điện: <strong>80.000 VND</strong></p>
+        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>600.000 VND</strong></p>
       </div>
     </div>
     <button class="contact-button">Liên hệ ngay</button>
@@ -95,14 +106,16 @@
   <!-- Doctor Card 2 -->
   <div class="doctor-card">
     <div class="doctor-info">
-      <img src="~/image/Doctor/Nguyen_Khac_Dung.png" alt="Nguyễn Khắc Dũng" class="doctor-avatar" />
+
+            <img src="@Url.Content("~/image/Doctor/Van_Thang.png")" alt="Lê Văn Thắng" class="doctor-avatar" />
+
       <div class="doctor-details">
-        <h3 class="doctor-name">Nguyễn Khắc Dũng</h3>
+                <h3 class="doctor-name">Lê Văn Thắng</h3>
         <p class="doctor-specialty">Chuyên gia tâm lý</p>
         <p class="doctor-location">📍TP Đà Nẵng</p>
         <p class="doctor-experience">🗓️ Hơn 10 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>200.000 VND/15 phút</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>1.100.000 VND/60 phút</strong></p>
+        <p class="doctor-price">📞 Gọi điện: <strong>200.000 VND</strong></p>
+        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>1.100.000 VND</strong></p>
       </div>
     </div>
     <button class="contact-button">Liên hệ ngay</button>
@@ -516,3 +529,84 @@
         margin-bottom: 20px;
     }
 </style>
+
+<style>
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1e3a8a;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+        .dropdown-toggle:hover {
+            background-color: #f0f4ff;
+        }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        min-width: 200px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        z-index: 1000;
+        padding: 8px 0;
+        margin-top: 8px;
+    }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+    .dropdown-item {
+        display: block;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #1e40af;
+        }
+
+    .dropdown-divider {
+        height: 1px;
+        background-color: #eee;
+        margin: 8px 0;
+    }
+</style>
+
+<script>
+    function toggleDropdown() {
+        document.getElementById("userDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if clicked outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-toggle') && !event.target.closest('.dropdown-toggle')) {
+            var dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>

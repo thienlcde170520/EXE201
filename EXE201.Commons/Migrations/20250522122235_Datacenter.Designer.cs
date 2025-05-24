@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXE201.Commons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517151856_FixData")]
-    partial class FixData
+    [Migration("20250522122235_Datacenter")]
+    partial class Datacenter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,6 +116,37 @@ namespace EXE201.Commons.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
@@ -646,6 +677,15 @@ namespace EXE201.Commons.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.HasOne("EXE201.Commons.Models.User", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
                 {
                     b.HasOne("EXE201.Commons.Models.Admin", null)
@@ -811,6 +851,8 @@ namespace EXE201.Commons.Migrations
 
             modelBuilder.Entity("EXE201.Commons.Models.User", b =>
                 {
+                    b.Navigation("Contacts");
+
                     b.Navigation("PodcastRatings");
 
                     b.Navigation("UserRoles");

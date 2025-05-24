@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutManager.cshtml";
+}
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            var noWSDetail = '@(TempData["NoWSDetail"])';
+            if (noWSDetail === 'True') {
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: 'Hiện chưa có yêu cầu xác nhận chứng chỉ nào',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+
+}

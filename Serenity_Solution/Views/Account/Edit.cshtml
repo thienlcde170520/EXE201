@@ -1,0 +1,247 @@
+﻿@model EditCustomerViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    form#editProfileForm {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .profile-picture-upload {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .upload-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 120px;
+        height: 120px;
+    }
+
+    .upload-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ccc;
+        margin: auto 90px;
+    }
+
+    .upload-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #007bff;
+        color: #fff;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid white;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+        color: #333;
+    }
+
+    .info-icon {
+        margin-right: 6px;
+        color: #007bff;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .btn-save, .btn-cancel {
+        flex: 1;
+        padding: 10px 20px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-save {
+        background-color: #28a745;
+        color: white;
+        margin-right: 10px;
+    }
+
+        .btn-save:hover {
+            background-color: #218838;
+        }
+
+    .btn-cancel {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+
+</style>
+
+        <form id="editProfileForm" asp-action="Edit" asp-controller="Account"  method="post" enctype="multipart/form-data">
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary-errors" style="color: red; margin-bottom: 15px;">
+                    <ul>
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Profile Picture Upload -->
+            <div class="profile-picture-upload">
+                <div class="upload-wrapper">
+                    <img src="@Model.ProfilePictureUrl" 
+                         class="upload-preview" 
+                         alt="Profile Picture"
+                         id="previewImage"
+                         onerror="this.src='https://via.placeholder.com/120x120/527C88/ffffff?text=No+Image'" />
+                    <div class="upload-overlay" onclick="document.getElementById('profilePictureFile').click()">
+                        <i class="fas fa-camera upload-icon"></i>
+                    </div>
+                </div>
+                <input type="file" id="profilePictureFile" name="ProfilePictureFile" class="file-input" accept="image/*" onchange="previewProfilePicture(this)">
+                @* <small class="text-muted mt-2 d-block">Click to change profile picture</small> *@
+            </div>
+            <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+            <!-- Full Name -->
+            <div class="form-group">
+                <label class="form-label" for="fullName">
+                    <i class="fas fa-user info-icon"></i>
+            Họ và Tên
+                </label>
+                <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FullName" required>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label class="form-label" for="email">
+                    <i class="fas fa-envelope info-icon"></i>
+                    Email
+                </label>
+                <input type="email" class="form-control" id="email" name="Email" value="@Model.Email" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label class="form-label" for="phone">
+                    <i class="fas fa-phone info-icon"></i>
+                    SĐT
+                </label>
+                <input type="tel" class="form-control" id="phone" name="Phone" value="@Model.Phone">
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+                <label class="form-label" for="address">
+                    <i class="fas fa-map-marker-alt info-icon"></i>
+                    Địa chỉ
+                </label>
+                <textarea class="form-control" id="address" name="Address" rows="3">@Model.Address</textarea>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+                <label class="form-label" for="gender">
+                    <i class="fas fa-venus-mars info-icon"></i>
+                    Giới tính
+                </label>
+                <select class="form-select" id="gender" name="Gender">
+                    <option value="Male" selected="@(Model.Gender == "Male" ? "selected" : null)">Male</option>
+                    <option value="Female" selected="@(Model.Gender == "Female" ? "selected" : null)">Female</option>
+                    <option value="Other" selected="@(Model.Gender == "Other" ? "selected" : null)">Other</option>
+
+                </select>
+            </div>  
+
+            <!-- Date of Birth -->
+            <div class="form-group">
+                <label class="form-label" for="dateOfBirth">
+                    <i class="fas fa-birthday-cake info-icon"></i>
+                    Ngày sinh
+                </label>
+                <input type="date" class="form-control" id="dateOfBirth" name="DateOfBirth" value="@Model.DateOfBirth?.ToString("yyyy-MM-dd")">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="btn-group">
+        <button asp-route-id="@Model.Id" type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i>
+                    Lưu
+                </button>
+        <a asp-action="CustomerProfile" type="button" class="btn-cancel">
+                    <i class="fas fa-times me-2"></i>
+                    Thoát
+                </a>
+            </div>
+        </form>
+
+
+<script>
+    function previewProfilePicture(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

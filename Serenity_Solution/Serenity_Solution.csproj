@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     <PackageReference Include="EPPlus" Version="8.0.1" />
     <PackageReference Include="jsreport.Local" Version="3.8.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
@@ -32,7 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\image\Podcast\" />
+
+    <Folder Include="wwwroot\image\Degree\" />
+
   </ItemGroup>
 
 </Project>

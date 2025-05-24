@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXE201.Commons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250516094344_EXE_newData")]
-    partial class EXE_newData
+    [Migration("20250523115810_podcastCreator")]
+    partial class podcastCreator
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,37 @@ namespace EXE201.Commons.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Contacts");
+                });
+
             modelBuilder.Entity("EXE201.Commons.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -171,6 +202,9 @@ namespace EXE201.Commons.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -288,7 +322,6 @@ namespace EXE201.Commons.Migrations
                         .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -576,6 +609,12 @@ namespace EXE201.Commons.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.ToTable("AspNetUsers", t =>
+                        {
+                            t.Property("ProfilePictureUrl")
+                                .HasColumnName("Customer_ProfilePictureUrl");
+                        });
+
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
@@ -598,7 +637,117 @@ namespace EXE201.Commons.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasDiscriminator().HasValue("Psychologist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "b82425b2-fcd0-4a69-ad88-b07d2bb0f92b",
+                            AccessFailedCount = 0,
+                            Address = "HCM, Việt Nam",
+                            ConcurrencyStamp = "8415eb2c-3631-4ffa-a79f-4fe33f60dcb7",
+                            Email = "Thang123@gamil.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Lê Văn Thắng",
+                            Phone = "123456789",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "656e01c1-6008-425d-be5b-42bffa9e9334",
+                            TwoFactorEnabled = false,
+                            UserName = "Lê Văn Thắng",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Nhà tâm lý học có nhiều năm kinh nghiệm trong ngành.",
+                            Experience = "10 years",
+                            Price = 1000000m,
+                            ProfilePictureUrl = "~image/Doctor/Van_Thang.png"
+                        },
+                        new
+                        {
+                            Id = "e377c76e-9eed-4278-a00f-4aa458c531f6",
+                            AccessFailedCount = 0,
+                            Address = "Hà Nội, Việt Nam",
+                            ConcurrencyStamp = "a20c1a3f-8dce-416c-abc2-b9f27ee9d808",
+                            Email = "Dungle123@gamil.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Dung Lê",
+                            Phone = "0987654321",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "750f61d3-509d-425b-8886-1900e77ed15e",
+                            TwoFactorEnabled = false,
+                            UserName = "Dung Lê",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Chuyên gia tư vấn tâm lý hôn nhân và gia đình.",
+                            Experience = "7 years",
+                            Price = 850000m,
+                            ProfilePictureUrl = "~image/Doctor/Dung_Le.png"
+                        },
+                        new
+                        {
+                            Id = "5fe5ae22-b3ed-4ee5-ae44-b5a305588346",
+                            AccessFailedCount = 0,
+                            Address = "Đà Nẵng, Việt Nam",
+                            ConcurrencyStamp = "3b36a2bc-6fca-498d-99cb-88f8fc591d5c",
+                            Email = "HaLe123@gamil.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Hà Lê",
+                            Phone = "0912345678",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4ee29fde-175e-4ab0-be37-caf1129ede8c",
+                            TwoFactorEnabled = false,
+                            UserName = "Hà Lê",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Tiến sĩ tâm lý học, chuyên về điều trị trầm cảm và rối loạn lo âu.",
+                            Experience = "12 years",
+                            Price = 1200000m,
+                            ProfilePictureUrl = "~image/Doctor/Ha_Le.png"
+                        },
+                        new
+                        {
+                            Id = "3678c375-ad66-4990-b653-7d67e82da258",
+                            AccessFailedCount = 0,
+                            Address = "Cần Thơ, Việt Nam",
+                            ConcurrencyStamp = "e62e1844-6c9f-460a-8165-250ccdbfbc98",
+                            Email = "KimNguyen123@gamil.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Kim Nguyễn",
+                            Phone = "0933555777",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8ed56b6e-712d-4552-a9e0-a3c4fd0fdebb",
+                            TwoFactorEnabled = false,
+                            UserName = "Kim Nguyễn",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                            Experience = "6 years",
+                            Price = 750000m,
+                            ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
+                        },
+                        new
+                        {
+                            Id = "5b5fedaf-92dd-48dc-9ef9-0dfabb398605",
+                            AccessFailedCount = 0,
+                            Address = "Đà Nẵng, Việt Nam",
+                            ConcurrencyStamp = "518db135-9d9a-4fbc-8049-70a4b384ac23",
+                            Email = "thienlc2105@gamil.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            Name = "Thien Le",
+                            Phone = "0933555777",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4d0daa78-ab92-4cad-8caa-cf86b4829832",
+                            TwoFactorEnabled = false,
+                            UserName = "Thien Le",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                            Experience = "6 years",
+                            Price = 750000m,
+                            ProfilePictureUrl = "~image/Doctor/download.jfif"
+                        });
                 });
 
             modelBuilder.Entity("EXE201.Commons.Models.ApplicationRole", b =>
@@ -640,6 +789,15 @@ namespace EXE201.Commons.Migrations
                     b.Navigation("ParentComment");
 
                     b.Navigation("Podcast");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EXE201.Commons.Models.Contact", b =>
+                {
+                    b.HasOne("EXE201.Commons.Models.User", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -809,6 +967,8 @@ namespace EXE201.Commons.Migrations
 
             modelBuilder.Entity("EXE201.Commons.Models.User", b =>
                 {
+                    b.Navigation("Contacts");
+
                     b.Navigation("PodcastRatings");
 
                     b.Navigation("UserRoles");

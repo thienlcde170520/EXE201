@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PsychologistViewModel
+@{
     ViewData["Title"] = "Detail";
 }
 
@@ -14,14 +15,14 @@
     <!-- Profile Section -->
     <div class="profile-section">
         <div class="profile-details">
-            <img src="Dung_Le.png" alt="Profile Picture" class="profile-pic">
-            <h1>Dung Lê</h1>
+            <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="profile-pic" />
+            <h1>@Model.Name</h1>
             <p class="role">Hồ sơ nhân viên</p>
             <ul>
-                <li><span class="icon">👤</span> Chức vụ: Chuyền viên</li>
-                <li><span class="icon">🏢</span> Kinh nghiệm: 5 năm</li>
-                <li><span class="icon">💼</span> Công ty: CÔNG TY PHẦN MỀM CÔNG NGHỆ YOOT</li>
-                <li><span class="icon">📍</span> Nơi ở: TP. HỒ CHÍ MINH</li>
+                <li><span class="icon">👤</span> Chức vụ: Chuyên gia</li>
+                <li><span class="icon">🏢</span> Kinh nghiệm: @Model.Experience</li>
+                <li><span class="icon">💼</span> Email: @Model.Email</li>
+                <li><span class="icon">📍</span> Nơi ở: @Model.Address</li>
             </ul>
             <div class="tabs">
                 <button class="tab active">Giới thiệu</button>
@@ -30,34 +31,38 @@
             </div>
             <div class="intro-section">
                 <div class="intro">
-                    <h3>Giới thiệu chuyển gia Kim Nguyên</h3>
-                    <p>Chuyển gia làm việc Nguyệt Thị Kim</p>
+                    <h3>Giới thiệu chuyên gia</h3>
+                    <p>@Model.Description</p>
                 </div>
                 <div class="intro">
-                    <h3>Kinh nghiệm làm việc chuyển gia Kim Nguyên</h3>
+                    <h3>Kinh nghiệm làm việc</h3>
+                    <p>@Model.Experience</p>
                 </div>
-                <div class="introintro">
+                <div class="intro">
                     <h3>Bằng cấp</h3>
+                    <p>@Model.Degree</p>
                 </div>
                 <div class="intro">
                     <h3>Chuyên gia khác</h3>
+                    <!-- Có thể thêm danh sách chuyên gia khác nếu cần -->
                 </div>
             </div>
         </div>
         <div class="order-section">
             <div class="order-box">
-                <p><span class="icon">🔒</span> Gói một phút: 800.000 VNĐ/60 Phút</p>
+                <p><span class="icon">🔒</span> Gói một phút: @Model.Price.ToString("N0") VNĐ/60 Phút</p>
                 <button class="order-button">Đặt lịch ngay</button>
             </div>
         </div>
     </div>
+
     <section class="contact-form">
         <div class="container">
             <h2>📩 Tương tác với chúng tôi</h2>
             <form asp-action="Contact" asp-controller="SendRequest" method="post" class="form">
-                <input type="text" placeholder="Họ tên">
-                <input type="email" placeholder="Email">
-                <textarea placeholder="Nội dung"></textarea>
+                <input type="text" placeholder="Họ tên" name="name" />
+                <input type="email" placeholder="Email" name="email" />
+                <textarea placeholder="Nội dung" name="message"></textarea>
                 <button>Gửi</button>
             </form>
         </div>
