@@ -152,6 +152,87 @@ namespace Serenity_Solution.Controllers
             return View(user);
         }
 
+        public async Task<IActionResult> EditPsychologist(string id)
+        {
+            var user = await _accountService.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+            var psychologist = user;  // Ép kiểu về Psychologist
+
+            var viewModel = new PsychologistViewModel
+            {
+                Id = psychologist.Id,
+                Name = psychologist.Name,
+                Email = psychologist.Email,
+                Phone = psychologist.PhoneNumber,
+                Address = psychologist.Address,
+                Description = psychologist.Description,
+                Experience = psychologist.Experience,
+                Price = psychologist.Price,
+                ProfilePictureUrl = psychologist.ProfilePictureUrl
+            };
+            return View(viewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPsychologist(string id, PsychologistViewModel  model)
+        {
+            if (string.IsNullOrEmpty(id)) return NotFound();
+            if (!ModelState.IsValid) return View(model);
+
+            var doctor = await _userManager.Users
+                .OfType<User>() // Lọc User chỉ lấy Staff
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (doctor == null) return NotFound();
+
+            doctor.Name = model.Name;
+            doctor.Email = model.Email;
+            doctor.PhoneNumber = model.Phone;
+            doctor.Address = model.Address;
+            doctor.Description = model.Description;
+            doctor.Experience = model.Experience; // Giả sử Degree là URL của chứng chỉ
+            doctor.Price = model.Price;
+
+
+            if (model.ProfilePictureFile != null && model.ProfilePictureFile.Length > 0)
+            {
+                using var stream = model.ProfilePictureFile.OpenReadStream();
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(model.ProfilePictureFile.FileName, stream),
+                    PublicId = $"profile_pictures/customer_{id}_{DateTime.UtcNow.Ticks}",
+                    Folder = "profile_pictures"
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    doctor.ProfilePictureUrl = uploadResult.SecureUrl.ToString();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Lỗi khi tải ảnh đại diện lên Cloudinary.");
+                    return View(model);
+                }
+            }
+            var updateResult = await _userManager.UpdateAsync(doctor);
+
+            if (updateResult.Succeeded)
+            {
+                return RedirectToAction(nameof(PsychologistProfile));
+            }
+
+            // Nếu có lỗi
+            foreach (var error in updateResult.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+
+        }
+
         // Edit user - Get (Load user data into form)
         public async Task<IActionResult> Edit(string id)
         {
@@ -288,22 +369,37 @@ namespace Serenity_Solution.Controllers
         [Authorize(Roles = "Psychologist")]
         public async Task<IActionResult> PsychologistProfile()
         {
-            var user = await _userManager.GetUserAsync(User) as Psychologist;
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            var user = await _userManager.GetUserAsync(User) ;
+
+            if (!await _userManager.IsInRoleAsync(user, "Psychologist"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var psychologist = await _context.ApplicationUsers
+                .Include(p => p.Appointments)
+                .FirstOrDefaultAsync(p => p.Id == user.Id);
+
+
+            if (psychologist == null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+            // map dữ liệu vào view model...
 
 
             var model = new PsychologistViewModel
             {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Degree = user.CertificateUrl,
-                Description = user.Description,
+                Id = psychologist.Id,
+                Name = psychologist.Name,
+                Email = psychologist.Email,
+                Degree = psychologist.CertificateUrl,
+                Description = psychologist.Description,
                 Address = user.Address,
-                Experience = user.Experience,
-                Price = user.Price,
-                ProfilePictureUrl = user.ProfilePictureUrl,
+                Experience = psychologist.Experience,
+                Price = psychologist.Price,
+                ProfilePictureUrl = psychologist.ProfilePictureUrl,
             };
 
             return View(model);

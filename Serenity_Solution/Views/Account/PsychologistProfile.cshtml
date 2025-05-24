@@ -1,70 +1,214 @@
 ﻿@model PsychologistViewModel
 @{
-    ViewData["Title"] = "Detail";
+    ViewBag.Title = "Psychologist Profile";
 }
 
-<div class="container">
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="#" class="nav-link">Hồ Sơ</a>
-            <a href="#" class="nav-link">Sự Nghiệp</a>
-        </nav>
-    </header>
+<style>
+    .profile-container {
+        background: linear-gradient(135deg, #527C88 0%, #3a5862 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
 
-    <!-- Profile Section -->
-    <div class="profile-section">
-        <div class="profile-details">
-            <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="profile-pic" />
-            <h1>@Model.Name</h1>
-            <p class="role">Hồ sơ nhân viên</p>
-            <ul>
-                <li><span class="icon">👤</span> Chức vụ: Chuyên gia</li>
-                <li><span class="icon">🏢</span> Kinh nghiệm: @Model.Experience</li>
-                <li><span class="icon">💼</span> Email: @Model.Email</li>
-                <li><span class="icon">📍</span> Nơi ở: @Model.Address</li>
-            </ul>
-            <div class="tabs">
-                <button class="tab active">Giới thiệu</button>
-                <button class="tab">Kinh nghiệm</button>
-                <button class="tab">Bằng cấp</button>
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem 2rem;
+        margin: 2rem auto;
+        max-width: 600px;
+    }
+
+    .profile-picture-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-picture {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 6px solid #fff;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+
+    .profile-title {
+        text-align: center;
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        font-size: 2.2rem;
+    }
+
+    .profile-info {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 700;
+        color: #2c3e50;
+        width: 160px;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        color: #2c3e50;
+        flex: 1;
+        font-size: 1rem;
+    }
+
+    .info-icon {
+        margin-right: 0.5rem;
+        color: #527C88;
+        width: 18px;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #527C88 0%, #3a5862 100%);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 2rem auto 0;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(82, 124, 136, 0.4);
+            color: white;
+        }
+
+</style>
+
+<div class="profile-container">
+    <div class="container">
+        <div class="profile-card">
+            <!-- Header -->
+            <h1 class="profile-title">
+                <i class="fas fa-user-circle me-2"></i>
+                Hồ sơ chuyên gia tâm lý
+            </h1>
+
+            <!-- Profile Picture -->
+            <div class="profile-picture-wrapper">
+                <img src="@Model.ProfilePictureUrl"
+                     class="profile-picture"
+                     alt="Profile Picture"
+                     onerror="this.src='https://via.placeholder.com/180x180/667eea/ffffff?text=No+Image'" />
             </div>
-            <div class="intro-section">
-                <div class="intro">
-                    <h3>Giới thiệu chuyên gia</h3>
-                    <p>@Model.Description</p>
+
+            <!-- Profile Information -->
+            <div class="profile-info">
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-user info-icon"></i>
+                        Họ và Tên
+                    </div>
+                    <div class="info-value">@Model.Name</div>
                 </div>
-                <div class="intro">
-                    <h3>Kinh nghiệm làm việc</h3>
-                    <p>@Model.Experience</p>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-envelope info-icon"></i>
+                        Email
+                    </div>
+                    <div class="info-value">@Model.Email</div>
                 </div>
-                <div class="intro">
-                    <h3>Bằng cấp</h3>
-                    <p>@Model.Degree</p>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-map-marker-alt info-icon"></i>
+                        Địa chỉ
+                    </div>
+                    <div class="info-value">@Model.Address</div>
                 </div>
-                <div class="intro">
-                    <h3>Chuyên gia khác</h3>
-                    <!-- Có thể thêm danh sách chuyên gia khác nếu cần -->
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-certificate info-icon"></i>
+                        Chứng chỉ
+                    </div>
+                    <div class="info-value">
+                        <a href="@Model.Degree" target="_blank">Xem chứng chỉ</a>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-info info-icon"></i>
+                        Mô tả
+                    </div>
+                    <div class="info-value">
+                        @(string.IsNullOrEmpty(Model.Description) ? "Chưa cập nhật" : Model.Description)
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-briefcase info-icon"></i>
+                        Kinh nghiệm
+                    </div>
+                    <div class="info-value">
+                        @(string.IsNullOrEmpty(Model.Experience) ? "Chưa cập nhật" : Model.Experience + " năm")
+                    </div>
+                </div>
+
+
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-dollar-sign info-icon"></i>
+                        Giá tư vấn
+                    </div>
+                    <div class="info-value">@String.Format("{0:N0} VND", Model.Price)</div>
                 </div>
             </div>
-        </div>
-        <div class="order-section">
-            <div class="order-box">
-                <p><span class="icon">🔒</span> Gói một phút: @Model.Price.ToString("N0") VNĐ/60 Phút</p>
-                <button class="order-button">Đặt lịch ngay</button>
-            </div>
+
+            <!-- Buttons -->
+            <a asp-action="EditPsychologist" asp-route-id="@Model.Id" class="btn-edit">
+                <i class="fas fa-edit me-2"></i>
+                Chỉnh sửa thông tin
+            </a>
+
+            <a asp-action="UpdateCertificate" asp-route-id="@Model.Id" class="btn-edit">
+                <i class="fas fa-upload me-2"></i>
+                Nộp chứng chỉ mới
+            </a>
         </div>
     </div>
-
-    <section class="contact-form">
-        <div class="container">
-            <h2>📩 Tương tác với chúng tôi</h2>
-            <form asp-action="Contact" asp-controller="SendRequest" method="post" class="form">
-                <input type="text" placeholder="Họ tên" name="name" />
-                <input type="email" placeholder="Email" name="email" />
-                <textarea placeholder="Nội dung" name="message"></textarea>
-                <button>Gửi</button>
-            </form>
-        </div>
-    </section>
 </div>
+
+<!-- Các link fontawesome và bootstrap giữ nguyên -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
