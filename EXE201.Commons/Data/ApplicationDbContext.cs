@@ -103,7 +103,7 @@ namespace EXE201.Commons.Data
                     Experience = "6 years",
                     Price = 750000,
                     ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
-                },
+                }
                 
             );            
         }

@@ -10,11 +10,8 @@ namespace EXE201.Commons.Models
 {
     public class Psychologist : User
     {
-        [Required]
-        public string? Degree { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public string Experience { get; set; } = string.Empty;
-        public decimal Price { get; set; } = 0;
+        //[Required]
+        
         //public string? ProfilePictureUrl { get; set; } = string.Empty;
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }

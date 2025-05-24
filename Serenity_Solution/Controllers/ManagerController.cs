@@ -72,9 +72,51 @@ namespace Serenity_Solution.Controllers
         [HttpPost]
         public async Task<IActionResult> ApproveUpgrade(string email)
         {
-            
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ErrorMessage"] = "Email không được để trống.";
+                return RedirectToAction("UpgradeRequest");
+            }
+
+            // Tìm user theo email
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy user.";
+                return RedirectToAction("UpgradeRequest");
+            }
+
+            // Kiểm tra user có đang ở role Customer không
+            var isInCustomerRole = await _userManager.IsInRoleAsync(user, "Customer");
+            if (!isInCustomerRole)
+            {
+                TempData["ErrorMessage"] = "User không phải là Customer hoặc đã được nâng cấp.";
+                return RedirectToAction("UpgradeRequest");
+            }
+
+            // Remove role Customer
+            var removeResult = await _userManager.RemoveFromRoleAsync(user, "Customer");
+            if (!removeResult.Succeeded)
+            {
+                TempData["ErrorMessage"] = "Xóa role Customer thất bại.";
+                return RedirectToAction("UpgradeRequest");
+            }
+
+            // Add role Psychologist
+            var addResult = await _userManager.AddToRoleAsync(user, "Psychologist");
+            if (!addResult.Succeeded)
+            {
+                TempData["ErrorMessage"] = "Thêm role Psychologist thất bại.";
+                return RedirectToAction("UpgradeRequest");
+            }
+
+            TempData["SuccessMessage"] = $"Nâng cấp user {email} thành công.";
+            await _emailService.SendEmailAsync(user.Email, "Nâng cấp thành công", "Bạn đã trở thành nhà tâm lý học của hệ thống chúng tôi!");
+
             return RedirectToAction("UpgradeRequest");
         }
+
+
 
 
         /*

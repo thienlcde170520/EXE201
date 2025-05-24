@@ -4,6 +4,7 @@ using EXE201.Commons.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EXE201.Commons.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250524165417_SecondData")]
+    partial class SecondData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -314,12 +317,6 @@ namespace EXE201.Commons.Migrations
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Degree")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -331,10 +328,6 @@ namespace EXE201.Commons.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Experience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -370,9 +363,6 @@ namespace EXE201.Commons.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -585,96 +575,111 @@ namespace EXE201.Commons.Migrations
                 {
                     b.HasBaseType("EXE201.Commons.Models.User");
 
+                    b.Property<string>("Degree")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Experience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasDiscriminator().HasValue("Psychologist");
 
                     b.HasData(
                         new
                         {
-                            Id = "a821b815-b710-435c-b123-b19ed92537cf",
+                            Id = "a0827ece-ae6a-4d87-aa0a-9d9635b751d4",
                             AccessFailedCount = 0,
                             Address = "HCM, Việt Nam",
-                            ConcurrencyStamp = "205e4814-065e-483c-a56a-a1fb7232dd88",
-                            Degree = "~image/Degree/cunhantamly.jpg",
-                            Description = "Nhà tâm lý học có nhiều năm kinh nghiệm trong ngành.",
+                            ConcurrencyStamp = "ad2f2218-4692-4d80-8e52-b18fa088589c",
                             Email = "Thang123@gamil.com",
                             EmailConfirmed = false,
-                            Experience = "10 years",
                             Gender = "Unspecified",
                             LockoutEnabled = false,
                             Name = "Lê Văn Thắng",
                             Phone = "123456789",
                             PhoneNumberConfirmed = false,
-                            Price = 1000000m,
                             ProfilePictureUrl = "~image/Doctor/Van_Thang.png",
-                            SecurityStamp = "674b0682-abb1-4891-9a9f-0274bd1f5d4c",
+                            SecurityStamp = "6b109524-530c-48a5-ab71-10e366600b79",
                             TwoFactorEnabled = false,
-                            UserName = "Lê Văn Thắng"
+                            UserName = "Lê Văn Thắng",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Nhà tâm lý học có nhiều năm kinh nghiệm trong ngành.",
+                            Experience = "10 years",
+                            Price = 1000000m
                         },
                         new
                         {
-                            Id = "35c1bb90-6703-4ea8-bb5e-cc9db8c7af13",
+                            Id = "74d1dc19-94a7-407f-8b0c-12a1a8f731bc",
                             AccessFailedCount = 0,
                             Address = "Hà Nội, Việt Nam",
-                            ConcurrencyStamp = "3a307517-b433-41e7-8201-0318fac3bfca",
-                            Degree = "~image/Degree/cunhantamly.jpg",
-                            Description = "Chuyên gia tư vấn tâm lý hôn nhân và gia đình.",
+                            ConcurrencyStamp = "5fc3ffba-4dd2-4925-bae5-5fd2e9893121",
                             Email = "Dungle123@gamil.com",
                             EmailConfirmed = false,
-                            Experience = "7 years",
                             Gender = "Unspecified",
                             LockoutEnabled = false,
                             Name = "Dung Lê",
                             Phone = "0987654321",
                             PhoneNumberConfirmed = false,
-                            Price = 850000m,
                             ProfilePictureUrl = "~image/Doctor/Dung_Le.png",
-                            SecurityStamp = "e6e05c75-b4f7-4b50-ae6a-d62870e5e045",
+                            SecurityStamp = "4a7b1f19-4e1f-414c-b18b-735d0276569d",
                             TwoFactorEnabled = false,
-                            UserName = "Dung Lê"
+                            UserName = "Dung Lê",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Chuyên gia tư vấn tâm lý hôn nhân và gia đình.",
+                            Experience = "7 years",
+                            Price = 850000m
                         },
                         new
                         {
-                            Id = "2d1bae59-d7a6-41f3-ba63-c7d128cceb8e",
+                            Id = "6eda8d88-3a85-4add-a3ba-54778f010f64",
                             AccessFailedCount = 0,
                             Address = "Đà Nẵng, Việt Nam",
-                            ConcurrencyStamp = "64e3dba9-2854-40a6-a2da-ea0b02951191",
-                            Degree = "~image/Degree/cunhantamly.jpg",
-                            Description = "Tiến sĩ tâm lý học, chuyên về điều trị trầm cảm và rối loạn lo âu.",
+                            ConcurrencyStamp = "cd29f9f4-5557-49b8-aa6f-0c67f2e53a1c",
                             Email = "HaLe123@gamil.com",
                             EmailConfirmed = false,
-                            Experience = "12 years",
                             Gender = "Unspecified",
                             LockoutEnabled = false,
                             Name = "Hà Lê",
                             Phone = "0912345678",
                             PhoneNumberConfirmed = false,
-                            Price = 1200000m,
                             ProfilePictureUrl = "~image/Doctor/Ha_Le.png",
-                            SecurityStamp = "a34aa329-82f4-4996-9883-413c644d47aa",
+                            SecurityStamp = "79320c68-945b-4f35-a40a-471c38bac393",
                             TwoFactorEnabled = false,
-                            UserName = "Hà Lê"
+                            UserName = "Hà Lê",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Tiến sĩ tâm lý học, chuyên về điều trị trầm cảm và rối loạn lo âu.",
+                            Experience = "12 years",
+                            Price = 1200000m
                         },
                         new
                         {
-                            Id = "da16d6b5-f2a1-4e95-a900-1ec62fae7cd0",
+                            Id = "9bbaf061-9504-44aa-9862-a209d93e00df",
                             AccessFailedCount = 0,
                             Address = "Cần Thơ, Việt Nam",
-                            ConcurrencyStamp = "9e35d60f-a3e7-42d8-8fc4-75dc5bd07629",
-                            Degree = "~image/Degree/cunhantamly.jpg",
-                            Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                            ConcurrencyStamp = "fdba479a-0aac-44c1-8aec-2ba4a594e669",
                             Email = "KimNguyen123@gamil.com",
                             EmailConfirmed = false,
-                            Experience = "6 years",
                             Gender = "Unspecified",
                             LockoutEnabled = false,
                             Name = "Kim Nguyễn",
                             Phone = "0933555777",
                             PhoneNumberConfirmed = false,
-                            Price = 750000m,
                             ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png",
-                            SecurityStamp = "79ec428c-95d3-4e34-98c3-ade5d3b37d46",
+                            SecurityStamp = "7add8dca-b419-41bf-a0cc-bc6f8cc1f7a3",
                             TwoFactorEnabled = false,
-                            UserName = "Kim Nguyễn"
+                            UserName = "Kim Nguyễn",
+                            Degree = "~image/Degree/cunhantamly.jpg",
+                            Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
+                            Experience = "6 years",
+                            Price = 750000m
                         });
                 });
 
