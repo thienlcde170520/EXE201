@@ -20,6 +20,6 @@ namespace EXE201.Services.Interfaces
         Task<SignInResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
         Task<string> GetCurrentUserIdAsync();
-        Task<Customer?> GetCurrentCustomerAsync();
+        Task<User?> GetCurrentCustomerAsync();
     }
 }

@@ -63,7 +63,7 @@ namespace EXE201.Services.Services
         {
             return await _accountRepository.GetCurrentUserId();
         }
-        public async Task<Customer?> GetCurrentCustomerAsync()
+        public async Task<User?> GetCurrentCustomerAsync()
         {
             var userId = await GetCurrentUserIdAsync();
             if (string.IsNullOrEmpty(userId)) return null;
@@ -71,7 +71,7 @@ namespace EXE201.Services.Services
             var user = await GetUserByIdAsync(userId);
 
             // Check if it's a Customer
-            if (user is Customer customer)
+            if (user is User customer)
             {
                 return customer;
             }

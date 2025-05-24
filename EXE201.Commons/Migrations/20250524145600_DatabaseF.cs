@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace EXE201.Commons.Migrations
 {
     /// <inheritdoc />
-    public partial class Datacenter : Migration
+    public partial class DatabaseF : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,17 +36,11 @@ namespace EXE201.Commons.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    AdminRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AccessLevel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Balance = table.Column<double>(type: "float", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LoyaltyPoints = table.Column<int>(type: "int", nullable: true),
-                    JoinDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CertificateUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Experience = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -380,17 +376,11 @@ namespace EXE201.Commons.Migrations
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PodcastID = table.Column<int>(type: "int", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_AspNetUsers_CustomerId",
                         column: x => x.CustomerId,
@@ -428,6 +418,18 @@ namespace EXE201.Commons.Migrations
                         principalTable: "Podcasts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Address", "CertificateUrl", "ConcurrencyStamp", "DateOfBirth", "Degree", "Description", "Discriminator", "Email", "EmailConfirmed", "Experience", "Gender", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "Phone", "PhoneNumber", "PhoneNumberConfirmed", "Price", "ProfilePictureUrl", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "226f1c77-954b-4b94-9033-58ef314f782d", 0, "Đà Nẵng, Việt Nam", null, "264b34af-e286-4da5-9a59-9846133f38f5", null, "~image/Degree/cunhantamly.jpg", "Tiến sĩ tâm lý học, chuyên về điều trị trầm cảm và rối loạn lo âu.", "Psychologist", "HaLe123@gamil.com", false, "12 years", "Unspecified", false, null, "Hà Lê", null, null, null, "0912345678", null, false, 1200000m, "~image/Doctor/Ha_Le.png", "89b282f6-11e3-40aa-a215-f7413e15c1a4", false, "Hà Lê" },
+                    { "35206a61-dad7-4e1e-a8e3-c675bc914c21", 0, "Đà Nẵng, Việt Nam", null, "43d8a88f-57d4-4405-abc4-7ea9265b0004", null, "~image/Degree/cunhantamly.jpg", "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.", "Psychologist", "thienlc2105@gamil.com", false, "6 years", "Unspecified", false, null, "Thien Le", null, null, null, "0933555777", null, false, 750000m, "~image/Doctor/download.jfif", "abdf640b-a7e4-47f4-87c4-902e93c45257", false, "Thien Le" },
+                    { "7c90bea7-2800-4d45-89cb-052f788d93eb", 0, "HCM, Việt Nam", null, "436cd40f-6a9c-4284-a4ed-4b1c03ac7287", null, "~image/Degree/cunhantamly.jpg", "Nhà tâm lý học có nhiều năm kinh nghiệm trong ngành.", "Psychologist", "Thang123@gamil.com", false, "10 years", "Unspecified", false, null, "Lê Văn Thắng", null, null, null, "123456789", null, false, 1000000m, "~image/Doctor/Van_Thang.png", "bd68cb1e-6860-4046-b2d4-e949b6dd9c4d", false, "Lê Văn Thắng" },
+                    { "8050239a-1b5f-4414-b89f-c16e6b4a3331", 0, "Cần Thơ, Việt Nam", null, "7b88beb8-6cbc-4b73-82e4-036017801810", null, "~image/Degree/cunhantamly.jpg", "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.", "Psychologist", "KimNguyen123@gamil.com", false, "6 years", "Unspecified", false, null, "Kim Nguyễn", null, null, null, "0933555777", null, false, 750000m, "~image/Doctor/Kim_Nguan.png", "0de38ac0-a34f-4f82-bf1e-5dd89411979a", false, "Kim Nguyễn" },
+                    { "86a5fc91-acf4-448b-b1ef-ec4dce369363", 0, "Hà Nội, Việt Nam", null, "1bb9de76-092f-48ca-902b-e000674bde80", null, "~image/Degree/cunhantamly.jpg", "Chuyên gia tư vấn tâm lý hôn nhân và gia đình.", "Psychologist", "Dungle123@gamil.com", false, "7 years", "Unspecified", false, null, "Dung Lê", null, null, null, "0987654321", null, false, 850000m, "~image/Doctor/Dung_Le.png", "f43443ea-9366-4d51-9f79-a40c1fb29157", false, "Dung Lê" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -503,11 +505,6 @@ namespace EXE201.Commons.Migrations
                 name: "IX_Contacts_UserId",
                 table: "Contacts",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_AdminId",
-                table: "Orders",
-                column: "AdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",

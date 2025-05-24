@@ -20,7 +20,7 @@ namespace EXE201.Commons.Models
         public DateTime create_date { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual Customer? Customer { get; set; }
+        public virtual User? User { get; set; }
         [ForeignKey("TestId")]
         public virtual PsychTest? PsychTest { get; set; }
     }

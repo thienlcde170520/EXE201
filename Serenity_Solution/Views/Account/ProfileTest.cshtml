@@ -1,4 +1,4 @@
-﻿@model EXE201.Commons.Models.Customer
+﻿@model EXE201.Commons.Models.User
 
 <h2>Thông tin khách hàng</h2>
 
@@ -22,9 +22,9 @@
 
         <dt class="col-sm-3">Ảnh đại diện</dt>
         <dd class="col-sm-9">
-            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
             {
-                <img src="@Model.ProfilePicture" alt="Ảnh đại diện" style="max-width:150px;" />
+                <img src="@Model.ProfilePictureUrl" alt="Ảnh đại diện" style="max-width:150px;" />
             }
             else
             {
@@ -38,7 +38,7 @@
     <h3>Thông tin khách hàng (Customer)</h3>
     <dl class="row">
         <dt class="col-sm-3">Họ và tên đầy đủ</dt>
-        <dd class="col-sm-9">@Model.FullName</dd>
+        <dd class="col-sm-9">@Model.Name</dd>
 
         <dt class="col-sm-3">Ngày sinh</dt>
         <dd class="col-sm-9">@Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật"</dd>
@@ -57,15 +57,7 @@
                 <span>Chưa có ảnh đại diện URL</span>
             }
         </dd>
-
-        <dt class="col-sm-3">Điểm tích lũy</dt>
-        <dd class="col-sm-9">@Model.LoyaltyPoints</dd>
-
-        <dt class="col-sm-3">Loại thành viên</dt>
-        <dd class="col-sm-9">@Model.MembershipType</dd>
-
-        <dt class="col-sm-3">Ngày tham gia</dt>
-        <dd class="col-sm-9">@Model.JoinDate.ToString("dd/MM/yyyy")</dd>
+       
     </dl>
 </section>
 

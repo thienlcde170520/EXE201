@@ -22,7 +22,7 @@ namespace EXE201.Commons.Models
         public decimal TotalAmount { get; set; }
 
         [ForeignKey("CustomerId")]
-        public virtual Customer? Customer { get; set; }
+        public virtual User? User { get; set; }
 
         [ForeignKey("PodcastID")]
         public virtual Podcast? Podcast { get; set; }

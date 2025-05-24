@@ -5,6 +5,7 @@ using EXE201.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Serenity_Solution.Models;
 
 namespace Serenity_Solution.Controllers
@@ -38,7 +39,7 @@ namespace Serenity_Solution.Controllers
         {
             var users = await _userManager.GetUsersInRoleAsync("Customer");
 
-            var customers = users.OfType<Customer>() // Lọc ra danh sách Customer
+            var customers = users.OfType<User>() // Lọc ra danh sách Customer
                 .Where(c => c.CertificateUrl != null) // Lọc ra những người có yêu cầu nâng cấp
                 .ToList();
 
@@ -52,7 +53,7 @@ namespace Serenity_Solution.Controllers
                  .Select(s => new CustomerViewModel
                  {
                      Id = s.Id,
-                     FullName = s.FullName,
+                     FullName = s.Name,
                      Email = s.Email,
                      CertificateUrl = s.CertificateUrl
                  })
@@ -71,41 +72,56 @@ namespace Serenity_Solution.Controllers
         [HttpPost]
         public async Task<IActionResult> ApproveUpgrade(string email)
         {
+            
+            return RedirectToAction("UpgradeRequest");
+        }
+
+
+        /*
+        public async Task<IActionResult> ApproveUpgrade(string email)
+        {
             var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return NotFound();
 
-            // Kiểm tra nếu user là Customer
-            if (user is Customer customer)
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Psychologist"))
             {
-                // Cập nhật vai trò
-                await _userManager.AddToRoleAsync(user, "Psychologist");
-                await _userManager.RemoveFromRoleAsync(user, "Customer");
-
-                // Tạo mới Psychologist hoặc chuyển user sang kiểu Psychologist
-                var psychologist = user as Psychologist;
-                if (psychologist != null)
-                {
-                    psychologist.Degree = customer.CertificateUrl ?? "Chưa có chứng chỉ";
-                }
-                else
-                {
-                    // Nếu user không thể ép kiểu trực tiếp thì có thể xử lý qua custom logic
-                    user.GetType().GetProperty("Degree")?.SetValue(user, customer.CertificateUrl ?? "Chưa có chứng chỉ");
-                }
-
-                // Cập nhật trạng thái và xóa chứng chỉ đã sử dụng
-                customer.CertificateUrl = null;
-                await _userManager.UpdateAsync(user);
-
-                // Gửi email thông báo
-                var subject = "Yêu cầu nâng cấp tài khoản đã được phê duyệt";
-                var message = "Chúc mừng bạn đã trở thành một nhà tâm lý học!";
-                await _emailService.SendEmailAsync(user.Email, subject, message);
-
+                TempData["Message"] = "Người dùng đã là Psychologist.";
                 return RedirectToAction("UpgradeRequest");
             }
 
-            return NotFound();
+            // Remove old roles
+            await _userManager.RemoveFromRolesAsync(user, roles);
+
+            // Add new role
+            await _userManager.AddToRoleAsync(user, "Psychologist");
+
+            // Lấy Customer để lấy CertificateUrl chuyển cho Degree của PsychologistProfile
+            var customer = await _context.Set<Customer>().FindAsync(user.Id);
+
+            if (customer == null)
+                return BadRequest("User không phải Customer.");
+
+            // Tạo PsychologistProfile riêng
+            var psychologistProfile = new Psychologist
+            {
+                Id = user.Id,
+                Degree = customer.CertificateUrl ?? "Chưa có chứng chỉ"
+            };
+
+            await _userManager.UpdateAsync(psychologistProfile);
+            await _context.SaveChangesAsync();
+
+            await _emailService.SendEmailAsync(user.Email, "Nâng cấp thành công", "Bạn đã trở thành nhà tâm lý học của hệ thống chúng tôi!");
+
+            return RedirectToAction("UpgradeRequest");
         }
+
+        */
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> RejectUpgrade(string email)
@@ -114,7 +130,7 @@ namespace Serenity_Solution.Controllers
             if (user != null)
             {
                 // Cập nhật trạng thái của người dùng
-                var customer = user as Customer;
+                var customer = user ;
                 if (customer != null)
                 {
                     customer.CertificateUrl = null;

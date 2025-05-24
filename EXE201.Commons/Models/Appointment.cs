@@ -27,7 +27,7 @@ namespace EXE201.Commons.Models
         public decimal? Price { get; set; } = 0;
 
         [ForeignKey("Client_ID")]
-        public virtual Customer? Customer { get; set; }
+        public virtual User? Client { get; set; }
 
         [ForeignKey("Psychologist_ID")]
         public virtual Psychologist? Psychologist { get; set; }
