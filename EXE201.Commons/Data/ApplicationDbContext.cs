@@ -104,19 +104,7 @@ namespace EXE201.Commons.Data
                     Price = 750000,
                     ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
                 },
-                new Psychologist
-                {
-                    UserName = "Thien Le",
-                    Email = "thienlc2105@gamil.com",
-                    Name = "Thien Le",
-                    Phone = "0933555777",
-                    Address = "Đà Nẵng, Việt Nam",
-                    Degree = "~image/Degree/cunhantamly.jpg",
-                    Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
-                    Experience = "6 years",
-                    Price = 750000,
-                    ProfilePictureUrl = "~image/Doctor/download.jfif"
-                }
+                
             );            
         }
 
