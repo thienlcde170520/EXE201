@@ -15,12 +15,12 @@ namespace EXE201.Commons.Data
             : base(options)
         {
         }
-        public virtual DbSet<Admin> Admins { get; set; }
+        //public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
+        //public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Podcast> Podcasts { get; set; }
         public virtual DbSet<PodcastRating> PodcastRatings { get; set; }
@@ -33,7 +33,7 @@ namespace EXE201.Commons.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+         
             // PodcastRating -> User (cascade delete)
             modelBuilder.Entity<PodcastRating>()
                 .HasOne(pr => pr.User)
@@ -104,19 +104,7 @@ namespace EXE201.Commons.Data
                     Price = 750000,
                     ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
                 },
-                new Psychologist
-                {
-                    UserName = "Thien Le",
-                    Email = "thienlc2105@gamil.com",
-                    Name = "Thien Le",
-                    Phone = "0933555777",
-                    Address = "Đà Nẵng, Việt Nam",
-                    Degree = "~image/Degree/cunhantamly.jpg",
-                    Description = "Tư vấn tâm lý cho trẻ em và thanh thiếu niên.",
-                    Experience = "6 years",
-                    Price = 750000,
-                    ProfilePictureUrl = "~image/Doctor/download.jfif"
-                }
+                
             );            
         }
 

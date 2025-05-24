@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace EXE201.Commons.Models
 {
-    public class Customer : User
+    public class Customer 
     {
-        public string FullName { get; set; } = string.Empty;
-        public DateTime? DateOfBirth { get; set; }
-        public string Gender { get; set; } = "Unspecified"; // Male, Female, Other
-        public string ProfilePictureUrl { get; set; } = string.Empty;
-        public string? CertificateUrl { get; set; }
+        
         public int LoyaltyPoints { get; set; } = 0;
         public string MembershipType
         {
@@ -25,9 +21,7 @@ namespace EXE201.Commons.Models
             }
         }
         public DateTime JoinDate { get; set; } = DateTime.UtcNow;
-        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-        public virtual ICollection<UserTestResult> UserTestResults { get; set; } = new List<UserTestResult>();
+        
        
     }
 }

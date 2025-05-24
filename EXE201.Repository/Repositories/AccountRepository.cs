@@ -63,6 +63,20 @@ namespace EXE201.Repository.Repositories
             }
             return result;
         }
+        public async Task<IdentityResult> CreatePsychologist(User user, string password)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            if (existingUser != null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Email have been used." });
+            }
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Psychologist");
+            }
+            return result;
+        }
         /*
         public async Task<SignInResult> LoginAsync(string email, string password)
         {
@@ -76,8 +90,8 @@ namespace EXE201.Repository.Repositories
         
         public async Task<SignInResult> LoginAsync(string email, string password, bool rememberMe)
         {
-            //var user = await _userManager.FindByEmailAsync(email);
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _userManager.FindByEmailAsync(email);
+            //var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null) return SignInResult.Failed;
 
             return await _signInManager.PasswordSignInAsync(user, password, rememberMe, lockoutOnFailure: false);

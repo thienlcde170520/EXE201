@@ -39,14 +39,14 @@
                             }
                             else if (User.IsInRole("Psychologist"))
                             {
-                                <a asp-controller="Account" asp-action="PsychologistProfile" class="dropdown-item">Profile</a>
+                                <a asp-controller="Account" asp-action="PsychologistProfile" class="dropdown-item">Tài khoản bác sĩ</a>
                             }
                             else if (User.IsInRole("Customer"))
                             {
-                                <a asp-controller="Account" asp-action="CustomerProfile" class="dropdown-item">Profile</a>
+                                <a asp-controller="Account" asp-action="CustomerProfile" class="dropdown-item">Tài khoản của bạn</a>
                             }
                             <div class="dropdown-divider"></div>
-                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Đăng xuất</a>
                         </div>
                     </div>
                 }

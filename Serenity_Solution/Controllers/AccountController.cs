@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Serenity_Solution.Controllers
 {
@@ -50,11 +51,10 @@ namespace Serenity_Solution.Controllers
             Random rnd = new Random();
             var NameDefault = "user_" + rnd.Next(1, 1000001);
 
-            var user = new Customer
+            var user = new User
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FullName = NameDefault,
                 Name = NameDefault,
                 PhoneNumber = model.Phone,
                 DateOfBirth = DateTime.Now,
@@ -67,6 +67,19 @@ namespace Serenity_Solution.Controllers
 
             if (result.Succeeded)
             {
+                /*
+                var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+                if (!roleResult.Succeeded)
+                {
+                    // Nếu thất bại, xoá user vừa tạo để tránh user không có role
+                    await _userManager.DeleteAsync(user);
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError("", "Role assignment failed: " + error.Description);
+                    }
+                    return View(model);
+                }
+                */
                 TempData["SuccessMessage"] = "Registration successful! Please login.";
                 return RedirectToAction("Login");
             }
@@ -145,12 +158,13 @@ namespace Serenity_Solution.Controllers
             var user = await _accountService.GetUserByIdAsync(id);
             if (user == null) return NotFound();
 
-            var customer = user as Customer; // Ép kiểu về Customer
+            var customer = user;  // Ép kiểu về Customer
 
             var viewModel = new EditCustomerViewModel
             {
                 Id = customer.Id,
-                FullName = customer.FullName,
+                FullName = customer.Name,
+                Name = customer.Name,
                 Email = customer.Email,
                 Phone = customer.PhoneNumber,
                 Address = customer.Address,
@@ -171,12 +185,12 @@ namespace Serenity_Solution.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var customer = await _userManager.Users
-                .OfType<Customer>() // Lọc User chỉ lấy Staff
+                .OfType<User>() // Lọc User chỉ lấy Staff
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (customer == null) return NotFound();
 
-            customer.FullName = model.FullName;
+            customer.Name = model.FullName;
             customer.Email = model.Email;
             customer.PhoneNumber = model.Phone;
             customer.Address = model.Address;
@@ -252,13 +266,13 @@ namespace Serenity_Solution.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CustomerProfile()
         {
-            var user = await _userManager.GetUserAsync(User) as Customer; // Ép kiểu về Customer
+            var user = await _userManager.GetUserAsync(User) ; // Ép kiểu về Customer
             if (user == null) return NotFound();
 
             var customerViewModel = new CustomerViewModel
             {
                 Id = user.Id,
-                FullName = user.FullName,
+                FullName = user.Name,
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 DateOfBirth = user.DateOfBirth,
@@ -284,7 +298,7 @@ namespace Serenity_Solution.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Degree = user.Degree,
+                Degree = user.CertificateUrl,
                 Description = user.Description,
                 Address = user.Address,
                 Experience = user.Experience,
@@ -429,7 +443,7 @@ namespace Serenity_Solution.Controllers
 
             //var customer = await _context.Customers.FindAsync(model.CustomerId);
             var user = await _accountService.GetUserByIdAsync(model.CustomerId);
-            var customer = user as Customer; // Ép kiểu về Customer 
+            var customer = user ; // Ép kiểu về Customer 
             if (customer == null)
             {
                 return NotFound();
