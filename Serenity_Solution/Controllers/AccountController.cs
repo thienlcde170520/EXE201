@@ -168,7 +168,8 @@ namespace Serenity_Solution.Controllers
                 Description = psychologist.Description,
                 Experience = psychologist.Experience,
                 Price = psychologist.Price,
-                ProfilePictureUrl = psychologist.ProfilePictureUrl
+                ProfilePictureUrl = psychologist.ProfilePictureUrl,
+                Major = psychologist.Major
             };
             return View(viewModel);
         }
@@ -192,6 +193,7 @@ namespace Serenity_Solution.Controllers
             doctor.Description = model.Description;
             doctor.Experience = model.Experience; // Giả sử Degree là URL của chứng chỉ
             doctor.Price = model.Price;
+            doctor.Major = model.Major;
 
 
             if (model.ProfilePictureFile != null && model.ProfilePictureFile.Length > 0)
@@ -400,6 +402,8 @@ namespace Serenity_Solution.Controllers
                 Experience = psychologist.Experience,
                 Price = psychologist.Price,
                 ProfilePictureUrl = psychologist.ProfilePictureUrl,
+                Major = psychologist.Major,
+                BaBalance = psychologist.BaBalance,
             };
 
             return View(model);

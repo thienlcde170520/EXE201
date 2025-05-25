@@ -155,6 +155,17 @@
                 </div>
 
                 <div class="info-row">
+                    <label class="info-label" for="major" style="display: flex; align-items: center; gap: 6px;">
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20" width="20" height="20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        Chức vụ 
+                    </label>
+                    <div class="info-value">@Model.Major</div>
+                </div>
+
+
+                <div class="info-row">
                     <div class="info-label">
                         <i class="fas fa-certificate info-icon"></i>
                         Chứng chỉ
@@ -185,7 +196,6 @@
                 </div>
 
 
-
                 <div class="info-row">
                     <div class="info-label">
                         <i class="fas fa-dollar-sign info-icon"></i>
@@ -193,6 +203,16 @@
                     </div>
                     <div class="info-value">@String.Format("{0:N0} VND", Model.Price)</div>
                 </div>
+
+                <div class="info-row">
+                    <div class="info-label">
+                        <i class="fas fa-money-bill info-icon"></i>
+                        Số tiền được nhận
+                    </div>
+                    <div class="info-value">@String.Format("{0:N0} VND", Model.BaBalance)</div>
+                </div>
+
+
             </div>
 
             <!-- Buttons -->

@@ -12,13 +12,9 @@
         public string Experience { get; set; }
         public decimal Price { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public string? Major { get; set; } = string.Empty;
+        public double BaBalance { get; set; } = 0;
         public IFormFile? ProfilePictureFile { get; set; }
-        /*
-         [Required]
-        public string Degree { get; set; } = string.Empty;
-        public string Description {  get; set; } = string.Empty;
-        public string Experience { get; set; } = string.Empty;
-        public decimal Price { get; set; } = 0;
-         */
+        
     }
 }

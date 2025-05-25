@@ -13,7 +13,6 @@ namespace EXE201.Commons.Models
     {
         public string Name { get; set; } = string.Empty;
         //public string Email {  get; set; } = string.Empty;
-
         public string Phone {  get; set; } = string.Empty;
 
         public string Address { get; set; } = string.Empty;
@@ -31,6 +30,9 @@ namespace EXE201.Commons.Models
         public string? Description { get; set; } = string.Empty;
         public string Experience { get; set; } = string.Empty;
         public decimal Price { get; set; } = 0;
+        public string? Major { get; set; } = string.Empty; // Major in psychology or related field
+
+        public double BaBalance { get; set; } = 0; // Balance for in-app purchases or services
 
         public virtual ICollection<IdentityUserRole<string>> UserRoles { get; set; } = new List<IdentityUserRole<string>>();
         public virtual ICollection<PodcastRating> PodcastRatings { get; set; } = new List<PodcastRating>();

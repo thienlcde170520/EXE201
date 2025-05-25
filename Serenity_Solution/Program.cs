@@ -33,6 +33,9 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+//builder.Services.AddScoped<IVnPayServicecs, VnPayService>(); //Vnpay
+builder.Services.AddSingleton<IVnPayServicecs, VnPayService>();
+
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddSingleton(provider =>
@@ -77,6 +80,7 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
 
     await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
+    await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

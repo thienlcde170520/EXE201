@@ -48,7 +48,7 @@ namespace EXE201.Commons.Data
                 .HasForeignKey(pr => pr.PodcastID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
+            /*
             modelBuilder.Entity<Psychologist>().HasData(
                 new Psychologist
                 {
@@ -105,7 +105,7 @@ namespace EXE201.Commons.Data
                     ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
                 }
                 
-            );            
+            );  */          
         }
 
     }
