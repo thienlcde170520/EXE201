@@ -193,6 +193,24 @@
         <textarea class="form-control" id="address" name="Address" rows="3">@Model.Address</textarea>
     </div>
 
+
+    <!-- major -->
+    <div class="form-group">
+    <label class="form-label" for="major" style="display: flex; align-items: center; gap: 6px;">
+        <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20" width="20" height="20">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        Chức vụ chuyên môn
+    </label>
+    <select class="form-control" id="major" name="Major">
+            <option value="Bác sĩ tâm thần" selected=@(Model.Major=="Bác sĩ tâm thần" ? "selected" : null)>Bác sĩ tâm thần</option>
+            <option value="Nhà tâm lý học lâm sàng" selected=@(Model.Major == "Nhà tâm lý học lâm sàng" ? "selected" : null)>Nhà tâm lý học lâm sàng</option>
+            <option value="Tư vấn viên tâm lý" selected=@(Model.Major == "Tư vấn viên tâm lý" ? "selected" : null)>Tư vấn viên tâm lý</option>
+    </select>
+</div>
+
+
+
     <!-- Description -->
     <div class="form-group">
         <label class="form-label" for="description">
@@ -201,6 +219,8 @@
         </label>
         <textarea class="form-control" id="description" name="Description" rows="4">@Model.Description</textarea>
     </div>
+
+
 
     <!-- Experience -->
     <div class="form-group">

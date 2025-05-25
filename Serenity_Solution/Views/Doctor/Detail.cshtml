@@ -1,65 +1,614 @@
-﻿@{
+﻿@model PsychologistViewModel
+@{
     ViewData["Title"] = "Detail";
 }
 
-<div class="container">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Name - Chuyên gia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #52c234, #4caf50);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+            .header nav {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+                display: flex;
+                gap: 2rem;
+            }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+            .nav-link:hover {
+                opacity: 0.8;
+            }
+
+        .breadcrumb {
+            background: #e9ecef;
+            padding: 0.75rem 0;
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .profile-main {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 750px;
+            width: 100%;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e9ecef;
+        }
+
+        .profile-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .status-badge {
+            background: #52c234;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .profile-details {
+            margin: 1.5rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #6c757d;
+        }
+
+        .detail-icon {
+            width: 16px;
+            height: 16px;
+            color: #52c234;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            padding: 0.75rem 0;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6c757d;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+            .tab.active {
+                color: #52c234;
+                border-bottom-color: #52c234;
+                font-weight: 500;
+            }
+
+            .tab:hover {
+                color: #52c234;
+            }
+
+        .tab-content {
+            padding: 1.5rem 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .section-content {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .pricing-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #6c757d;
+        }
+
+        .lock-icon {
+            color: #6c757d;
+        }
+
+        .price {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .book-button {
+            width: 100%;
+            background: #52c234;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .book-button:hover:not(:disabled) {
+                background: #4caf50;
+                transform: translateY(-1px);
+            }
+
+            .book-button:disabled {
+                background: #28a745;
+                cursor: not-allowed;
+                opacity: 0.9;
+            }
+
+            .book-button.success {
+                background: #28a745;
+                pointer-events: none;
+            }
+
+        .checkmark-icon {
+            width: 18px;
+            height: 18px;
+            animation: checkmarkPop 0.3s ease-out;
+        }
+
+        
+
+        .contact-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+
+        .contact-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #52c234;
+            }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+            .form-textarea:focus {
+                outline: none;
+                border-color: #52c234;
+            }
+
+        .submit-button {
+            background: #52c234;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            justify-self: start;
+        }
+
+            .submit-button:hover {
+                background: #4caf50;
+            }
+
+        
+    </style>
+</head>
+<body>
     <!-- Header -->
-    <header>
+    <header class="header">
         <nav>
-            <a href="#" class="nav-link">Hồ Sơ</a>
+            <a href="#" class="nav-link">Hồn Nhân</a>
             <a href="#" class="nav-link">Sự Nghiệp</a>
         </nav>
     </header>
 
-    <!-- Profile Section -->
-    <div class="profile-section">
-        <div class="profile-details">
-            <img src="Dung_Le.png" alt="Profile Picture" class="profile-pic">
-            <h1>Dung Lê</h1>
-            <p class="role">Hồ sơ nhân viên</p>
-            <ul>
-                <li><span class="icon">👤</span> Chức vụ: Chuyền viên</li>
-                <li><span class="icon">🏢</span> Kinh nghiệm: 5 năm</li>
-                <li><span class="icon">💼</span> Công ty: CÔNG TY PHẦN MỀM CÔNG NGHỆ YOOT</li>
-                <li><span class="icon">📍</span> Nơi ở: TP. HỒ CHÍ MINH</li>
-            </ul>
-            <div class="tabs">
-                <button class="tab active">Giới thiệu</button>
-                <button class="tab">Kinh nghiệm</button>
-                <button class="tab">Bằng cấp</button>
-            </div>
-            <div class="intro-section">
-                <div class="intro">
-                    <h3>Giới thiệu chuyển gia Kim Nguyên</h3>
-                    <p>Chuyển gia làm việc Nguyệt Thị Kim</p>
-                </div>
-                <div class="intro">
-                    <h3>Kinh nghiệm làm việc chuyển gia Kim Nguyên</h3>
-                </div>
-                <div class="introintro">
-                    <h3>Bằng cấp</h3>
-                </div>
-                <div class="intro">
-                    <h3>Chuyên gia khác</h3>
-                </div>
-            </div>
-        </div>
-        <div class="order-section">
-            <div class="order-box">
-                <p><span class="icon">🔒</span> Gói một phút: 800.000 VNĐ/60 Phút</p>
-                <button class="order-button">Đặt lịch ngay</button>
-            </div>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            🏠 <a href="#">Trang chủ</a> > Chi tiết chuyên gia
         </div>
     </div>
-    <section class="contact-form">
-        <div class="container">
-            <h2>📩 Tương tác với chúng tôi</h2>
-            <form asp-action="Contact" asp-controller="SendRequest" method="post" class="form">
-                <input type="text" placeholder="Họ tên">
-                <input type="email" placeholder="Email">
-                <textarea placeholder="Nội dung"></textarea>
-                <button>Gửi</button>
+
+    <div class="container">
+        <!-- Alert Messages -->
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success">
+                <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                @TempData["success"]
+            </div>
+        }
+
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-error">
+                <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                @TempData["error"]
+            </div>
+        }
+
+        <div class="profile-layout">
+            <!-- Main Profile Content -->
+            <div class="profile-main">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <img src="@(!string.IsNullOrEmpty(Model.ProfilePictureUrl) ? Model.ProfilePictureUrl : "https://images.unsplash.com/photo-1494790108755-2616b612b789?w=200&h=200&fit=crop&crop=face")"
+                         alt="@Model.Name" class="profile-pic">
+                    <div class="profile-info">
+                        <h1>@Model.Name</h1>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="detail-label">Major:</span>
+                        <span>@Model.Major</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="detail-label">Kinh nghiệm:</span>
+                        <span>@Model.Experience năm</span>
+                    </div>
+                    <div class="detail-item">
+                        <svg class="detail-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="detail-label">Địa chỉ:</span>
+                        <span>@Model.Address</span>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('intro')">Giới thiệu</button>
+                    @if (!string.IsNullOrEmpty(Model.Degree))
+                    {
+                        <button class="tab" onclick="showTab('education')">Bằng cấp</button>
+                    }
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="intro-content">
+                    <div class="section-title">Giới thiệu chuyên gia @Model.Name</div>
+                    <div class="section-content">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Html.Raw(Model.Description.Replace("\n", "<br/>"))
+                        }
+                        else
+                        {
+                            <p>Chuyên gia tâm lý với nhiều năm kinh nghiệm trong lĩnh vực tư vấn và hỗ trợ khách hàng.</p>
+                        }
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Degree))
+                {
+                    <div class="tab-content" id="education-content" style="display: none;">
+                        <div class="section-title">Bằng cấp và chứng chỉ</div>
+                        <div class="section-content">
+                            <p><strong>Bằng cấp:</strong></p>
+                            <img src="@Model.Degree" alt="Bằng cấp" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+                            <p>Chuyên gia được đào tạo bài bản với các chứng chỉ chuyên môn trong lĩnh vực tâm lý học.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Pricing Card -->
+                <div class="pricing-card">
+                    <div class="pricing-info">
+                        <svg class="lock-icon" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Gói tư vấn: <span class="price">@Model.Price.ToString("N0") VNĐ</span></span>
+                    </div>
+                    <button id="bookButton" type="button" class="book-button" data-doctor-id="@Model.Id">
+                        <span id="buttonText">Đặt lịch ngay</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2 class="contact-title">
+                📩 Tương tác với chúng tôi
+            </h2>
+            <form asp-action="Contact" asp-controller="SendRequest" method="post" class="contact-form">
+                <div class="form-group">
+                    <input type="text" name="fullName" placeholder="Họ tên" class="form-input" required>
+                    <input type="email" name="email" placeholder="Email" class="form-input" required>
+                </div>
+                <textarea name="content" placeholder="Nội dung" class="form-textarea" required></textarea>
+                <input type="hidden" name="psychologistId" value="@Model.Id" />
+                <button type="submit" class="submit-button">Gửi</button>
             </form>
         </div>
-    </section>
-</div>
+    </div>
+
+    <script>
+        const isAuthenticated = @(User.Identity.IsAuthenticated.ToString().ToLower());
+        const hasSuccessMessage = @((TempData["success"] != null).ToString().ToLower());
+        const hasErrorMessage = @((TempData["error"] != null).ToString().ToLower());
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.getElementById('intro-content').style.display = 'none';
+            const educationContent = document.getElementById('education-content');
+            if (educationContent) {
+                educationContent.style.display = 'none';
+            }
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName + '-content').style.display = 'block';
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Handle button state based on messages
+        function updateBookButton() {
+            const bookButton = document.getElementById('bookButton');
+            const buttonText = document.getElementById('buttonText');
+
+            if (hasSuccessMessage) {
+                // Success state - show checkmark and disable
+                bookButton.classList.add('success');
+                bookButton.disabled = true;
+                buttonText.innerHTML = `
+                    <svg class="checkmark-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    Đã đặt lịch thành công
+                `;
+
+                // Remove attributes not needed anymore since we handle navigation in JS
+                bookButton.onclick = function(e) {
+                    e.preventDefault();
+                    return false;
+                };
+            }
+        }
+
+        // Initialize button state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBookButton();
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+
+        // Handle button click for authentication check
+        document.getElementById('bookButton').addEventListener('click', function(e) {
+            // If button is in success state, prevent all actions
+            if (this.classList.contains('success') || this.disabled) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+
+            // Check authentication
+            if (!isAuthenticated) {
+                e.preventDefault();
+                alert('Vui lòng đăng nhập trước khi thực hiện hành động này!');
+                window.location.href = '/Account/Login';
+                return false;
+            }
+
+            // If authenticated, redirect to payment
+            const doctorId = this.getAttribute('data-doctor-id');
+            window.location.href = `/Doctor/Payment/${doctorId}`;
+        });
+    </script>
+</body>
+</html>

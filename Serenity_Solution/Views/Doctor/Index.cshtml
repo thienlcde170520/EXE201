@@ -1,406 +1,255 @@
-﻿@{
+﻿@model List<PsychologistViewModel>
+@{
     ViewData["Title"] = "Doctor Page";
-    Layout = null;
 }
 
-   <header class="site-header">
-  <div class="header-container">
-    <div class="logo">
-      <img src="@Url.Content("~/image/Logo/LogoSere.jpg")" alt="Logo">
-      <span><strong>Serenity</strong> Solution</span>
+<div class="search-section">
+    <div class="search-container">
+        <div class="search-tabs">
+            <div class="tab active">
+                <h3>Đặt câu hỏi</h3>
+                <p>Đặt câu hỏi với chúng tôi</p>
+                <div class="underline"></div>
+            </div>
+            <div class="tab">
+                <h3>Kiểm tra sức khỏe nhanh</h3>
+                <p>Kiểm tra nhanh tâm lý của bạn</p>
+            </div>
+        </div>
+        <div class="search-box">
+            <i class="search-icon">&#128269;</i>
+            <input type="text" placeholder="Search" />
+        </div>
     </div>
-    <nav class="main-nav">
-                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Trang chủ</a>
+</div>
 
-                <a class="nav-link text-dark" asp-controller="Podcast" asp-action="Index">Podcast</a>
-                <a class="nav-link text-dark" asp-controller="Test" asp-action="Index">Kiểm tra tâm lý</a>
-                <a asp-controller="Doctor" asp-action="Index" class="active">Danh sách bác sĩ</a>
-    </nav>
-            <div class="auth-buttons">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="dropdown">
-                        <button class="dropdown-toggle" onclick="toggleDropdown()">
-                            <i class="fas fa-user-circle"></i> Hello, @User.Identity.Name
-                            <i class="fas fa-caret-down"></i>
-                        </button>
-                        <div class="dropdown-menu" id="userDropdown">
-                            @if (User.IsInRole("Admin"))
+<main>
+    <h2>Bác sĩ dành cho bạn</h2>
+    <div class="filters">
+        <button>Bộ lọc</button>
+        <select>
+            <option>Mới nhất</option>
+            <option>Kinh nghiệm</option>
+            <option>Giá thấp đến cao</option>
+        </select>
+    </div>
+
+    <div class="doctor-list">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var doctor in Model)
+            {
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <!-- Default avatar if no image available -->
+                        <img src="@doctor.ProfilePictureUrl" alt="@doctor.Name" class="doctor-avatar" />
+                        <div class="doctor-details">
+                            <h3 class="doctor-name">@doctor.Name</h3>
+                            <p class="doctor-specialty">Chuyên gia tâm lý</p>
+                            <p class="doctor-location">📍@(string.IsNullOrEmpty(doctor.Address) ? "Chưa cập nhật địa chỉ" : doctor.Address)</p>
+                            <p class="doctor-experience">🗓️ @(doctor.Experience ?? "Chưa cập nhật kinh nghiệm") năm</p>
+                            @if (doctor.Description != null)
                             {
-                                <a asp-controller="AdminDashboard" asp-action="ManageUser" class="dropdown-item">Dashboard</a>
+                                <p class="doctor-description">📝 @doctor.Description</p>
                             }
-                            else if (User.IsInRole("Psychologist"))
-                            {
-                                <a asp-controller="Account" asp-action="PsychologistProfile" class="dropdown-item">Profile</a>
-                            }
-                            else if (User.IsInRole("Customer"))
-                            {
-                                <a asp-controller="Account" asp-action="CustomerProfile" class="dropdown-item">Profile</a>
-                            }
-                            <div class="dropdown-divider"></div>
-                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+                            <p class="doctor-price">👥 Chi phí tư vấn: <strong>@(doctor.Price.ToString("N0") ?? "0") VND</strong></p>
                         </div>
                     </div>
+                    <form asp-controller="Doctor" asp-action="Detail">
+                        <input type="hidden" name="Id" value="@doctor.Id" />
+                    <button class="contact-button" >Liên hệ ngay</button>
+                    </form>
+                    @*onclick="contactDoctor('@doctor.Id')"*@
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-doctors">
+                <p>Hiện tại không có bác sĩ nào khả dụng.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        @if (ViewBag.TotalPages > 1)
+        {
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="?page=@(ViewBag.CurrentPage - 1)" class="pagination-btn">&laquo;</a>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                if (i == ViewBag.CurrentPage)
+                {
+                    <button class="pagination-btn active">@i</button>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="login-link">Đăng Nhập</a>
-                    <a asp-controller="Account" asp-action="Register" class="signup-btn">Đăng Ký</a>
+                    <a href="?page=@i" class="pagination-btn">@i</a>
                 }
-            </div>
-  </div>
-</header>
+            }
 
-
-<div class="search-section">
-  <div class="search-container">
-    <div class="search-tabs">
-      <div class="tab active">
-        <h3>Đặt câu hỏi</h3>
-        <p>Đặt câu hỏi với chúng tôi</p>
-        <div class="underline"></div>
-      </div>
-      <div class="tab">
-        <h3>Kiểm tra sức khỏe nhanh</h3>
-        <p>Kiểm tra nhanh tâm lý của bạn</p>
-      </div>
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <a href="?page=@(ViewBag.CurrentPage + 1)" class="pagination-btn">&raquo;</a>
+            }
+        }
     </div>
-    <div class="search-box">
-      <i class="search-icon">&#128269;</i>
-      <input type="text" placeholder="Search" />
-    </div>
-  </div>
-</div>
-
-  <main>
-    <h2>Bác sĩ dành cho bạn</h2>
-    <div class="filters">
-      <button>Bộ lọc</button>
-      <select>
-        <option>Mới nhất</option>
-        <option>Kinh nghiệm</option>
-        <option>Giá thấp đến cao</option>
-      </select>
-    </div>
-
-   <div class="doctor-card">
-    <div class="doctor-info">
-            <img src="@Url.Content("~/image/Doctor/Kim_Ngan.png")" alt="Kim Nguyễn" class="doctor-avatar" />
-      <div class="doctor-details">
-        <h3 class="doctor-name">Kim Nguyễn</h3>
-        <p class="doctor-specialty">Chuyên gia tâm lý</p>
-        <p class="doctor-location">📍TP Đà Nẵng</p>
-        <p class="doctor-experience">🗓️ Hơn 5 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>80.000 VND</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>600.000 VND</strong></p>
-      </div>
-    </div>
-    <button class="contact-button">Liên hệ ngay</button>
-  </div>
-
-  <!-- Doctor Card 2 -->
-  <div class="doctor-card">
-    <div class="doctor-info">
-            <img src="@Url.Content("~/image/Doctor/Van_Thang.png")" alt="Lê Văn Thắng" class="doctor-avatar" />
-      <div class="doctor-details">
-                <h3 class="doctor-name">Lê Văn Thắng</h3>
-        <p class="doctor-specialty">Chuyên gia tâm lý</p>
-        <p class="doctor-location">📍TP Đà Nẵng</p>
-        <p class="doctor-experience">🗓️ Hơn 10 năm kinh nghiệm</p>
-        <p class="doctor-price">📞 Gọi điện: <strong>200.000 VND</strong></p>
-        <p class="doctor-price">👥 Gặp mặt trực tiếp: <strong>1.100.000 VND</strong></p>
-      </div>
-    </div>
-    <button class="contact-button">Liên hệ ngay</button>
-  </div>
-
-   
-
-    <div class="pagination">
-      <button>&laquo;</button>
-      <button class="active">1</button>
-      <button>2</button>
-      <button>&raquo;</button>
-    </div>
-  </main>
-
-   <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-column-1">
-        <h2 class="logo"><span>Serenity</span> <strong>Solution</strong></h2>
-        <p>
-          Chăm sóc sức khỏe tâm thần đề cập đến những nỗ lực mà các chuyên gia y tế thực hiện để phục hồi sức khỏe thể chất và tinh thần của chúng ta. Thuật ngữ này cũng bao gồm việc cung cấp các dịch vụ để duy trì sức khỏe cảm xúc. Chúng tôi gọi những người và tổ chức cung cấp các dịch vụ này là 'nhà cung cấp dịch vụ chăm sóc sức khỏe'.
-        </p>
-      </div>
-      <div class="footer-column">
-        <h3>Overview</h3>
-        <ul>
-          <li><a href="#">BookShop</a></li>
-          <li><a href="#">Podcast and Music</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Company</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Services</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Explore</h3>
-        <ul>
-          <li><a href="#">Blogs & Feeds</a></li>
-          <li><a href="#">Privacy Police</a></li>
-          <li><a href="#">Cookies</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
- <h3>Social Media</h3>
-<div class="social-icons">
-  <a href="https://www.facebook.com/" target="_blank" title="Facebook">
-    <i class="fab fa-facebook-f"></i>
-  </a>
-  <a href="https://www.instagram.com/" target="_blank" title="Instagram">
-    <i class="fab fa-instagram"></i>
-  </a>
-  <a href="https://www.twitter.com/" target="_blank" title="Twitter">
-    <i class="fab fa-twitter"></i>
-  </a>
-</div>
-
-</div>
-    </div>
-
-    <hr />
-    <div class="copyright">
-      Copyright  Serenity Solution 2025
-    </div>
-  </footer>
+</main>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    * {
         margin: 0;
-        background: #f9f9f9;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
         color: #333;
     }
 
-    .site-header {
-        background-color: white;
-        border-bottom: 1px solid #eee;
-        padding: 10px 0;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .header-container {
-        width: 90%;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-        .logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        .logo span {
-            font-size: 20px;
-            color: #1e3a8a;
-        }
-
-            .logo span strong {
-                color: #1e40af; /* Darker blue for "Serenity" */
-            }
-
-    .main-nav {
-        display: flex;
-        gap: 30px;
-        align-items: center;
-    }
-
-        .main-nav a {
-            text-decoration: none;
-            color: #111;
-            font-weight: 500;
-            position: relative;
-        }
-
-            .main-nav a.active {
-                color: #0f5e72;
-                font-weight: bold;
-            }
-
-                .main-nav a.active::after {
-                    content: "";
-                    position: absolute;
-                    bottom: -4px;
-                    left: 0;
-                    height: 3px;
-                    width: 100%;
-                    background-color: #0f5e72;
-                    border-radius: 2px;
-                }
-
-    .auth-buttons {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .login-link {
-        color: #1e3a8a;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .signup-btn {
-        background-color: #93c5fd;
+    @* .search-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem 0;
         color: white;
-        text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 9999px;
-        font-weight: 500;
-        transition: background-color 0.3s;
-    }
-
-        .signup-btn:hover {
-            background-color: #60a5fa;
-        }
-
-
-    .search-section {
-        background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQa3_zuvcqTyOXXSYmZXFyNqtLh8rnOwo5_A&s') no-repeat center center;
-        background-size: cover;
-        padding: 80px 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
 
     .search-container {
-        background: white;
-        border-radius: 20px;
-        padding: 30px 40px;
-        width: 70%;
-        max-width: 1000px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
     }
 
     .search-tabs {
         display: flex;
-        justify-content: space-around;
-        border-bottom: 1px solid #e5e7eb;
-        padding-bottom: 20px;
+        gap: 2rem;
+        margin-bottom: 2rem;
     }
 
     .tab {
-        flex: 1;
-        text-align: center;
-        cursor: pointer;
-        padding: 10px;
         position: relative;
-    }
-
-        .tab h3 {
-            margin: 0;
-            color: #1e3a8a;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .tab p {
-            color: #6b7280;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .tab.active::after {
-            content: "";
-            display: block;
-            height: 3px;
-            width: 60%;
-            background-color: #14b8b8;
-            margin: 10px auto 0;
-            border-radius: 2px;
-        }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        margin-top: 30px;
-        border: 2px solid #0f172a;
-        border-radius: 50px;
-        padding: 10px 20px;
-        height: 50px;
-    }
-
-    .search-icon {
-        font-size: 20px;
-        color: #1e3a8a;
-        margin-right: 10px;
-        display: flex;
-        align-items: center;
-    }
-
-    .search-box input {
-        border: none;
-        outline: none;
-        font-size: 16px;
-        width: 100%;
-    }
-
-
-    .tab {
-        padding: 10px 20px;
-        border: none;
         cursor: pointer;
-        background: #eee;
+        transition: all 0.3s ease;
     }
 
         .tab.active {
-            background: #f2f3f3;
-            color: #fff;
+            color: white;
         }
 
-    .search-bar input {
-        margin-top: 10px;
-        padding: 10px;
-        width: 300px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        .tab h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tab p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+    .underline {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: white;
+        border-radius: 2px;
     }
 
-    h2 {
-        padding: 20px;
+    .search-box {
+        position: relative;
+        max-width: 500px;
     }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #666;
+    } *@
+
+    main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+        main h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
 
     .filters {
         display: flex;
-        justify-content: space-between;
-        padding: 0 20px;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        align-items: center;
+    }
+
+        .filters button,
+        .filters select {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+            .filters button:hover,
+            .filters select:hover {
+                border-color: #667eea;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+            }
+
+    .doctor-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .doctor-card {
-        border-bottom: 1px solid #ddd;
-        padding: 20px 0;
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
         display: flex;
-        flex-direction: column;
-        gap: 20px;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
     }
+
+        .doctor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
 
     .doctor-info {
         display: flex;
-        gap: 20px;
+        align-items: center;
+        gap: 1.5rem;
+        flex: 1;
     }
 
     .doctor-avatar {
@@ -408,198 +257,101 @@
         height: 80px;
         border-radius: 50%;
         object-fit: cover;
+        border: 3px solid #f0f0f0;
     }
 
-    .doctor-details {
-        flex: 1;
-    }
-
-    .doctor-name {
-        margin: 0;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .doctor-specialty,
-    .doctor-location,
-    .doctor-experience,
-    .doctor-price {
-        margin: 4px 0;
-        font-size: 14px;
+    .doctor-details h3 {
+        font-size: 1.3rem;
         color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .doctor-details p {
+        margin-bottom: 0.3rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .doctor-specialty {
+        color: #667eea !important;
+        font-weight: 600;
+    }
+
+    .doctor-description {
+        color: #555 !important;
+        font-style: italic;
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .doctor-price strong {
+        color: #e74c3c;
+        font-weight: 700;
     }
 
     .contact-button {
-        align-self: flex-start;
-        background-color: #7f9c96;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 10px 20px;
-        border-radius: 6px;
         border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        transition: background-color 0.3s;
+        transition: all 0.3s ease;
+        white-space: nowrap;
     }
 
         .contact-button:hover {
-            background-color: #5e7b74;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
 
-    .footer {
-        background-color: #f9fbfc;
-        padding: 40px 60px;
-        border-top: 3px solid #1a2fa1;
-    }
-
-    .footer-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 40px;
-        justify-content: space-between;
-    }
-
-    .footer-column {
-        flex: 1;
-        min-width: 200px;
-    }
-
-    .logo span {
-        font-weight: bold;
-        font-size: 24px;
-        color: #002379;
-    }
-
-    .logo strong {
-        font-size: 24px;
-        color: #3e7c7f;
-    }
-
-    .footer-column h3 {
-        font-size: 18px;
-        color: #3e7c7f;
-        margin-bottom: 10px;
-    }
-
-    .footer-column ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-        .footer-column ul li {
-            margin-bottom: 8px;
-        }
-
-            .footer-column ul li a {
-                text-decoration: none;
-                color: #111;
-                font-weight: 500;
-            }
-
-    .footer-column p {
-        font-size: 14px;
-        color: #222;
-        line-height: 1.5;
-    }
-
-    .social-icons a {
-        margin-right: 10px;
-        font-size: 18px;
-        color: #111;
-        text-decoration: none;
-    }
-
-    hr {
-        margin: 30px 0 15px;
-        border: none;
-        border-top: 1px solid #ddd;
-    }
-
-    .copyright {
+    .no-doctors {
         text-align: center;
-        font-size: 14px;
-        color: #111;
-        margin-bottom: 20px;
+        padding: 3rem;
+        color: #666;
+        font-size: 1.1rem;
     }
-</style>
 
-<style>
-    /* Dropdown Styles */
-    .dropdown {
-        position: relative;
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .pagination-btn {
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        background: white;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: #333;
         display: inline-block;
     }
 
-    .dropdown-toggle {
-        background: none;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #1e3a8a;
-        font-weight: 500;
-        padding: 8px 12px;
-        border-radius: 4px;
-        transition: all 0.3s;
-    }
-
-        .dropdown-toggle:hover {
-            background-color: #f0f4ff;
+        .pagination-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: white;
-        min-width: 200px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        border-radius: 8px;
-        z-index: 1000;
-        padding: 8px 0;
-        margin-top: 8px;
-    }
-
-        .dropdown-menu.show {
-            display: block;
+        .pagination-btn:hover:not(.active) {
+            background: #f8f9fa;
+            border-color: #667eea;
         }
-
-    .dropdown-item {
-        display: block;
-        padding: 10px 16px;
-        color: #333;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
-
-        .dropdown-item:hover {
-            background-color: #f5f5f5;
-            color: #1e40af;
-        }
-
-    .dropdown-divider {
-        height: 1px;
-        background-color: #eee;
-        margin: 8px 0;
-    }
 </style>
 
-<script>
-    function toggleDropdown() {
-        document.getElementById("userDropdown").classList.toggle("show");
+@* <script>
+    function contactDoctor(doctorId) {
+        // Implement contact functionality here
+        alert('Liên hệ với bác sĩ ID: ' + doctorId);
+        // You can redirect to a contact page or open a modal
+        // window.location.href = '/Contact/Doctor/' + doctorId;
     }
-
-    // Close the dropdown if clicked outside
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropdown-toggle') && !event.target.closest('.dropdown-toggle')) {
-            var dropdowns = document.getElementsByClassName("dropdown-menu");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    }
-</script>
+</script> *@
