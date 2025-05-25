@@ -13,6 +13,6 @@ namespace EXE201.Commons.Models
         //[Required]
         
         //public string? ProfilePictureUrl { get; set; } = string.Empty;
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

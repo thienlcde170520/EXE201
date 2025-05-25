@@ -69,6 +69,58 @@ namespace Serenity_Solution.Controllers
             return View(pagedUsers);
 
         }
+
+        public async Task<IActionResult> AllDoctor(int page = 1, int pageSize = 5)
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Psychologist");
+            var userList = users.Select(s => new PsychologistViewModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Email = s.Email,
+                Price = s.Price,
+                Phone = s.Phone,
+                Address = s.Address,
+                Degree = s.CertificateUrl,
+                Description = s.Description,
+                Experience = s.Experience,
+                ProfilePictureUrl = s.ProfilePictureUrl,
+                Major = s.Major,
+            }).ToList();
+            int totalUsers = userList.Count();
+            var pagedUsers = userList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
+            ViewBag.CurrentPage = page;
+            return View(pagedUsers);
+        }
+
+        public async Task<IActionResult> AllAppointments(int page = 1, int pageSize = 5)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var ListAppointments = await _context.Appointments
+                .Where(a => a.Psychologist_ID == user.Id && a.Status == "Booked" || a.Status == "Confirmed")
+                .Include(a => a.Client)
+                .Include(a => a.Psychologist)
+                .ToListAsync();
+
+            if (ListAppointments.Count == 0)
+            {
+                TempData["NoWSDetail"] = true;
+                return RedirectToAction("Index");
+            }
+
+            int totalUsers = ListAppointments.Count();
+            var pagedUsers = ListAppointments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(pagedUsers);
+        }
+
+        #region Resolve_Upgrade_Request
+
         [HttpPost]
         public async Task<IActionResult> ApproveUpgrade(string email)
         {
@@ -116,54 +168,7 @@ namespace Serenity_Solution.Controllers
             return RedirectToAction("UpgradeRequest");
         }
 
-
-
-
-        /*
-        public async Task<IActionResult> ApproveUpgrade(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return NotFound();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("Psychologist"))
-            {
-                TempData["Message"] = "Người dùng đã là Psychologist.";
-                return RedirectToAction("UpgradeRequest");
-            }
-
-            // Remove old roles
-            await _userManager.RemoveFromRolesAsync(user, roles);
-
-            // Add new role
-            await _userManager.AddToRoleAsync(user, "Psychologist");
-
-            // Lấy Customer để lấy CertificateUrl chuyển cho Degree của PsychologistProfile
-            var customer = await _context.Set<Customer>().FindAsync(user.Id);
-
-            if (customer == null)
-                return BadRequest("User không phải Customer.");
-
-            // Tạo PsychologistProfile riêng
-            var psychologistProfile = new Psychologist
-            {
-                Id = user.Id,
-                Degree = customer.CertificateUrl ?? "Chưa có chứng chỉ"
-            };
-
-            await _userManager.UpdateAsync(psychologistProfile);
-            await _context.SaveChangesAsync();
-
-            await _emailService.SendEmailAsync(user.Email, "Nâng cấp thành công", "Bạn đã trở thành nhà tâm lý học của hệ thống chúng tôi!");
-
-            return RedirectToAction("UpgradeRequest");
-        }
-
-        */
-
-
-
+    
 
         [HttpPost]
         public async Task<IActionResult> RejectUpgrade(string email)
@@ -187,29 +192,7 @@ namespace Serenity_Solution.Controllers
             return NotFound();
         }
 
-        /*
-        [HttpPost]
-        public async Task<IActionResult> ApproveUpgrade(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            var customers = await _userManager.FindByEmailAsync(email) as Customer;
-            if (user != null)
-            {
-                // Cập nhật vai trò cho người dùng
-                await _userManager.AddToRoleAsync(user, "Psychologist");
-                await _userManager.RemoveFromRoleAsync(user, "Customer");
-                // Cập nhật trạng thái của người dùng
-                user.CertificateUrl = null;
-                await _userManager.UpdateAsync(user);
-                // Gửi email thông báo
-                var subject = "Yêu cầu nâng cấp tài khoản đã được phê duyệt";
-                var message = "Chúc mừng bạn đã trở thành một nhà tâm lý học!";
-                await _emailService.SendEmailAsync(user.Email, subject, message);
-                return RedirectToAction("UpgradeRequest");
-            }
-            return NotFound();
-        }
-        */
+#endregion 
 
 
     }
