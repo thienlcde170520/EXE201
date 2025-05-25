@@ -1,0 +1,66 @@
+﻿@model List<PsychologistViewModel>
+
+@{
+    ViewBag.Title = "Danh sách bác sĩ";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    Layout = "~/Views/Shared/_LayoutManager.cshtml";
+}
+
+<h2 class="text-center mt-4 mb-4">Danh sách bác sĩ</h2>
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle" style="min-width: 1000px;">
+            <thead class="table-light">
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th>Bằng cấp</th>
+                    <th>Chuyên ngành</th>
+                    <th>Kinh nghiệm</th>
+                    <th>Giá</th>
+                    <th>Mô tả</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doctor in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@doctor.ProfilePictureUrl" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;" alt="Ảnh">
+                        </td>
+                        <td>@doctor.Name</td>
+                        <td>@doctor.Email</td>
+                        <td>@doctor.Phone</td>
+                        <td>@doctor.Address</td>
+                        <td><a href="@doctor.Degree" target="_blank">Xem chứng chỉ</a></td>
+                        <td>@doctor.Major</td>
+                        <td>@doctor.Experience năm</td>
+                        <td>@doctor.Price VNĐ</td>
+                        <td style="white-space: nowrap; overflow-x: auto; max-width: 200px;">@doctor.Description</td>
+                        <td>
+                            <a href="@Url.Action("Detail", "Doctor", new { id = doctor.Id })" class="btn btn-sm btn-primary">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("AllDoctor", new { page = i })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

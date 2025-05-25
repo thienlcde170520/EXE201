@@ -32,7 +32,7 @@ namespace Serenity_Solution.Controllers
             _context = context;
             _vpnPayServicecs = vnPayServicecs;
         }
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 2)
+        public async Task<IActionResult> Index(string searchString, string filterType, int page = 1, int pageSize = 2)
         {
             var users = await _userManager.GetUsersInRoleAsync("Psychologist");
 
@@ -40,10 +40,41 @@ namespace Serenity_Solution.Controllers
                 .Where(c => c.CertificateUrl != null) // Lọc ra những người có yêu cầu nâng cấp
                 .ToList();
 
+            if(!string.IsNullOrEmpty(searchString))
+            {
+                doctors = doctors.Where(d => d.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                             d.Major.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Lọc theo loại bác sĩ dựa trên filterType
+            if (!string.IsNullOrEmpty(filterType))
+            {
+                switch (filterType)
+                {
+                    case "psychiatrist":
+                        doctors = doctors.Where(d => d.Major != null && d.Major.Contains("Bác sĩ tâm thần", StringComparison.OrdinalIgnoreCase)).ToList();
+                        break;
+                    case "clinicalPsychologist":
+                        doctors = doctors.Where(d => d.Major != null && d.Major.Contains("Nhà tâm lý học lâm sàng", StringComparison.OrdinalIgnoreCase)).ToList();
+                        break;
+                    case "counselor":
+                        doctors = doctors.Where(d => d.Major != null && d.Major.Contains("Tư vấn viên tâm lý", StringComparison.OrdinalIgnoreCase)).ToList();
+                        break;
+                    case "experience":
+                        doctors = doctors.OrderByDescending(d => d.Experience).ToList();
+                        break;
+                    case "priceAsc":
+                        doctors = doctors.OrderBy(d => d.Price).ToList();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
             if (doctors.Count == 0)
             {
                 TempData["NoWSDetail"] = true;
-                return RedirectToAction("Index", "Home");
             }
             var DoctorList = doctors
                  .Select(s => new PsychologistViewModel
@@ -63,6 +94,8 @@ namespace Serenity_Solution.Controllers
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
             ViewBag.CurrentPage = page;
             // Gửi danh sách Staff kèm ID (dùng ViewBag nếu cần)
+            ViewBag.SearchString = searchString;
+
             ViewBag.StaffIds = doctors.ToDictionary(s => s.Email, s => s.Id);
 
             return View(pagedUsers);
@@ -149,7 +182,7 @@ namespace Serenity_Solution.Controllers
                 invoice.Status = "Booked";
                 invoice.Scheduled_time = DateTime.Now.AddDays(3);
                 invoice.Created_at = DateTime.Now;
-                invoice.Notes = "Thanh toán thành công qua VNPay";
+                invoice.Notes = "Bạn có 3 ngày để phản hồi";
 
                 //await _context.AddAsync(invoice);
                 await _context.Appointments.AddAsync(invoice);
@@ -176,21 +209,6 @@ namespace Serenity_Solution.Controllers
             }
 
         }
-        private string ExtractDoctorIdFromOrderInfo(string orderInfo)
-        {
-            if (string.IsNullOrEmpty(orderInfo))
-                return null;
-
-            try
-            {
-                var parts = orderInfo.Split('|');
-                var doctorPart = parts.FirstOrDefault(p => p.StartsWith("DOCTOR_ID:"));
-                return doctorPart?.Substring("DOCTOR_ID:".Length);
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        
     }
 }

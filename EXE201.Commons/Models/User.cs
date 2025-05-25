@@ -40,7 +40,8 @@ namespace EXE201.Commons.Models
 
         //customer
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<Appointment> ClientAppointments { get; set; }
+        public ICollection<Appointment> PsychologistAppointments { get; set; }
         public virtual ICollection<UserTestResult> UserTestResults { get; set; } = new List<UserTestResult>();
 
         //psychologist

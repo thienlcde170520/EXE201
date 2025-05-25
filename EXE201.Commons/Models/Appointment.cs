@@ -18,7 +18,7 @@ namespace EXE201.Commons.Models
         public DateTime Scheduled_time { get; set; }
         [Required]
         [StringLength(50)]
-        public string Status { get; set; } = "Booked"; // Booked, confirmed, Canceled
+        public string Status { get; set; } = "Booked"; // Booked, Confirmed, Canceled
         public string? Notes { get; set; }
         [Required]
         public DateTime Created_at { get; set; }
@@ -30,7 +30,7 @@ namespace EXE201.Commons.Models
         public virtual User? Client { get; set; }
 
         [ForeignKey("Psychologist_ID")]
-        public virtual Psychologist? Psychologist { get; set; }
+        public virtual User? Psychologist { get; set; }
 
     }
 }

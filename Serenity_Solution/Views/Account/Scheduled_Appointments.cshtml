@@ -1,0 +1,164 @@
+﻿@model List<EXE201.Commons.Models.Appointment>
+
+@{
+    ViewBag.Title = "Cuộc hẹn đã đặt";
+}
+
+<div class="container appointment-container">
+    <h2 class="section-title">Danh sách cuộc hẹn đã đặt</h2>
+
+    <div class="appointment-table-wrapper">
+        <table class="table appointment-table">
+            <thead>
+                <tr>
+                    @if(User.IsInRole("Customer"))
+                    {
+                        <th>Chuyên viên</th>
+                    }
+                    else if (User.IsInRole("Psychologist"))
+                    {
+                        <th>Khách hàng</th>
+                    }
+                    <th>Thời gian hẹn</th>
+                    <th>Ghi chú</th>
+                    <th>Giá</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <td>@item.Psychologist?.Name</td>                          
+                        }
+                        else if (User.IsInRole("Psychologist"))
+                        {
+                            <td>@item.Client?.Name</td>
+                        }
+
+                        <td>@item.Scheduled_time.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Notes</td>
+                        <td>@String.Format("{0:N0} VND", item.Price)</td>
+                        <td class="action-buttons">
+                            <form asp-action="AcceptAppointment" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-accept"
+                                        onclick="return confirm('Bạn có chắc chắn xác nhận cuộc hẹn?');">
+                                    <i class="fas fa-check-circle"></i> Chấp nhận
+                                </button>
+                            </form>
+                            <form asp-action="RejectAppointment" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-reject"
+                                        onclick="return confirm('Bạn có chắc chắn từ chốin cuộc hẹn?');">
+                                    <i class="fas fa-times-circle"></i> Từ chối
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            var noWSDetail = '@(TempData["NoWSDetail"])';
+            if (noWSDetail === 'True') {
+                Swal.fire({
+                    title: 'Thông báo',
+                    text: 'Bạn chưa có cuộc hẹn với nhà tâm lý học nào',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    </script>
+
+}
+<style>
+    .appointment-container {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        color: #1e3a8a;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    .appointment-table-wrapper {
+        overflow-x: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .appointment-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .appointment-table th,
+        .appointment-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        .appointment-table th {
+            background-color: #f0f4ff;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .appointment-table td {
+            color: #333;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-accept {
+        background-color: #22c55e;
+        color: white;
+    }
+
+        .btn-accept:hover {
+            background-color: #16a34a;
+        }
+
+    .btn-reject {
+        background-color: #ef4444;
+        color: white;
+    }
+
+        .btn-reject:hover {
+            background-color: #dc2626;
+        }
+
+</style>

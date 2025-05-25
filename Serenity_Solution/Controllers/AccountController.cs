@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Serenity_Solution.Controllers
 {
@@ -56,7 +57,7 @@ namespace Serenity_Solution.Controllers
                 UserName = model.Email,
                 Email = model.Email,
                 Name = NameDefault,
-                PhoneNumber = model.Phone,
+                Phone = model.Phone,
                 DateOfBirth = DateTime.Now,
                 Gender = model.Gender,
                 Address = model.Address,
@@ -364,7 +365,7 @@ namespace Serenity_Solution.Controllers
                 ProfilePictureUrl = user.ProfilePictureUrl,  
                 CertificateUrl = user.CertificateUrl
             };
-
+            
             return View(customerViewModel);
         }
 
@@ -379,7 +380,7 @@ namespace Serenity_Solution.Controllers
             }
 
             var psychologist = await _context.ApplicationUsers
-                .Include(p => p.Appointments)
+                .Include(p => p.PsychologistAppointments)
                 .FirstOrDefaultAsync(p => p.Id == user.Id);
 
 
@@ -587,5 +588,93 @@ namespace Serenity_Solution.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Scheduled_Appointments(int page = 1, int pageSize = 5)
+        {
+            var user = await _userManager.GetUserAsync(User);           
+
+            var ListAppointments = await _context.Appointments
+                .Where(a => a.Psychologist_ID == user.Id && a.Status == "Booked")
+                .Include(a => a.Client)
+                .Include(a => a.Psychologist)
+                .ToListAsync();
+
+            if (ListAppointments.Count == 0)
+            {
+                TempData["NoWSDetail"] = true;
+            }
+
+            int totalUsers = ListAppointments.Count();
+            var pagedUsers = ListAppointments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalUsers / pageSize);
+            ViewBag.CurrentPage = page;
+            
+            return View(pagedUsers);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AcceptAppointment(int id)
+        {
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            appointment.Status = "Confirmed";
+            _context.Appointments.Update(appointment);
+            _context.SaveChanges();
+
+            if(User.IsInRole("Psychologist"))
+            {
+                // Gửi email thông báo cho khách hàng
+                var emailContent = $"Cuộc hẹn tư vấn của bạn với  {appointment.Psychologist.Name} đã được xác nhận.";
+                await _emailService.SendEmailAsync(appointment.Client.Email, "Xác Nhận tư vấn", emailContent);
+            }           
+
+            return RedirectToAction(nameof(Scheduled_Appointments));
+   
+        }
+        [HttpPost]
+        public async Task<IActionResult> RejectAppointment(int id)
+        {
+            var appointment = await _context.Appointments
+                .Include(a => a.Client)
+                .Include(a => a.Psychologist).FirstOrDefaultAsync(a => a.Id == id);
+
+            var check = appointment.Psychologist.Name;
+            var checkemail = appointment.Psychologist.Email;
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            appointment.Status = "Canceled";
+            
+
+            
+            if (User.IsInRole("Psychologist"))
+            {
+                // Gửi email thông báo cho khách hàng
+                await _emailService.SendEmailAsync(appointment.Client.Email, 
+                    "Xác Nhận tư vấn", 
+                    $"Cuộc hẹn tư vấn của bạn với  {appointment.Psychologist.Name} đã bị từ chối.");
+            }
+            else
+            {
+                // Gửi email thông báo cho bác sĩ
+                await _emailService.SendEmailAsync(appointment.Psychologist.Email, 
+                    "Hủy cuộc hẹn", 
+                    $"Cuộc hẹn tư vấn của bạn với  {appointment.Client.Name} đã bị hủy.");
+            }
+            _context.Appointments.Remove(appointment);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Scheduled_Appointments));
+        }
+        
     }
 }

@@ -379,15 +379,16 @@
     <!-- Header -->
     <header class="header">
         <nav>
-            <a href="#" class="nav-link">Hồn Nhân</a>
-            <a href="#" class="nav-link">Sự Nghiệp</a>
+            <a asp-action="Index" asp-route-searchString="Bác sĩ tâm thần" class="nav-link">Bác sĩ tâm thần</a>
+            <a asp-action="Index" asp-route-searchString="Nhà tâm lý học lâm sàng" class="nav-link">Nhà tâm lý học lâm sàng</a>
+            <a asp-action="Index" asp-route-searchString="Tư vấn viên tâm lý" class="nav-link">Tư vấn viên tâm lý</a>
         </nav>
     </header>
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="breadcrumb-content">
-            🏠 <a href="#">Trang chủ</a> > Chi tiết chuyên gia
+            🏠 <a asp-controller="Home" asp-action="Index">Trang chủ</a> > Chi tiết chuyên gia
         </div>
     </div>
 

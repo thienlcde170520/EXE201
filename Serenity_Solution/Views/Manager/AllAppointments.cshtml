@@ -1,0 +1,68 @@
+﻿@model List<EXE201.Commons.Models.Appointment>
+
+@{
+    ViewBag.Title = "Lịch hẹn của bạn";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    Layout = "~/Views/Shared/_LayoutManager.cshtml";
+}
+
+<h2 class="text-center mt-4 mb-4">Danh sách lịch hẹn</h2>
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle" style="min-width: 1000px;">
+            <thead class="table-light">
+                <tr>
+                    <th>Khách hàng</th>
+                    <th>Email khách</th>
+                    <th>Chuyên viên</th>
+                    <th>Email chuyên viên</th>
+                    <th>Thời gian hẹn</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú</th>
+                    <th>Giá</th>
+                    <th>Ngày tạo</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appt in Model)
+                {
+                    <tr>
+                        <td>@appt.Client?.Name</td>
+                        <td>@appt.Client?.Email</td>
+                        <td>@appt.Psychologist?.Name</td>
+                        <td>@appt.Psychologist?.Email</td>
+                        <td>@appt.Scheduled_time.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <span class="badge bg-@(appt.Status == "Confirmed" ? "success" : "warning")">
+                                @appt.Status
+                            </span>
+                        </td>
+                        <td style="max-width: 200px; overflow-x: auto; white-space: nowrap;">@appt.Notes</td>
+                        <td>@string.Format("{0:N0} VNĐ", appt.Price)</td>
+                        <td>@appt.Created_at.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <a href="@Url.Action("AppointmentDetail", "Appointment", new { id = appt.Id })" class="btn btn-sm btn-primary">
+                                Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("AllAppointments", new { page = i })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
