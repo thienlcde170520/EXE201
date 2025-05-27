@@ -77,16 +77,14 @@
       <div class="footer-column">
         <h3>Overview</h3>
         <ul>
-          <li><a href="#">BookShop</a></li>
-          <li><a href="#">Podcast and Music</a></li>
+          <li><a asp-controller="Podcast" asp-action="Index">Podcast and Music</a></li>
         </ul>
       </div>
       <div class="footer-column">
         <h3>Company</h3>
         <ul>
-          <li><a href="#">Home</a></li>
+          <li><a asp-controller="Home" asp-action="Index">Home</a></li>
           <li><a href="#">About us</a></li>
-          <li><a href="#">Services</a></li>
         </ul>
       </div>
       <div class="footer-column">
@@ -94,7 +92,6 @@
         <ul>
           <li><a href="#">Blogs & Feeds</a></li>
           <li><a href="#">Privacy Police</a></li>
-          <li><a href="#">Cookies</a></li>
         </ul>
       </div>
       <div class="footer-column">
@@ -126,9 +123,46 @@
 
 
 <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.main-nav a');
+        const nav = document.querySelector('.main-nav');
 
+        // Khởi tạo vị trí ban đầu cho indicator
+        const activeLink = document.querySelector('.main-nav a.active');
+        if (activeLink) {
+            const linkWidth = activeLink.offsetWidth;
+            const linkLeft = activeLink.offsetLeft;
 
-<style>
+            nav.style.setProperty('--indicator-width', `${linkWidth}px`);
+            nav.style.setProperty('--indicator-left', `${linkLeft}px`);
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Ngăn chặn hành vi mặc định nếu cần
+                // e.preventDefault();
+
+                // Xóa class active khỏi tất cả các link
+                navLinks.forEach(l => l.classList.remove('active'));
+
+                // Thêm class active vào link được click
+                this.classList.add('active');
+
+                // Lấy kích thước và vị trí của link được click
+                const linkWidth = this.offsetWidth;
+                const linkLeft = this.offsetLeft;
+
+                // Cập nhật CSS variables
+                nav.style.setProperty('--indicator-width', `${linkWidth}px`);
+                nav.style.setProperty('--indicator-left', `${linkLeft}px`);
+            });
+        });
+    });
+
+</script>
+
+<style>   
     /* Dropdown Styles */
     .dropdown {
         position: relative;

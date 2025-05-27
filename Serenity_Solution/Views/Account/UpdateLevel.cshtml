@@ -1,4 +1,4 @@
-﻿@model CertificateUploadViewModel
+﻿@* @model CertificateUploadViewModel
 
 <form asp-action="UpdateLevel" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="CustomerId" />
@@ -9,3 +9,92 @@
     </div>
     <button type="submit" class="btn btn-primary mt-3">Nộp chứng chỉ</button>
 </form>
+ *@
+
+ @model CertificateUploadViewModel
+
+<div class="upload-container">
+    <h2 class="form-title">Tải lên chứng chỉ của bạn</h2>
+    <form asp-action="UpdateLevel" method="post" enctype="multipart/form-data" class="upload-form">
+        <input type="hidden" asp-for="CustomerId" />
+
+        <div class="form-group">
+            <label asp-for="CertificateFile" class="form-label">Chứng chỉ (.pdf, .jpg, .png)</label>
+            <input asp-for="CertificateFile" type="file" class="form-control file-input" />
+            <span asp-validation-for="CertificateFile" class="text-danger validation-message"></span>
+        </div>
+
+        <button type="submit" class="btn-submit">Nộp chứng chỉ</button>
+    </form>
+</div>
+
+<style>
+    .upload-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 24px;
+        color: #1e3a8a;
+        font-weight: 600;
+        font-size: 24px;
+    }
+
+    .upload-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    .file-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background-color: #f8fafc;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+        .file-input:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+    .validation-message {
+        font-size: 14px;
+        color: #dc2626;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .btn-submit {
+        background-color: #3b82f6;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 500;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+        .btn-submit:hover {
+            background-color: #2563eb;
+        }
+
+</style>
+

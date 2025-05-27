@@ -1,4 +1,6 @@
-﻿namespace Serenity_Solution.Models
+﻿using EXE201.Commons.Models;
+
+namespace Serenity_Solution.Models
 {
     public class PsychologistViewModel
     {
@@ -15,6 +17,7 @@
         public string? Major { get; set; } = string.Empty;
         public double BaBalance { get; set; } = 0;
         public IFormFile? ProfilePictureFile { get; set; }
-        
+        public Contact? Contact { get; set; }
+
     }
 }
