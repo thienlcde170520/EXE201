@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Manager" asp-action="AllAppointments">Danh sách lịch tư vấn</a>
                         </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Manager" asp-action="AllRequest">Các yêu cầu</a>
+                        </li>
 
                     </ul>
                     <ul class="navbar-nav ms-auto">
@@ -68,6 +71,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
 <style>
 

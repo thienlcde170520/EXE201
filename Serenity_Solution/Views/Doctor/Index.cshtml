@@ -110,19 +110,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function () {
-        var noWSDetail = '@(TempData["NoWSDetail"])';
-        if (noWSDetail === 'True') {
-            Swal.fire({
-                title: 'Thông báo',
-                text: 'Hiện chưa có yêu cầu xác nhận chứng chỉ nào',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-        }
-    });
-</script>
 
 <style>
     * {
@@ -298,6 +285,6 @@
         .pagination-btn:hover:not(.active) {
             background: #f8f9fa;
             border-color: #667eea;
-        }
+        }    
 </style>
 
