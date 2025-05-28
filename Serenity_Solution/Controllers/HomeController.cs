@@ -6,7 +6,6 @@ using EXE201.Commons.Models;
 using EXE201.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Serenity_Solution.Models;
 
 namespace Serenity_Solution.Controllers
@@ -21,24 +20,23 @@ namespace Serenity_Solution.Controllers
         private readonly IEmailService _emailService;
 
 
-        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, IAccountService accountService, 
-            IEmailService emailService, 
+        public HomeController(ILogger<HomeController> logger,UserManager<User> userManager, IAccountService accountService,
+            IEmailService emailService,
             SignInManager<User> signInManager,
             ApplicationDbContext context)
         {           
             _logger = logger;
-<<<<<<< Updated upstream
+
             _accountService = accountService;
             _userManager = userManager;
             _emailService = emailService;
             _signInManager = signInManager;
             _context = context;
-        }       
-=======
-        }
->>>>>>> Stashed changes
 
-        public async Task<IActionResult> IndexAsync()
+        }
+
+
+        public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
@@ -46,23 +44,33 @@ namespace Serenity_Solution.Controllers
                 return RedirectToAction("Index", "Manager");
             }
 
-<<<<<<< Updated upstream
-            var doctors = await _userManager.GetUsersInRoleAsync("Psychologist");
+            // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
+            var podcasts = PodcastController.GetPodcasts()
+                .OrderByDescending(p => p.Rating)
+                .Take(10)
+                .ToList();
 
-            var podcasts = await _context.Podcasts.ToListAsync(); // Giả sử bạn có DbSet<Podcast>
+            // Truyền danh sách podcast vào view bằng ViewBag
+            ViewBag.Podcasts = podcasts;
 
-            var CurrentUser = await _userManager.GetUserAsync(User);
-
-            var viewModel = new HomeVM
+            // Tạo CombinedViewModel để truyền vào view
+            var model = new CombinedViewModel
             {
-                Doctors = doctors,
-                Podcasts = podcasts,
-                Contact = new Contact(),
-                currentUser = CurrentUser.Id
+                Contact = new ContactViewModel(), // Khởi tạo ContactViewModel
+                Podcast = new PodcastViewModel
+                {
+                    // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                    // Ví dụ:
+                    Title = "Life Update: Cuộc sống của mình sau pobcast",
+                    ImageUrl = "/image/Podcast/ThePresent2.png",
+                    AudioUrl = "/audio/podcast-audio.mp3",
+                    Rating = 4.6,
+                    RatingCount = 205,
+                    Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                }
             };
 
-            return View(viewModel);
-
+            return View(model);
         }
 
         [HttpPost]
@@ -95,37 +103,8 @@ namespace Serenity_Solution.Controllers
 
         }
 
-=======
-            // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
-            var podcasts = PodcastController.GetPodcasts()
-                .OrderByDescending(p => p.Rating)
-                .Take(10)
-                .ToList();
 
-            // Truyền danh sách podcast vào view bằng ViewBag
-            ViewBag.Podcasts = podcasts;
 
-            // Tạo CombinedViewModel để truyền vào view
-            var model = new CombinedViewModel
-            {
-                Contact = new ContactViewModel(), // Khởi tạo ContactViewModel
-                Podcast = new PodcastViewModel
-                {
-                    // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
-                    // Ví dụ:
-                    Title = "Life Update: Cuộc sống của mình sau pobcast",
-                    ImageUrl = "/image/Podcast/ThePresent2.png",
-                    AudioUrl = "/audio/podcast-audio.mp3",
-                    Rating = 4.6,
-                    RatingCount = 205,
-                    Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
-                }
-            };
-
-            return View(model);
-        }
-
->>>>>>> Stashed changes
 
         public IActionResult Privacy()
         {

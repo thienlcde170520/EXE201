@@ -84,34 +84,19 @@ var app = builder.Build();
 // Ensure database is created
 using (var scope = app.Services.CreateScope())
 {
-<<<<<<< Updated upstream
-    var serviceProvider = scope.ServiceProvider;
-
-    await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
-    await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
-=======
     var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    var serviceProvider = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
-    
+
     try
     {
-        // Xóa database cũ nếu tồn tại và tạo mới
-        logger.LogInformation("Đang xóa và tạo lại database...");
-        // dbContext.Database.EnsureDeleted();
-        dbContext.Database.EnsureCreated();
-        
-        // Seed dữ liệu
-        logger.LogInformation("Đang seed dữ liệu...");
-        var serviceProvider = services;
-    // await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
-        logger.LogInformation("Seed dữ liệu thành công!");
+        await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
+        await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
->>>>>>> Stashed changes
 }
 
 // Configure the HTTP request pipeline.

@@ -588,7 +588,7 @@ namespace Serenity_Solution.Controllers
             return View(model);
         }
 
-<<<<<<< Updated upstream
+
         [HttpGet]
         public async Task<IActionResult> Scheduled_Appointments(int page = 1, int pageSize = 5)
         {
@@ -676,7 +676,7 @@ namespace Serenity_Solution.Controllers
             return RedirectToAction(nameof(Scheduled_Appointments));
         }
         
-=======
+
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CustomerDashboard()
         {
@@ -711,6 +711,6 @@ namespace Serenity_Solution.Controllers
 
             return View(dashboardViewModel);
         }
->>>>>>> Stashed changes
+
     }
 }
