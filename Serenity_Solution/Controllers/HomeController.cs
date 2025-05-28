@@ -41,8 +41,8 @@ namespace Serenity_Solution.Controllers
                 // Redirect đến trang chính của Manager
                 return RedirectToAction("Index", "Manager");
             }
-
-            var doctors = await _userManager.GetUsersInRoleAsync("Psychologist");
+            var allDoctors = await _userManager.GetUsersInRoleAsync("Psychologist");
+            var doctors = allDoctors.OrderBy(d => Guid.NewGuid()).Take(2).ToList();
 
             var podcasts = await _context.Podcasts.ToListAsync(); // Giả sử bạn có DbSet<Podcast>
 

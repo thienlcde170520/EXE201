@@ -11,7 +11,7 @@
                 <p>Đặt câu hỏi với chúng tôi</p>
                 @* <div class="underline"></div> *@
             </div>
-            <div class="tab" id="testTab">
+            <div class="tab" id="testTab" onclick="location.href='/Test/Index';" style="cursor: pointer;">
                 <h3>Kiểm tra sức khỏe nhanh</h3>
                 <p>Kiểm tra nhanh tâm lý của bạn</p>
             </div>
@@ -31,57 +31,23 @@
     </div> *@
 
     <div class="doctor-list-wrapper">
-        <div class="doctor-list" id="doctorList">
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fb16adc5b-7f4c-4536-94f7-ff992b35f935.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Kim Nguyễn">
-                <h4><strong>Kim Nguyễn</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Ffb4d2f5b-10cf-459c-85c0-90ed10f3df86.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Lê Văn Thắng">
-                <h4><strong>Lê Văn Thắng</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F3e9735ff-22dc-4552-a62e-332c1c57b260.jpeg%3Fformat%3Dwebp&w=1920&q=75" alt="Hà Lê">
-                <h4><strong>Hà Lê</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý, hướng nghiệp</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2F1310b339-3c76-4e15-acd5-ce1437cc1841.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Hải Uyên">
-                <h4><strong>Nguyễn Hải Uyên</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F40077437-045d-4641-a94d-a3f22ac53c6b.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Dung Lê">
-                <h4><strong>Dung Lê</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Faskany.s3.ap-southeast-1.amazonaws.com%2Fimages%2F4f4874ff-8640-4b08-a87c-f518983cb41c.jpeg%3Fformat%3Dwebp&w=256&q=75" alt="Phương Bùi">
-                <h4><strong>Phương Bùi</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <div class="doctor-card">
-                <img src="https://askany.com/_next/image?url=https%3A%2F%2Fd2czqxs5dso3qv.cloudfront.net%2Fexperts%2Fef29f845-0b22-4a34-a99b-fc839505d21a.jpg%3Fformat%3Dwebp&w=256&q=75" alt="Nguyễn Khắc Dũng">
-                <h4><strong>Nguyễn Khắc Dũng</strong></h4>
-                <p>Chuyên gia Tư vấn tâm lý</p>
-                <button class="contact-btn">Liên hệ</button>
-            </div>
-            <!-- Thêm nhiều bác sĩ nếu muốn -->
+        <div class="doctor-list" id="doctorList">            
+            @foreach (var doctor in Model.Doctors)
+            {
+                <div class="doctor-card">
+                    <img src="@(!string.IsNullOrEmpty(doctor.ProfilePictureUrl) ? doctor.ProfilePictureUrl : "/images/Doctor/default-doctor.jpg")" alt="@doctor.Name">
+                    <h4><strong>@doctor.Name</strong></h4>
+                    <p>@doctor.Major</p>
+                    <a asp-controller="Doctor" asp-action="Detail" asp-route-Id="@doctor.Id" class="contact-btn">Liên hệ</a>
+                </div>
+            }
         </div>
     </div>
 </section>
 
 
 <!-- Contact Section -->
-<div class="contact-section">
+<div class="contact-section" id="contact">
     <h2 class="contact-title">
         📩 Tương tác với chúng tôi
     </h2>
@@ -108,26 +74,36 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         const askTab = document.getElementById('askTab');
         const contactSection = document.querySelector('.contact-section');
 
-        askTab.addEventListener('click', function(e) {
-            e.preventDefault();
+        function scrollToContact(e) {
+            if (e) e.preventDefault();
 
-            // Tính toán vị trí của phần contact
             const contactPosition = contactSection.getBoundingClientRect().top + window.pageYOffset;
 
-            // Cuộn mượt xuống vị trí đó
             window.scrollTo({
                 top: contactPosition,
                 behavior: 'smooth'
             });
-        });
+        }
+
+        askTab.addEventListener('click', scrollToContact);
+
+        const hash = window.location.hash;
+        if (hash === '#contact') {
+            scrollToContact();  // tự động cuộn khi trang load nếu URL có #contact
+        }
     });
+
 </script>
 
     <style >
+    .contact-btn {
+        text-decoration: none; /* Xóa gạch chân */
+    }
+
     /* Contact Section */
     .contact-section {
         background: white;

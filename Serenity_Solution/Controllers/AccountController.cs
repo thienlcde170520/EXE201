@@ -399,6 +399,7 @@ namespace Serenity_Solution.Controllers
                 Email = psychologist.Email,
                 Degree = psychologist.CertificateUrl,
                 Description = psychologist.Description,
+                Phone = psychologist.PhoneNumber,
                 Address = user.Address,
                 Experience = psychologist.Experience,
                 Price = psychologist.Price,

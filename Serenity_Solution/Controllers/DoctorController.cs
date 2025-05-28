@@ -110,7 +110,7 @@ namespace Serenity_Solution.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Phone = user.Phone,
+                Phone = user.PhoneNumber,
                 Address = user.Address,
                 Degree = user.CertificateUrl,
                 Description = user.Description,
