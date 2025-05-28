@@ -77,10 +77,19 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
     var serviceProvider = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
-    await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
-    await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
+    try
+    {
+        await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
+        await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

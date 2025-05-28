@@ -45,7 +45,7 @@
             <div class="password-wrapper">
                 <input type="password" name="Password" id="password" required />
                 <span class="toggle-password" onclick="togglePassword('password', this)">
-                    👁️
+                    <i class="fa fa-eye"></i>
                 </span>
             </div>
 
@@ -53,7 +53,7 @@
             <div class="password-wrapper">
                 <input type="password" name="ConfirmPassword" id="confirmPassword" required />
                 <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">
-                    👁️
+                    <i class="fa fa-eye"></i>
                 </span>
             </div>
 
@@ -79,11 +79,18 @@
 
 @section Scripts {
     <script>
-            function togglePassword(inputId, iconElement) {
+        function togglePassword(inputId, iconElement) {
             const input = document.getElementById(inputId);
-            const isPassword = input.type === "password";
-            input.type = isPassword ? "text" : "password";
-            iconElement.textContent = isPassword ? "🙈" : "👁️";
+            const icon = iconElement.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
     </script>
 }

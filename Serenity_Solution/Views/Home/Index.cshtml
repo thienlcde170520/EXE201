@@ -25,10 +25,10 @@
     <h2>Danh sách <span>Bác sĩ</span></h2>
     <p class="description">Chăm sóc sức khỏe giúp mọi người duy trì sức khỏe tốt và phòng ngừa bệnh tật...</p>
 
-    <div class="slider-controls">
+   @*  <div class="slider-controls">
         <button id="prevBtn">←</button>
         <button id="nextBtn">→</button>
-    </div>
+    </div> *@
 
     <div class="doctor-list-wrapper">
         <div class="doctor-list" id="doctorList">
@@ -93,7 +93,7 @@
     {
         <div class="alert alert-success">@TempData["Success"]</div>
     }
-    <form asp-action="SubmitContact" asp-controller="Home" method="post" class="contact-form">
+    <form asp-action="SubmitContact" asp-controller="Home" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="contact-form">
         <div class="form-group">
             <input type="hidden" asp-for="Contact.UserId" value="@Model.currentUser" />
             <input type="text" asp-for="Contact.Name" placeholder="Họ tên" class="form-input" required>
