@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace Serenity_Solution.Models
 {
@@ -7,6 +8,10 @@ namespace Serenity_Solution.Models
         public int Id { get; set; }
         public string UserId { get; set; }
         public DateTime TestDate { get; set; } = DateTime.Now;
+
+        // Theo dõi câu hỏi đã trả lời
+        public List<bool> AnsweredQuestions { get; set; } = new List<bool>();
+        public int AnsweredCount { get; set; } = 0;
 
         // Câu hỏi DASS-21
         [Range(0, 3, ErrorMessage = "Vui lòng chọn một giá trị từ 0 đến 3")]

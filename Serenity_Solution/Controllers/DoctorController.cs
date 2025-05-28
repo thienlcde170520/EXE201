@@ -120,8 +120,11 @@ namespace Serenity_Solution.Controllers
                 Major = user.Major,
                 Contact = new Contact()
             };
-            var currentUser = await _userManager.GetUserAsync(User);
-            ViewBag.UserId = currentUser.Id;
+            if (User.Identity.IsAuthenticated) 
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                ViewBag.UserId = currentUser.Id;
+            }
             return View(psychologist);
         }
 
