@@ -34,7 +34,7 @@ namespace Serenity_Solution.Controllers
             _context = context;
         }       
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
@@ -48,12 +48,26 @@ namespace Serenity_Solution.Controllers
 
             var CurrentUser = await _userManager.GetUserAsync(User);
 
-            var viewModel = new HomeVM
+            if (User.Identity.IsAuthenticated)
+            {
+                var viewModelC = new HomeVM
+                {
+                    Doctors = doctors,
+                    Podcasts = podcasts,
+                    Contact = new Contact(),
+
+                    currentUser = CurrentUser.Id
+                };
+                return View(viewModelC);
+            }
+
+                var viewModel = new HomeVM
             {
                 Doctors = doctors,
                 Podcasts = podcasts,
                 Contact = new Contact(),
-                currentUser = CurrentUser.Id
+              
+                //currentUser = CurrentUser.Id
             };
 
             return View(viewModel);
@@ -64,6 +78,11 @@ namespace Serenity_Solution.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitContact(HomeVM model, string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+
             if (!User.Identity.IsAuthenticated)
             {
                 TempData["Error"] = "Vui lòng đăng nhập để gửi yêu cầu!";

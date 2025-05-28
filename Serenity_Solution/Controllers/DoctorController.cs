@@ -36,7 +36,7 @@ namespace Serenity_Solution.Controllers
         {
             var users = await _userManager.GetUsersInRoleAsync("Psychologist");
             var doctors = users.OfType<User>() // Lọc ra danh sách Customer
-                .Where(c => c.CertificateUrl != null) // Lọc ra những người có yêu cầu nâng cấp
+                .Where(c => c.CertificateUrl != null && c.Price > 0) // Lọc ra những người có yêu cầu nâng cấp
                 .ToList();
 
             if(!string.IsNullOrEmpty(searchString))
