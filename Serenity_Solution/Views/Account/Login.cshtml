@@ -25,7 +25,13 @@
             <input type="email" name="Email" placeholder="example@gmail.com" required />
 
             <label>Mật khẩu</label>
-            <input type="password" name="Password" required />
+            <div class="password-wrapper">
+                <input type="password" name="Password" id="password" required />
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="fas fa-eye" id="eyeIcon"></i>
+                </span>
+            </div>
+
 
             <div class="options">
                 <label><input type="checkbox" name="RememberMe" value="true"/> Nhớ mật khẩu</label>
@@ -48,8 +54,22 @@
 </div>
 
 @section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eyeIcon");
 
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
     </script>
 }
 <style>
@@ -172,4 +192,23 @@
       color: #333;
       font-size: 16px;
     }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px; /* để chừa chỗ cho icon */
+        }
+
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #888;
+    }
+
 </style>

@@ -107,7 +107,7 @@
 
             <div class="audio-player">
                 <audio id="audio-element" src="@Model.AudioUrl"></audio>
-                
+
                 <div class="controls">
                     <button class="btn-backward" id="backward-10">
                         <i class="fas fa-undo-alt"></i>
@@ -118,12 +118,13 @@
                         <i class="fas fa-play" id="play-icon"></i>
                     </button>
                     
+
                     <button class="btn-forward" id="forward-10">
                         <i class="fas fa-redo-alt"></i>
                         <span>10s</span>
                     </button>
                 </div>
-                
+
                 <div class="progress-container">
                     <span id="current-time">00:00</span>
                     <div class="progress-bar">
@@ -131,13 +132,13 @@
                     </div>
                     <span id="duration">00:00</span>
                 </div>
-                
+
                 <div class="volume-container">
                     <i class="fas fa-volume-up" id="volume-icon"></i>
                     <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
                 </div>
             </div>
-            
+
             <div class="podcast-description">
                 <h2>Giới thiệu</h2>
                 <p>@Model.Description</p>
@@ -835,7 +836,7 @@
             audioElement.addEventListener('timeupdate', function() {
                 const percent = (audioElement.currentTime / audioElement.duration) * 100;
                 progressBar.style.width = percent + '%';
-                
+
                 // Update current time
                 const currentMinutes = Math.floor(audioElement.currentTime / 60);
                 const currentSeconds = Math.floor(audioElement.currentTime % 60);

@@ -357,7 +357,7 @@ namespace Serenity_Solution.Controllers
                 Id = user.Id,
                 FullName = user.Name,
                 Email = user.Email,
-                Phone = user.PhoneNumber,
+                Phone = user.Phone,
                 DateOfBirth = user.DateOfBirth,
                 Gender = user.Gender,
                 Address = user.Address,
@@ -398,6 +398,7 @@ namespace Serenity_Solution.Controllers
                 Email = psychologist.Email,
                 Degree = psychologist.CertificateUrl,
                 Description = psychologist.Description,
+                Phone = psychologist.PhoneNumber,
                 Address = user.Address,
                 Experience = psychologist.Experience,
                 Price = psychologist.Price,
@@ -675,12 +676,13 @@ namespace Serenity_Solution.Controllers
 
             return RedirectToAction(nameof(Scheduled_Appointments));
         }
-        
 
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CustomerDashboard()
         {
-            var user = await _userManager.GetUserAsync(User); 
+
+            var user = await _userManager.GetUserAsync(User);
+
             if (user == null) return NotFound();
 
             // Lấy các dữ liệu cần thiết cho dashboard
@@ -706,9 +708,11 @@ namespace Serenity_Solution.Controllers
                     CertificateUrl = user.CertificateUrl
                 },
                 RecentAppointments = appointments.Take(5).ToList(),
-                TotalAppointments = appointments.Count()  // Thêm () để gọi phương thức Count()
-            };
 
+                TotalAppointments = appointments.Count(),  // Thêm () để gọi phương thức Count()
+                
+            };
+            
             return View(dashboardViewModel);
         }
 

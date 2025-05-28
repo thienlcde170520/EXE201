@@ -90,6 +90,7 @@ namespace Serenity_Solution.Controllers
             new PodcastViewModel
             {
                 Id = 7,
+
                 Title = "Vì sao mình làm Podcast",
                 Description = "Tình yêu không chỉ là cảm xúc, mà còn là sự đồng hành và hỗ trợ. Podcast này sẽ giúp bạn hiểu cách để thực sự đồng hành cùng người mình thương trong những lúc khó khăn.",
                 ImageUrl = "/image/podcast/ViSaoLamPodcast.png",
@@ -103,6 +104,7 @@ namespace Serenity_Solution.Controllers
             new PodcastViewModel
             {
                 Id = 8,
+
                 Title = "Nhân quả và sức khỏe",
                 Description = "Theo cách nhìn nhà Phật là mình bị ốm vì do mình đã từng làm hại đến sức khỏe người khác. Đấy! Mình bị ốm nặng vì mình đã từng làm hại nặng nề đến sức khỏe người khác. Mình bị ốm chết bởi vì mình đã không chỉ làm hại sức khỏe mà mình còn giết hại người khác. Nên là tất cả những cái bệnh tật đều đến từ chỗ đấy.",
                 ImageUrl = "/image/podcast/TraDamTrongSuot.png",
@@ -181,19 +183,23 @@ namespace Serenity_Solution.Controllers
             // Filter by search term if provided
             if (!string.IsNullOrEmpty(search))
             {
+
                 query = query.Where(p => 
                     p.Title.Contains(search, System.StringComparison.OrdinalIgnoreCase) || 
+
                     p.Description.Contains(search, System.StringComparison.OrdinalIgnoreCase) ||
                     p.Author.Contains(search, System.StringComparison.OrdinalIgnoreCase));
             }
 
             // Get distinct categories for filter tags
             ViewBag.Categories = _podcasts.Select(p => p.Category).Distinct().ToList();
+
             
             // Get total count for pagination
             int totalItems = query.Count();
             int totalPages = (int)System.Math.Ceiling(totalItems / (double)pageSize);
             
+
             // Apply pagination
             var podcasts = query
                 .Skip((page - 1) * pageSize)
@@ -209,6 +215,7 @@ namespace Serenity_Solution.Controllers
             return View(podcasts);
         }
 
+
         public static List<PodcastViewModel> GetPodcasts()
         {
             return _podcasts;
@@ -218,6 +225,7 @@ namespace Serenity_Solution.Controllers
         {
             var podcast = _podcasts.FirstOrDefault(p => p.Id == id) ?? _podcasts.First();
             
+
             // Get related podcasts (same category but different ID)
             var relatedPodcasts = _podcasts
                 .Where(p => p.Id != podcast.Id && p.Category == podcast.Category)
@@ -231,7 +239,7 @@ namespace Serenity_Solution.Controllers
                     .Where(p => p.Id != podcast.Id && p.Category != podcast.Category)
                     .Take(4 - relatedPodcasts.Count)
                     .ToList();
-                
+
                 relatedPodcasts.AddRange(additionalPodcasts);
             }
 

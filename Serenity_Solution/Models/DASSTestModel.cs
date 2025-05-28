@@ -1,3 +1,4 @@
+
 using System.ComponentModel.DataAnnotations;
 
 namespace Serenity_Solution.Models
@@ -136,3 +137,4 @@ namespace Serenity_Solution.Models
         }
     }
 } 
+

@@ -1,3 +1,4 @@
+
 /* General Styles */
 .test-container {
   max-width: 1200px;
@@ -77,6 +78,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #4e54c8;
+
 }
 
 .test-purpose h3,
@@ -357,6 +359,7 @@
 .retry-btn {
   background-color: #4e54c8;
   color: white;
+
 }
 
 /* Responsive Styles */
@@ -383,4 +386,5 @@
   .why-test-section h2 {
     font-size: 1.8rem;
   }
+
 }

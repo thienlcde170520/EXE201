@@ -79,7 +79,7 @@ namespace Serenity_Solution.Controllers
                 Name = s.Name,
                 Email = s.Email,
                 Price = s.Price,
-                Phone = s.Phone,
+                Phone = s.PhoneNumber,
                 Address = s.Address,
                 Degree = s.CertificateUrl,
                 Description = s.Description,

@@ -1,4 +1,6 @@
+
 using EXE201.Commons.Models;
+
 
 namespace Serenity_Solution.Models
 {
@@ -10,3 +12,4 @@ namespace Serenity_Solution.Models
         public List<Notification> Notifications { get; set; } = new List<Notification>();
     }
 } 
+

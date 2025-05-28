@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   // DOM Elements
   const chatbotToggle = document.getElementById("chatbot-toggle");
@@ -155,4 +156,5 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 800);
     }
   }
+
 });

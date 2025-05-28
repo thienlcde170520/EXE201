@@ -1,6 +1,8 @@
+
 using System;
 
 namespace Serenity_Solution.Models
+
 {
     public class PodcastViewModel
     {
@@ -17,3 +19,4 @@ namespace Serenity_Solution.Models
         public int RatingCount { get; set; }
     }
 } 
+

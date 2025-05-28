@@ -33,10 +33,8 @@ namespace Serenity_Solution.Controllers
             _signInManager = signInManager;
             _context = context;
 
-        }
 
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
@@ -44,15 +42,21 @@ namespace Serenity_Solution.Controllers
                 return RedirectToAction("Index", "Manager");
             }
 
+
             // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
             var podcasts = PodcastController.GetPodcasts()
                 .OrderByDescending(p => p.Rating)
                 .Take(10)
                 .ToList();
 
+            var allDoctors = await _userManager.GetUsersInRoleAsync("Psychologist");
+            var doctors = allDoctors.OrderBy(d => Guid.NewGuid()).Take(2).ToList();
+
+
             // Truyền danh sách podcast vào view bằng ViewBag
             ViewBag.Podcasts = podcasts;
 
+            //podcast from thih
             // Tạo CombinedViewModel để truyền vào view
             var model = new CombinedViewModel
             {
@@ -68,15 +72,43 @@ namespace Serenity_Solution.Controllers
                     RatingCount = 205,
                     Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
                 }
+            //end podcast from thinh
+            var CurrentUser = await _userManager.GetUserAsync(User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var viewModelC = new HomeVM
+                {
+                    Doctors = doctors,
+                    Podcasts = podcasts,
+                    Contact = new Contact(),
+
+                    currentUser = CurrentUser.Id
+                };
+                return View(viewModelC);
+            }
+
+                var viewModel = new HomeVM
+            {
+                Doctors = doctors,
+                Podcasts = podcasts,
+                Contact = new Contact(),
+              
+                //currentUser = CurrentUser.Id
             };
 
-            return View(model);
+            return View(model); // an cua thih
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitContact(HomeVM model, string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+
             if (!User.Identity.IsAuthenticated)
             {
                 TempData["Error"] = "Vui lòng đăng nhập để gửi yêu cầu!";
