@@ -68,7 +68,6 @@ namespace Serenity_Solution.Controllers
 
             if (result.Succeeded)
             {
-                /*
                 var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
                 if (!roleResult.Succeeded)
                 {
@@ -80,7 +79,7 @@ namespace Serenity_Solution.Controllers
                     }
                     return View(model);
                 }
-                */
+                
                 TempData["SuccessMessage"] = "Registration successful! Please login.";
                 return RedirectToAction("Login");
             }
@@ -590,6 +589,7 @@ namespace Serenity_Solution.Controllers
             return View(model);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Scheduled_Appointments(int page = 1, int pageSize = 5)
         {
@@ -680,7 +680,9 @@ namespace Serenity_Solution.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CustomerDashboard()
         {
+
             var user = await _userManager.GetUserAsync(User);
+
             if (user == null) return NotFound();
 
             // Lấy các dữ liệu cần thiết cho dashboard
@@ -706,6 +708,7 @@ namespace Serenity_Solution.Controllers
                     CertificateUrl = user.CertificateUrl
                 },
                 RecentAppointments = appointments.Take(5).ToList(),
+
                 TotalAppointments = appointments.Count(),  // Thêm () để gọi phương thức Count()
                 
             };

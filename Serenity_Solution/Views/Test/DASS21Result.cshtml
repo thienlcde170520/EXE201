@@ -1,5 +1,187 @@
-﻿@{
+@{
     ViewData["Title"] = "Kết quả bài Test DASS-21";
+    
+    // Calculate percentages based on scores
+    int depressionScore = ViewData["DepressionScore"] != null ? Convert.ToInt32(ViewData["DepressionScore"]) : 0;
+    int anxietyScore = ViewData["AnxietyScore"] != null ? Convert.ToInt32(ViewData["AnxietyScore"]) : 0;
+    int stressScore = ViewData["StressScore"] != null ? Convert.ToInt32(ViewData["StressScore"]) : 0;
+    
+    string depressionLevel = ViewData["DepressionLevel"]?.ToString() ?? "Bình thường";
+    string anxietyLevel = ViewData["AnxietyLevel"]?.ToString() ?? "Bình thường";
+    string stressLevel = ViewData["StressLevel"]?.ToString() ?? "Bình thường";
+    
+    // Maximum possible scores (for DASS-21 doubled)
+    const int maxScore = 42;
+    
+    // Calculate percentages (rounded to nearest integer)
+    int depressionPercent = (int)Math.Round((double)depressionScore / maxScore * 100);
+    int anxietyPercent = (int)Math.Round((double)anxietyScore / maxScore * 100);
+    int stressPercent = (int)Math.Round((double)stressScore / maxScore * 100);
+    
+    // Group questions by category
+    var depressionQuestions = new[] { 3, 5, 10, 13, 16, 17, 21 };
+    var anxietyQuestions = new[] { 2, 4, 7, 9, 15, 19, 20 };
+    var stressQuestions = new[] { 1, 6, 8, 11, 12, 14, 18 };
+    
+    // Map của câu hỏi và câu trả lời
+    var questionValues = new Dictionary<int, int>();
+    for (int i = 1; i <= 21; i++) {
+        string questionKey = $"Question{i}";
+        // Lấy giá trị từ model nếu có
+        var questionValue = 0;
+        if (ViewData.ContainsKey(questionKey) && ViewData[questionKey] != null) {
+            int.TryParse(ViewData[questionKey].ToString(), out questionValue);
+        }
+        questionValues[i] = questionValue;
+    }
+    
+    // Tính tổng điểm của mỗi loại
+    var depressionSum = depressionQuestions.Sum(q => questionValues.ContainsKey(q) ? questionValues[q] : 0);
+    var anxietySum = anxietyQuestions.Sum(q => questionValues.ContainsKey(q) ? questionValues[q] : 0);
+    var stressSum = stressQuestions.Sum(q => questionValues.ContainsKey(q) ? questionValues[q] : 0);
+    
+    // Tính số câu trả lời theo từng mức độ (0, 1, 2, 3) cho mỗi loại
+    var depressionLevels = new int[4];
+    var anxietyLevels = new int[4];
+    var stressLevels = new int[4];
+    
+    foreach (var q in depressionQuestions) {
+        if (questionValues.ContainsKey(q)) {
+            int val = questionValues[q];
+            if (val >= 0 && val <= 3) {
+                depressionLevels[val]++;
+            }
+        }
+    }
+    
+    foreach (var q in anxietyQuestions) {
+        if (questionValues.ContainsKey(q)) {
+            int val = questionValues[q];
+            if (val >= 0 && val <= 3) {
+                anxietyLevels[val]++;
+            }
+        }
+    }
+    
+    foreach (var q in stressQuestions) {
+        if (questionValues.ContainsKey(q)) {
+            int val = questionValues[q];
+            if (val >= 0 && val <= 3) {
+                stressLevels[val]++;
+            }
+        }
+    }
+    
+    // Determine color based on level
+    string GetLevelColor(string level) {
+        return level switch {
+            "Bình thường" => "#4caf50", // Green
+            "Nhẹ" => "#8bc34a",         // Light Green
+            "Vừa" => "#ffeb3b",         // Yellow
+            "Nặng" => "#ff9800",        // Orange
+            "Rất nặng" => "#f44336",    // Red
+            _ => "#4caf50"
+        };
+    }
+    
+    // Get result text based on percentage
+    string GetResultText(int percentage, string type) {
+        if (percentage < 33) {
+            return $"Bạn không có dấu hiệu của rối loạn {type} (bình thường).";
+        } else if (percentage < 60) {
+            return $"Bạn đang trải qua rối loạn {type} ở mức độ trung bình.";
+        } else if (percentage < 80) {
+            return $"Bạn đang trải qua rối loạn {type} ở mức độ nặng.";
+        } else {
+            return $"Bạn đang trải qua rối loạn {type} ở mức độ rất nặng.";
+        }
+    }
+    
+    // Get gauge rotation angle (120 degrees total range from -60 to +60)
+    int GetGaugeRotation(int percentage) {
+        return -60 + (int)(percentage * 1.2);
+    }
+    
+    string depressionColor = GetLevelColor(depressionLevel);
+    string anxietyColor = GetLevelColor(anxietyLevel);
+    string stressColor = GetLevelColor(stressLevel);
+    
+    string depressionText = GetResultText(depressionPercent, "Trầm cảm");
+    string anxietyText = GetResultText(anxietyPercent, "Lo Âu");
+    string stressText = GetResultText(stressPercent, "Stress");
+    
+    // Xử lý dữ liệu về câu hỏi đã trả lời
+    int answeredCount = ViewData["AnsweredCount"] != null ? Convert.ToInt32(ViewData["AnsweredCount"]) : 0;
+    int totalQuestions = ViewData["TotalQuestions"] != null ? Convert.ToInt32(ViewData["TotalQuestions"]) : 21;
+    int unansweredCount = totalQuestions - answeredCount;
+    double answeredPercent = Math.Round((double)answeredCount / totalQuestions * 100, 1);
+    
+    // Chuyển đổi chuỗi JSON thành danh sách bool
+    List<bool> answeredList = new List<bool>();
+    if (ViewData["AnsweredQuestions"] != null)
+    {
+        try {
+            answeredList = System.Text.Json.JsonSerializer.Deserialize<List<bool>>(ViewData["AnsweredQuestions"].ToString());
+        } catch {}
+    }
+    
+    // Nếu không có dữ liệu hoặc danh sách rỗng, tạo danh sách mặc định
+    if (answeredList == null || answeredList.Count == 0)
+    {
+        answeredList = Enumerable.Repeat(false, totalQuestions).ToList();
+    }
+    
+    // Texts for question analysis
+    var questionTexts = new Dictionary<int, string> {
+        { 1, "Tôi thấy khó mà thoải mái được" },
+        { 2, "Tôi bị khô miệng" },
+        { 3, "Tôi không thấy có chút cảm xúc tích cực nào" },
+        { 4, "Tôi bị rối loạn nhịp thở" },
+        { 5, "Tôi thấy khó bắt tay vào công việc" },
+        { 6, "Tôi phản ứng thái quá với mọi tình huống" },
+        { 7, "Tôi bị ra mồ hôi" },
+        { 8, "Tôi cảm thấy sợ hãi" },
+        { 9, "Tôi lo lắng về những tình huống có thể khiến tôi hoảng sợ" },
+        { 10, "Tôi thấy mình chẳng có gì để mong đợi cả" },
+        { 11, "Tôi thấy bản thân dễ bị kích động" },
+        { 12, "Tôi thấy khó thư giãn được" },
+        { 13, "Tôi cảm thấy chán nản, thất vọng" },
+        { 14, "Tôi không chấp nhận được việc có cái gì đó xen vào cản trở việc tôi đang làm" },
+        { 15, "Tôi thấy mình gần như hoảng loạn" },
+        { 16, "Tôi không thấy hăng hái với bất kỳ việc gì nữa" },
+        { 17, "Tôi cảm thấy mình chẳng đáng làm người" },
+        { 18, "Tôi thấy mình khá dễ phật ý, tự ái" },
+        { 19, "Tôi nghe thấy rõ tiếng nhịp tim dù chẳng làm việc gì cả" },
+        { 20, "Tôi hay sợ vô cớ" },
+        { 21, "Tôi thấy cuộc sống vô nghĩa" }
+    };
+    
+    // Highest scoring questions
+    var highestDepression = depressionQuestions.OrderByDescending(q => questionValues.ContainsKey(q) ? questionValues[q] : 0).First();
+    var highestAnxiety = anxietyQuestions.OrderByDescending(q => questionValues.ContainsKey(q) ? questionValues[q] : 0).First();
+    var highestStress = stressQuestions.OrderByDescending(q => questionValues.ContainsKey(q) ? questionValues[q] : 0).First();
+    
+    // Determine overall advice based on severity
+    bool hasSevereCondition = depressionPercent >= 60 || anxietyPercent >= 60 || stressPercent >= 60;
+    bool hasModerateCondition = depressionPercent >= 33 || anxietyPercent >= 33 || stressPercent >= 33;
+    bool hasBothSevere = (depressionPercent >= 60 && anxietyPercent >= 60) || (depressionPercent >= 60 && stressPercent >= 60) || (anxietyPercent >= 60 && stressPercent >= 60);
+    bool hasAllSevere = depressionPercent >= 60 && anxietyPercent >= 60 && stressPercent >= 60;
+    
+    // Mặc định là type A (không có vấn đề)
+    string adviceType = "A";
+    
+    if (hasModerateCondition && !hasSevereCondition) {
+        adviceType = "B"; // Moderate issues
+    } else if (hasSevereCondition && !hasAllSevere) {
+        adviceType = "C"; // Severe issues but not all
+    } else if (hasAllSevere) {
+        adviceType = "D"; // All severe
+    }
+
+    // Force logging to debug what's happening
+    System.Diagnostics.Debug.WriteLine($"Depression: {depressionPercent}%, Anxiety: {anxietyPercent}%, Stress: {stressPercent}%");
+    System.Diagnostics.Debug.WriteLine($"Has Severe: {hasSevereCondition}, Has Moderate: {hasModerateCondition}, Has Both Severe: {hasBothSevere}, Has All Severe: {hasAllSevere}");
+    System.Diagnostics.Debug.WriteLine($"Advice Type: {adviceType}");
 }
 
 <link rel="stylesheet" href="~/css/test.css" />
@@ -13,75 +195,7 @@
                 Dưới đây là kết quả đánh giá mức độ lo âu, trầm cảm và stress của bạn theo thang đo DASS-21.
             </p>
         </div>
-
-        @{
-            // Calculate percentages based on scores
-            int depressionScore = ViewData["DepressionScore"] != null ? Convert.ToInt32(ViewData["DepressionScore"]) : 0;
-            int anxietyScore = ViewData["AnxietyScore"] != null ? Convert.ToInt32(ViewData["AnxietyScore"]) : 0;
-            int stressScore = ViewData["StressScore"] != null ? Convert.ToInt32(ViewData["StressScore"]) : 0;
-
-            string depressionLevel = ViewData["DepressionLevel"]?.ToString() ?? "Bình thường";
-            string anxietyLevel = ViewData["AnxietyLevel"]?.ToString() ?? "Bình thường";
-            string stressLevel = ViewData["StressLevel"]?.ToString() ?? "Bình thường";
-
-            // Maximum possible scores (for DASS-21 doubled)
-            const int maxScore = 42;
-
-            // Calculate percentages (rounded to nearest integer)
-            int depressionPercent = (int)Math.Round((double)depressionScore / maxScore * 100);
-            int anxietyPercent = (int)Math.Round((double)anxietyScore / maxScore * 100);
-            int stressPercent = (int)Math.Round((double)stressScore / maxScore * 100);
-
-            // Determine color based on level
-            string GetLevelColor(string level)
-            {
-                return level switch
-                {
-                    "Bình thường" => "#4caf50", // Green
-                    "Nhẹ" => "#8bc34a",         // Light Green
-                    "Vừa" => "#ffeb3b",         // Yellow
-                    "Nặng" => "#ff9800",        // Orange
-                    "Rất nặng" => "#f44336",    // Red
-                    _ => "#4caf50"
-                };
-            }
-
-            // Get result text based on percentage
-            string GetResultText(int percentage, string type)
-            {
-                if (percentage < 33)
-                {
-                    return $"Bạn không có dấu hiệu của rối loạn {type} (bình thường).";
-                }
-                else if (percentage < 60)
-                {
-                    return $"Bạn đang trải qua rối loạn {type} ở mức độ trung bình.";
-                }
-                else if (percentage < 80)
-                {
-                    return $"Bạn đang trải qua rối loạn {type} ở mức độ nặng.";
-                }
-                else
-                {
-                    return $"Bạn đang trải qua rối loạn {type} ở mức độ rất nặng.";
-                }
-            }
-
-            // Get gauge rotation angle (120 degrees total range from -60 to +60)
-            int GetGaugeRotation(int percentage)
-            {
-                return -60 + (int)(percentage * 1.2);
-            }
-
-            string depressionColor = GetLevelColor(depressionLevel);
-            string anxietyColor = GetLevelColor(anxietyLevel);
-            string stressColor = GetLevelColor(stressLevel);
-
-            string depressionText = GetResultText(depressionPercent, "Trầm cảm");
-            string anxietyText = GetResultText(anxietyPercent, "Lo Âu");
-            string stressText = GetResultText(stressPercent, "Stress");
-        }
-
+        
         <div class="gauge-container">
             <div class="gauge-row">
                 <div class="gauge-item">
@@ -105,7 +219,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="gauge-item">
                     <div class="gauge">
                         <div class="gauge-labels">
@@ -127,7 +241,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="gauge-item">
                     <div class="gauge">
                         <div class="gauge-labels">
@@ -151,7 +265,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="result-conclusion">
             <h2>Kết luận:</h2>
             <div class="conclusion-content">
@@ -160,60 +274,303 @@
                 <p><strong>Stress:</strong> @stressText</p>
             </div>
         </div>
+        
+        <div class="answer-statistics">
+            <h2>Thống kê câu trả lời</h2>
+            <div class="statistics-content">
+                <div class="stat-summary">
+                    <div class="stat-card">
+                        <div class="stat-number">@answeredCount/@totalQuestions</div>
+                        <div class="stat-label">Câu hỏi đã trả lời</div>
+                        <div class="stat-percentage">@answeredPercent%</div>
+                    </div>
+                    
+                    <div class="stat-chart">
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: @(answeredPercent)%;"></div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="color-box answered"></div>
+                                <span>Đã trả lời (@answeredCount)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="color-box unanswered"></div>
+                                <span>Chưa trả lời (@unansweredCount)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                @if (answeredList.Any())
+                {
+                    <div class="questions-detail">
+                        <h3>Chi tiết từng câu hỏi</h3>
+                        <div class="question-grid">
+                            @for (int i = 0; i < answeredList.Count && i < totalQuestions; i++)
+                            {
+                                <div class="question-item @(answeredList[i] ? "answered" : "unanswered")">
+                                    <span class="question-number">@(i + 1)</span>
+                                    <span class="question-status">
+                                        @if (answeredList[i])
+                                        {
+                                            <i class="fas fa-check"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times"></i>
+                                        }
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <div class="response-statistics">
+            <h2>Thống kê câu trả lời chi tiết</h2>
+            <div class="statistics-content">
+                <p class="stats-intro">Dưới đây là bảng thống kê chi tiết về các câu trả lời của bạn theo từng loại câu hỏi:</p>
 
-        @{
-            // Determine overall advice based on severity
-            bool hasSevereCondition = depressionPercent >= 60 || anxietyPercent >= 60 || stressPercent >= 60;
-            bool hasModerateCondition = depressionPercent >= 33 || anxietyPercent >= 33 || stressPercent >= 33;
-        }
+                <table class="response-table">
+                    <thead>
+                        <tr>
+                            <th>Loại câu hỏi</th>
+                            <th>Mức 0<br><small>(Không đúng với tôi)</small></th>
+                            <th>Mức 1<br><small>(Đúng một phần)</small></th>
+                            <th>Mức 2<br><small>(Phần lớn là đúng)</small></th>
+                            <th>Mức 3<br><small>(Hoàn toàn đúng)</small></th>
+                            <th>Điểm trung bình</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="category-cell"><strong>Trầm cảm</strong></td>
+                            <td class="count-cell @(depressionLevels[0] > 3 ? "highlight" : "")">@depressionLevels[0]</td>
+                            <td class="count-cell">@depressionLevels[1]</td>
+                            <td class="count-cell @(depressionLevels[2] > 2 ? "highlight" : "")">@depressionLevels[2]</td>
+                            <td class="count-cell @(depressionLevels[3] > 1 ? "highlight-severe" : "")">@depressionLevels[3]</td>
+                            <td class="avg-cell">@(Math.Round((double)depressionSum / 7, 1))/3</td>
+                        </tr>
+                        <tr>
+                            <td class="category-cell"><strong>Lo âu</strong></td>
+                            <td class="count-cell @(anxietyLevels[0] > 3 ? "highlight" : "")">@anxietyLevels[0]</td>
+                            <td class="count-cell">@anxietyLevels[1]</td>
+                            <td class="count-cell @(anxietyLevels[2] > 2 ? "highlight" : "")">@anxietyLevels[2]</td>
+                            <td class="count-cell @(anxietyLevels[3] > 1 ? "highlight-severe" : "")">@anxietyLevels[3]</td>
+                            <td class="avg-cell">@(Math.Round((double)anxietySum / 7, 1))/3</td>
+                        </tr>
+                        <tr>
+                            <td class="category-cell"><strong>Stress</strong></td>
+                            <td class="count-cell @(stressLevels[0] > 3 ? "highlight" : "")">@stressLevels[0]</td>
+                            <td class="count-cell">@stressLevels[1]</td>
+                            <td class="count-cell @(stressLevels[2] > 2 ? "highlight" : "")">@stressLevels[2]</td>
+                            <td class="count-cell @(stressLevels[3] > 1 ? "highlight-severe" : "")">@stressLevels[3]</td>
+                            <td class="avg-cell">@(Math.Round((double)stressSum / 7, 1))/3</td>
+                        </tr>
+                    </tbody>
+                </table>
 
+                <div class="response-breakdown">
+                    <h3>Phân tích câu trả lời</h3>
+                    <div class="breakdown-container">
+                        <div class="breakdown-item">
+                            <div class="breakdown-header">
+                                <h4>Trầm cảm</h4>
+                                <div class="breakdown-score">Điểm: @depressionScore</div>
+                            </div>
+                            <div class="breakdown-content">
+                                <ul class="question-list-detailed">
+                                    @foreach (var q in depressionQuestions)
+                                    {
+                                        var value = questionValues.ContainsKey(q) ? questionValues[q] : 0;
+                                        <li class="q-item @(value >= 2 ? "q-high" : (value == 0 ? "q-low" : ""))">
+                                            <span class="q-num">Q@q:</span> 
+                                            <span class="q-value">
+                                                @for (int i = 0; i < 4; i++)
+                                                {
+                                                    <span class="q-dot @(i <= value - 1 ? "filled" : "")"></span>
+                                                }
+                                            </span>
+                                            <span class="q-score">@value</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-header">
+                                <h4>Lo âu</h4>
+                                <div class="breakdown-score">Điểm: @anxietyScore</div>
+                            </div>
+                            <div class="breakdown-content">
+                                <ul class="question-list-detailed">
+                                    @foreach (var q in anxietyQuestions)
+                                    {
+                                        var value = questionValues.ContainsKey(q) ? questionValues[q] : 0;
+                                        <li class="q-item @(value >= 2 ? "q-high" : (value == 0 ? "q-low" : ""))">
+                                            <span class="q-num">Q@q:</span>
+                                            <span class="q-value">
+                                                @for (int i = 0; i < 4; i++)
+                                                {
+                                                    <span class="q-dot @(i <= value - 1 ? "filled" : "")"></span>
+                                                }
+                                            </span>
+                                            <span class="q-score">@value</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="breakdown-item">
+                            <div class="breakdown-header">
+                                <h4>Stress</h4>
+                                <div class="breakdown-score">Điểm: @stressScore</div>
+                            </div>
+                            <div class="breakdown-content">
+                                <ul class="question-list-detailed">
+                                    @foreach (var q in stressQuestions)
+                                    {
+                                        var value = questionValues.ContainsKey(q) ? questionValues[q] : 0;
+                                        <li class="q-item @(value >= 2 ? "q-high" : (value == 0 ? "q-low" : ""))">
+                                            <span class="q-num">Q@q:</span>
+                                            <span class="q-value">
+                                                @for (int i = 0; i < 4; i++)
+                                                {
+                                                    <span class="q-dot @(i <= value - 1 ? "filled" : "")"></span>
+                                                }
+                                            </span>
+                                            <span class="q-score">@value</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-summary-details">
+                    <h3>Điểm số cao nhất theo lĩnh vực</h3>
+                    <div class="highest-scores">
+                        <div class="high-score-item">
+                            <div class="high-category">Trầm cảm</div>
+                            <div class="high-question">Câu @highestDepression: @questionTexts[highestDepression]</div>
+                            <div class="high-value">Điểm số: @(questionValues.ContainsKey(highestDepression) ? questionValues[highestDepression] : 0)/3</div>
+                        </div>
+                        
+                        <div class="high-score-item">
+                            <div class="high-category">Lo âu</div>
+                            <div class="high-question">Câu @highestAnxiety: @questionTexts[highestAnxiety]</div>
+                            <div class="high-value">Điểm số: @(questionValues.ContainsKey(highestAnxiety) ? questionValues[highestAnxiety] : 0)/3</div>
+                        </div>
+                        
+                        <div class="high-score-item">
+                            <div class="high-category">Stress</div>
+                            <div class="high-question">Câu @highestStress: @questionTexts[highestStress]</div>
+                            <div class="high-value">Điểm số: @(questionValues.ContainsKey(highestStress) ? questionValues[highestStress] : 0)/3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="result-recommendations">
             <h2>Lời khuyên của chuyên gia</h2>
-
+            
             <div class="expert-advice">
+                @if (adviceType == "A") {
+                    <p>Chúc mừng bạn!</p>
+                    <p>Kết quả của bạn cho thấy bạn không gặp phải dấu hiệu nào của rối loạn lo âu. Tuy nhiên, hãy luôn chú ý giữ gìn sức khỏe tinh thần của mình bằng cách:</p>
+                    <div class="advice-section">
+                        <ul>
+                            <li><strong>Duy trì một lối sống lành mạnh:</strong> ăn uống đủ chất, ngủ đủ giấc, và vận động thể dục thường xuyên.</li>
+                            <li><strong>Thực hiện các hoạt động quản lý stress:</strong> như thiền, yoga, hoặc hít thở sâu.</li>
+                            <li><strong>Kết nối xã hội:</strong> dành thời gian với gia đình và bạn bè.</li>
+                            <li><strong>Thư giãn và giải trí:</strong> tìm kiếm những hoạt động bạn yêu thích và dành thời gian cho bản thân.</li>
+                        </ul>
+                    </div>
+                    <p>Nếu có bất kỳ thay đổi nào trong cảm xúc hoặc tình trạng tâm lý, đừng ngần ngại tìm đến sự hỗ trợ từ người thân, bạn bè hoặc chuyên gia. Bạn đã làm rất tốt rồi!</p>
+                }
+                else if (adviceType == "B") {
                 <p>Gửi đến bạn cái ôm đầy sự chia sẻ và thấu hiểu.</p>
                 <p>Là một chuyên gia tâm lý, tôi thấu hiểu những khó khăn và áp lực mà mỗi người đang phải đối mặt trong cuộc sống. Cuộc sống hiện đại với nhịp sống hối hả, nhiều lo toan có thể khiến chúng ta dễ dàng rơi vào trạng thái lo âu, căng thẳng hay stress, ảnh hưởng đến sức khỏe tinh thần và thể chất. Điều quan trọng là chúng ta cần nhận thức được vấn đề và tìm kiếm giải pháp để cải thiện.</p>
-
-                @if (hasSevereCondition)
-                {
+                
                     <div class="advice-section">
-                        <h3>Các khuyến nghị chính:</h3>
+                        <h3>Về trầm cảm và lo âu:</h3>
+                        <p>Kết quả bài test cho thấy bạn đang mắc phải vấn đề rối loạn Trầm Cảm - Lo Âu mức độ vừa. Ngoài việc hãy dành nhiều thời gian để thư giãn, bạn có thể tìm kiếm sự hỗ trợ từ các chuyên gia tâm lý. Hãy thử tìm cách giảm bớt Trầm Cảm - Lo Âu qua các hoạt động sau:</p>
                         <ul>
-                            <li><strong>Tìm kiếm hỗ trợ chuyên nghiệp ngay lập tức:</strong> Hãy tìm đến sự trợ giúp của chuyên gia tâm lý. Các chuyên gia sẽ hỗ trợ bạn tìm hiểu nguyên nhân gốc rễ của vấn đề và đưa ra phương pháp điều trị phù hợp.</li>
-                            <li><strong>Không cô lập bản thân:</strong> Đừng ngần ngại tìm kiếm sự giúp đỡ từ gia đình và bạn bè. Họ luôn sẵn lòng lắng nghe và hỗ trợ bạn.</li>
-                            <li><strong>Thiết lập thói quen hàng ngày khoa học:</strong> Ăn uống và ngủ nghỉ đúng giờ, tập thể dục đều đặn.</li>
-                            <li><strong>Tìm kiếm nhóm hỗ trợ:</strong> Bạn có thể tham gia các nhóm có cùng tình trạng để chia sẻ và học hỏi kinh nghiệm từ người khác.</li>
-                        </ul>
-                    </div>
-                }
-                else if (hasModerateCondition)
-                {
-                    <div class="advice-section">
-                        <h3>Các khuyến nghị chính:</h3>
-                        <ul>
-                            <li><strong>Tập thể dục thường xuyên:</strong> Hoạt động thể chất giúp giải phóng endorphin - hormone hạnh phúc, đồng thời giúp giảm căng thẳng và cải thiện tâm trạng.</li>
+                            <li><strong>Tập thể dục thường xuyên:</strong> Hoạt động thể chất giúp giải phóng endorphin - hormone hạnh phúc, đồng thời giúp giảm căng thẳng và cải thiện tâm trạng. Bạn có thể chọn các bài tập phù hợp với sở thích và khả năng của bản thân như đi bộ, chạy bộ, bơi lội, yoga,...</li>
                             <li><strong>Tâm sự với người thân:</strong> Đừng ngại chia sẻ cảm xúc của mình để nhận được sự hỗ trợ.</li>
                             <li><strong>Hạn chế sử dụng chất kích thích:</strong> Rượu bia, thuốc lá, caffeine có thể khiến tình trạng căng thẳng thêm tồi tệ.</li>
-                            <li><strong>Thực hành các kỹ thuật thư giãn:</strong> Thiền, yoga, hoặc hít thở sâu để giảm căng thẳng.</li>
                         </ul>
                     </div>
-                }
-                else
-                {
+                    
                     <div class="advice-section">
-                        <h3>Các khuyến nghị duy trì:</h3>
+                        <h3>Về stress:</h3>
+                        <p>Chúc mừng bạn!</p>
+                        <p>Kết quả của bạn cho thấy bạn không gặp phải dấu hiệu nào của rối loạn lo âu. Tuy nhiên, hãy luôn chú ý giữ gìn sức khỏe tinh thần của mình bằng cách:</p>
                         <ul>
-                            <li><strong>Duy trì một lối sống lành mạnh:</strong> Ăn uống đủ chất, ngủ đủ giấc, vận động thể dục thường xuyên.</li>
-                            <li><strong>Thực hiện các hoạt động quản lý stress:</strong> Như thiền, yoga, hoặc hít thở sâu.</li>
-                            <li><strong>Kết nối xã hội:</strong> Dành thời gian với gia đình và bạn bè.</li>
-                            <li><strong>Thư giãn và giải trí:</strong> Tìm kiếm những hoạt động bạn yêu thích và dành thời gian cho bản thân.</li>
+                            <li><strong>Duy trì một lối sống lành mạnh:</strong> ăn uống đủ chất, ngủ đủ giấc, và vận động thể dục thường xuyên.</li>
+                            <li><strong>Thực hiện các hoạt động quản lý stress:</strong> như thiền, yoga, hoặc hít thở sâu.</li>
+                            <li><strong>Kết nối xã hội:</strong> dành thời gian với gia đình và bạn bè.</li>
+                            <li><strong>Thư giãn và giải trí:</strong> tìm kiếm những hoạt động bạn yêu thích và dành thời gian cho bản thân.</li>
                         </ul>
                     </div>
+                    
+                    <p>Nếu có bất kỳ thay đổi nào trong cảm xúc hoặc tình trạng tâm lý, đừng ngần ngại tìm đến sự hỗ trợ từ người thân, bạn bè hoặc chuyên gia. Chăm sóc sức khỏe tâm lý là một hành trình liên tục, và bạn đang làm rất tốt!</p>
                 }
-
-                <p>Hãy nhớ rằng, bạn không đơn độc! Rất nhiều người đang trải qua những điều tương tự như bạn, giữ vững niềm tin và không bỏ cuộc nhé!</p>
+                else if (adviceType == "C") {
+                    <p>Gửi đến bạn cái ôm đầy sự chia sẻ và thấu hiểu.</p>
+                    <p>Là một chuyên gia tâm lý, tôi thấu hiểu những khó khăn và áp lực mà mỗi người đang phải đối mặt trong cuộc sống. Cuộc sống hiện đại với nhịp sống hối hả, nhiều lo toan có thể khiến chúng ta dễ dàng rơi vào trạng thái lo âu, căng thẳng hay stress, ảnh hưởng đến sức khỏe tinh thần và thể chất. Điều quan trọng là chúng ta cần nhận thức được vấn đề và tìm kiếm giải pháp để cải thiện.</p>
+                    
+                    <div class="advice-section">
+                        <h3>Về trầm cảm và lo âu:</h3>
+                        <p>Dựa và kết quả bài test có thể thấy bạn là người đang gặp những vấn đề về rối loạn Trầm Cảm - Lo Âu cực kỳ nghiêm trọng. Dưới đây là một số phương pháp và sự hỗ trợ để giúp bạn vượt qua tình trạng Trầm Cảm - Lo Âu rất nặng:</p>
+                        <ul>
+                            <li><strong>Tìm kiếm hỗ trợ chuyên nghiệp ngay lập tức:</strong> Nếu bạn đã thử nhiều cách mà vẫn không thể cải thiện tình trạng căng thẳng, stress, hãy tìm đến sự trợ giúp của chuyên gia tâm lý. Các chuyên gia sẽ hỗ trợ bạn tìm hiểu nguyên nhân gốc rễ của vấn đề và đưa ra phương pháp điều trị phù hợp.</li>
+                            <li><strong>Không cô lập bản thân:</strong> Đừng ngần ngại tìm kiếm sự giúp đỡ từ gia đình và bạn bè. Họ luôn sẵn lòng lắng nghe và hỗ trợ bạn.</li>
+                            <li><strong>Thiết lập thói quen hàng ngày khoa học:</strong> ăn uống và ngủ nghỉ đúng giờ, tập thể dục đều đặn.</li>
+                            <li><strong>Tìm kiếm nhóm hỗ trợ:</strong> Bạn có thể tham gia các nhóm có cùng tình trạng để chia sẻ và học hỏi kinh nghiệm từ người khác.</li>
+                            <li><strong>Chia sẻ cảm xúc:</strong> Chia sẻ những cảm xúc, tâm tư với người mà bạn tin tưởng như bạn bè, thành viên gia đình hoặc chuyên gia tâm lý. Việc kìm nén cảm xúc chỉ khiến bạn thêm nặng nề.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="advice-section">
+                        <h3>Về stress:</h3>
+                        <p>Kết quả bài test đã chỉ ra bạn đang gặp vấn đề về rối loạn Stress mức độ nặng. Việc bạn có thể tự cân bằng hoặc tìm cho mình sự hỗ trợ từ một chuyên gia tâm lý sẽ là một quyết định tốt trong trường hợp này. Một số gợi ý mà bạn nên áp dụng để giảm bớt tình trạng Stress nặng:</p>
+                        <ul>
+                            <li><strong>Tìm kiếm sự hỗ trợ từ chuyên gia:</strong> như nhà tâm lý học hoặc bác sĩ tâm thần. Điều này sẽ giúp bạn hiểu rõ hơn về tình trạng của mình cũng như cách để điều trị nhanh chóng và hiệu quả.</li>
+                            <li><strong>Thực hiện các bài tập thể dục và thư giãn:</strong> như yoga, thiền, hoặc hít thở sâu để giảm stress. Thiền giúp bạn tập trung vào hiện tại, loại bỏ những suy nghĩ tiêu cực và bình tĩnh tâm trí.</li>
+                            <li><strong>Đảm bảo giấc ngủ đủ và chất lượng:</strong> giúp cơ thể và tinh thần được phục hồi.</li>
+                            <li><strong>Hạn chế sử dụng chất kích thích:</strong> Rượu bia, thuốc lá, caffeine có thể khiến tình trạng căng thẳng thêm tồi tệ.</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Hãy nhớ rằng, bạn không đơn độc! Rất nhiều người đang trải qua những điều tương tự như bạn, giữ vững niềm tin và không bỏ cuộc nhé!</p>
+                }
+                else {
+                    <p>Gửi đến bạn cái ôm đầy sự chia sẻ và thấu hiểu.</p>
+                    <p>Là một chuyên gia tâm lý, tôi thấu hiểu những khó khăn và áp lực mà mỗi người đang phải đối mặt trong cuộc sống. Cuộc sống hiện đại với nhịp sống hối hả, nhiều lo toan có thể khiến chúng ta dễ dàng rơi vào trạng thái lo âu, căng thẳng hay stress, ảnh hưởng đến sức khỏe tinh thần và thể chất. Điều quan trọng là chúng ta cần nhận thức được vấn đề và tìm kiếm giải pháp để cải thiện.</p>
+                    
+                    <div class="advice-section">
+                        <p>Dựa và kết quả bài test có thể thấy bạn là người đang gặp những vấn đề về rối loạn Trầm Cảm - Lo Âu - Stress cực kỳ nghiêm trọng. Dưới đây là một số phương pháp và sự hỗ trợ để giúp bạn vượt qua tình trạng Trầm Cảm - Lo Âu - Stress rất nặng:</p>
+                        <ul>
+                            <li><strong>Tìm kiếm hỗ trợ chuyên nghiệp ngay lập tức:</strong> Nếu bạn đã thử nhiều cách mà vẫn không thể cải thiện tình trạng căng thẳng, stress, hãy tìm đến sự trợ giúp của chuyên gia tâm lý. Các chuyên gia sẽ hỗ trợ bạn tìm hiểu nguyên nhân gốc rễ của vấn đề và đưa ra phương pháp điều trị phù hợp.</li>
+                            <li><strong>Không cô lập bản thân:</strong> Đừng ngần ngại tìm kiếm sự giúp đỡ từ gia đình và bạn bè. Họ luôn sẵn lòng lắng nghe và hỗ trợ bạn.</li>
+                            <li><strong>Thiết lập thói quen hàng ngày khoa học:</strong> ăn uống và ngủ nghỉ đúng giờ, tập thể dục đều đặn.</li>
+                            <li><strong>Tìm kiếm nhóm hỗ trợ:</strong> Bạn có thể tham gia các nhóm có cùng tình trạng để chia sẻ và học hỏi kinh nghiệm từ người khác.</li>
+                            <li><strong>Chia sẻ cảm xúc:</strong> Chia sẻ những cảm xúc, tâm tư với người mà bạn tin tưởng như bạn bè, thành viên gia đình hoặc chuyên gia tâm lý. Việc kìm nén cảm xúc chỉ khiến bạn thêm nặng nề.</li>
+                        </ul>
+                    </div>
+                
+                    <p>Hãy nhớ rằng, cảm giác lo âu không định nghĩa con người bạn và bạn hoàn toàn có thể tìm lại sự bình yên trong tâm hồn. Bạn là một người dũng cảm, và mình tin rằng bạn sẽ vượt qua được giai đoạn này. Hãy nhớ rằng, bạn không đơn độc! Rất nhiều người đang trải qua những điều tương tự như bạn, giữ vững niềm tin và không bỏ cuộc nhé!</p>
+                }
             </div>
-
+            
             <div class="resource-cards">
                 <div class="resource-card">
                     <div class="resource-icon">
@@ -223,7 +580,7 @@
                     <p>Nghe các bài podcast giúp thư giãn tâm trí và giảm stress</p>
                     <a href="/Podcast/Index" class="resource-btn">Nghe ngay</a>
                 </div>
-
+                
                 <div class="resource-card">
                     <div class="resource-icon">
                         <i class="fas fa-user-md"></i>
@@ -232,7 +589,7 @@
                     <p>Đặt lịch tư vấn với các chuyên gia tâm lý</p>
                     <a href="/Doctor/Index" class="resource-btn">Đặt lịch</a>
                 </div>
-
+                
                 <div class="resource-card">
                     <div class="resource-icon">
                         <i class="fas fa-book-reader"></i>
@@ -243,7 +600,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="result-actions">
             <a href="/Test/Index" class="result-back-btn">Quay lại trang chủ</a>
             <a href="/Test/DASS21" class="result-retry-btn">Làm lại bài kiểm tra</a>
@@ -257,13 +614,13 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: #333;
     }
-
+    
     .main-container {
         max-width: 1100px;
         margin: 0 auto;
         padding: 40px 20px;
     }
-
+    
     .result-container {
         background-color: #fff;
         border-radius: 10px;
@@ -271,48 +628,48 @@
         padding: 40px;
         margin-bottom: 30px;
     }
-
+    
     .result-header {
         text-align: center;
         margin-bottom: 40px;
     }
-
-        .result-header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
+    
+    .result-header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
     .result-description {
         font-size: 1.1rem;
         color: #555;
         max-width: 800px;
         margin: 0 auto;
     }
-
+    
     /* Gauge styles */
     .gauge-container {
         margin: 30px 0;
     }
-
+    
     .gauge-row {
         display: flex;
         justify-content: space-around;
         flex-wrap: wrap;
         gap: 20px;
     }
-
+    
     .gauge-item {
         flex: 1;
         min-width: 280px;
         padding: 20px;
     }
-
+    
     .gauge {
         position: relative;
         width: 100%;
     }
-
+    
     .gauge-labels {
         display: flex;
         justify-content: space-between;
@@ -320,13 +677,13 @@
         font-size: 12px;
         color: #777;
     }
-
+    
     .gauge-body {
         position: relative;
         height: 130px;
         overflow: hidden;
     }
-
+    
     .gauge-fill {
         position: absolute;
         top: 0;
@@ -335,7 +692,7 @@
         height: 130px;
         border-radius: 150px 150px 0 0;
     }
-
+    
     .gauge-cover {
         position: absolute;
         top: 20px;
@@ -345,7 +702,7 @@
         background: white;
         border-radius: 120px 120px 0 0;
     }
-
+    
     .gauge-needle {
         position: absolute;
         bottom: 0;
@@ -357,18 +714,18 @@
         transition: transform 1s ease-out;
         z-index: 10;
     }
-
+    
     .gauge-value {
         text-align: center;
         margin-top: 10px;
     }
-
+    
     .gauge-title {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 5px;
     }
-
+    
     .percentage-badge {
         display: inline-block;
         padding: 5px 15px;
@@ -378,7 +735,7 @@
         font-size: 16px;
         margin-top: 5px;
     }
-
+    
     /* Conclusion section */
     .result-conclusion {
         background-color: #f9f9f9;
@@ -386,41 +743,41 @@
         padding: 25px;
         margin: 40px 0;
     }
-
-        .result-conclusion h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
+    
+    .result-conclusion h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
     .conclusion-content {
         background-color: white;
         border-radius: 8px;
         padding: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
-        .conclusion-content p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-            .conclusion-content p:last-child {
-                margin-bottom: 0;
-            }
-
+    
+    .conclusion-content p {
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    
+    .conclusion-content p:last-child {
+        margin-bottom: 0;
+    }
+    
     /* Expert advice section */
     .result-recommendations {
         margin-top: 50px;
     }
-
-        .result-recommendations h2 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #333;
-        }
-
+    
+    .result-recommendations h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #333;
+    }
+    
     .expert-advice {
         background-color: #f5f9ff;
         padding: 30px;
@@ -428,12 +785,12 @@
         margin-bottom: 30px;
         border-left: 4px solid #4e54c8;
     }
-
-        .expert-advice p {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
+    
+    .expert-advice p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+    
     .advice-section {
         background-color: white;
         border-radius: 8px;
@@ -441,22 +798,22 @@
         margin: 20px 0;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
-        .advice-section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: #444;
-        }
-
-        .advice-section ul {
-            padding-left: 20px;
-        }
-
-        .advice-section li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
+    
+    .advice-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: #444;
+    }
+    
+    .advice-section ul {
+        padding-left: 20px;
+    }
+    
+    .advice-section li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+    
     /* Resource cards */
     .resource-cards {
         display: grid;
@@ -464,7 +821,7 @@
         gap: 20px;
         margin-top: 40px;
     }
-
+    
     .resource-card {
         background: white;
         padding: 25px;
@@ -473,11 +830,11 @@
         text-align: center;
         transition: transform 0.2s;
     }
-
-        .resource-card:hover {
-            transform: translateY(-5px);
-        }
-
+    
+    .resource-card:hover {
+        transform: translateY(-5px);
+    }
+    
     .resource-icon {
         width: 60px;
         height: 60px;
@@ -488,22 +845,22 @@
         justify-content: center;
         margin: 0 auto 20px;
     }
-
-        .resource-icon i {
-            font-size: 1.8rem;
-            color: #4e54c8;
-        }
-
+    
+    .resource-icon i {
+        font-size: 1.8rem;
+        color: #4e54c8;
+    }
+    
     .resource-card h3 {
         margin-bottom: 10px;
         color: #444;
     }
-
+    
     .resource-card p {
         margin-bottom: 20px;
         color: #666;
     }
-
+    
     .resource-btn {
         display: inline-block;
         background-color: #4e54c8;
@@ -513,70 +870,652 @@
         text-decoration: none;
         transition: background-color 0.3s;
     }
-
-        .resource-btn:hover {
-            background-color: #3f45b6;
-            color: white;
-        }
-
+    
+    .resource-btn:hover {
+        background-color: #3f45cc;
+    }
+    
     /* Action buttons */
     .result-actions {
         display: flex;
         justify-content: space-between;
         margin-top: 50px;
     }
-
+    
     .result-back-btn, .result-retry-btn {
         padding: 12px 25px;
         border-radius: 5px;
         text-decoration: none;
         font-weight: 500;
     }
-
+    
     .result-back-btn {
         background-color: #e9ecef;
         color: #495057;
     }
-
+    
     .result-retry-btn {
         background-color: #4e54c8;
         color: white;
     }
-
+    
     .result-back-btn:hover {
         background-color: #dee2e6;
     }
-
+    
     .result-retry-btn:hover {
         background-color: #3f45b6;
         color: white;
     }
-
+    
     /* Responsive styles */
     @@media (max-width: 768px) {
         .result-container {
             padding: 20px;
         }
-
+        
         .result-header h1 {
             font-size: 1.8rem;
         }
-
+        
         .gauge-row {
             flex-direction: column;
         }
-
+        
         .gauge-item {
             min-width: 100%;
         }
-
+        
         .result-actions {
             flex-direction: column;
             gap: 15px;
         }
-
+        
         .result-back-btn, .result-retry-btn {
             text-align: center;
         }
     }
-</style> 
+    
+    /* Answer statistics styles */
+    .answer-statistics {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 40px 0;
+    }
+    
+    .answer-statistics h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    .statistics-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .stat-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+        align-items: center;
+    }
+    
+    .stat-card {
+        flex: 0 0 200px;
+        text-align: center;
+        padding: 20px;
+        background-color: #f5f9ff;
+        border-radius: 8px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #4e54c8;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 5px;
+    }
+    
+    .stat-percentage {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #28a745;
+    }
+    
+    .stat-chart {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .chart-bar {
+        height: 25px;
+        background-color: #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    
+    .chart-fill {
+        height: 100%;
+        background-color: #4e54c8;
+        border-radius: 12px;
+        transition: width 1s ease-out;
+    }
+    
+    .chart-legend {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .color-box {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+    }
+    
+    .color-box.answered {
+        background-color: #4e54c8;
+    }
+    
+    .color-box.unanswered {
+        background-color: #e9ecef;
+    }
+    
+    .questions-detail {
+        margin-top: 30px;
+    }
+    
+    .questions-detail h3 {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        color: #444;
+    }
+    
+    .question-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 10px;
+    }
+    
+    .question-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+        aspect-ratio: 1;
+    }
+    
+    .question-item.answered {
+        background-color: #e8f5e9;
+    }
+    
+    .question-item.unanswered {
+        background-color: #ffebee;
+    }
+    
+    .question-number {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .question-status {
+        font-size: 14px;
+    }
+    
+    .question-status .fa-check {
+        color: #4caf50;
+    }
+    
+    .question-status .fa-times {
+        color: #f44336;
+    }
+    
+    /* Detailed analysis styles */
+    .detailed-analysis {
+        margin: 40px 0;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 25px;
+    }
+    
+    .detailed-analysis h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+    
+    .analysis-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .analysis-intro {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .analysis-intro p {
+        font-size: 1.1rem;
+        color: #555;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .analysis-categories {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .analysis-category {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .category-header {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #f0f5ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+    
+    .category-icon i {
+        font-size: 1.5rem;
+        color: #4e54c8;
+    }
+    
+    .category-title {
+        flex: 1;
+    }
+    
+    .category-title h3 {
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .score-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        color: white;
+        font-size: 0.9rem;
+    }
+    
+    .category-content {
+        padding: 20px;
+    }
+    
+    .category-content > p {
+        margin-bottom: 20px;
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    .question-analysis {
+        margin-bottom: 25px;
+        background-color: #f9f9ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .question-analysis h4 {
+        margin-bottom: 15px;
+        color: #4e54c8;
+        font-size: 1.1rem;
+    }
+    
+    .question-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .question-list li {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .question-list li:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .question-text {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    
+    .explanation {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .interpretation {
+        background-color: #f0f5ff;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #4e54c8;
+    }
+    
+    .interpretation h4 {
+        margin-bottom: 10px;
+        color: #4e54c8;
+        font-size: 1.1rem;
+    }
+    
+    .interpretation p {
+        color: #333;
+        line-height: 1.6;
+    }
+    
+    @@media (max-width: 768px) {
+        .detailed-analysis {
+            padding: 15px;
+        }
+        
+        .analysis-content {
+            padding: 15px;
+        }
+        
+        .category-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .category-icon {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+    
+    /* Response statistics styles */
+    .response-statistics {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 40px 0;
+    }
+    
+    .response-statistics h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+    
+    .statistics-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .stats-intro {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #555;
+        font-size: 1.1rem;
+    }
+    
+    /* Response table styles */
+    .response-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+    
+    .response-table th, .response-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .response-table th {
+        background-color: #f5f9ff;
+        color: #333;
+        font-weight: 600;
+    }
+    
+    .response-table th small {
+        display: block;
+        font-weight: normal;
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+    }
+    
+    .response-table tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .category-cell {
+        text-align: left;
+        color: #333;
+    }
+    
+    .count-cell {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .count-cell.highlight {
+        color: #4caf50;
+        background-color: rgba(76, 175, 80, 0.1);
+    }
+    
+    .count-cell.highlight-severe {
+        color: #f44336;
+        background-color: rgba(244, 67, 54, 0.1);
+    }
+    
+    .avg-cell {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2196f3;
+    }
+    
+    /* Response breakdown styles */
+    .response-breakdown {
+        margin-top: 40px;
+    }
+    
+    .response-breakdown h3 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        color: #333;
+    }
+    
+    .breakdown-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .breakdown-item {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .breakdown-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background-color: #f5f9ff;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .breakdown-header h4 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #333;
+    }
+    
+    .breakdown-score {
+        font-weight: 600;
+        color: #2196f3;
+    }
+    
+    .breakdown-content {
+        padding: 15px;
+    }
+    
+    .question-list-detailed {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .q-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .q-item:last-child {
+        border-bottom: none;
+    }
+    
+    .q-item.q-high {
+        background-color: rgba(244, 67, 54, 0.05);
+    }
+    
+    .q-item.q-low {
+        background-color: rgba(76, 175, 80, 0.05);
+    }
+    
+    .q-num {
+        width: 40px;
+        font-weight: 600;
+        color: #555;
+    }
+    
+    .q-value {
+        flex: 1;
+        display: flex;
+        gap: 5px;
+    }
+    
+    .q-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        display: inline-block;
+    }
+    
+    .q-dot.filled {
+        background-color: #2196f3;
+        border-color: #2196f3;
+    }
+    
+    .q-score {
+        width: 20px;
+        text-align: right;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    /* Highest scores section */
+    .stat-summary-details {
+        margin-top: 40px;
+    }
+    
+    .stat-summary-details h3 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        color: #333;
+    }
+    
+    .highest-scores {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .high-score-item {
+        background-color: #f5f9ff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .high-category {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .high-question {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+    
+    .high-value {
+        font-weight: 600;
+        color: #2196f3;
+    }
+    
+    @@media (max-width: 768px) {
+        .response-statistics {
+            padding: 15px;
+        }
+        
+        .statistics-content {
+            padding: 15px;
+        }
+        
+        .response-table {
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .breakdown-container, .highest-scores {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

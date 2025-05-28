@@ -1,34 +1,70 @@
-﻿@model Serenity_Solution.Models.HomeVM
+
+@model  Serenity_Solution.Models.HomeVM
+
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="search-section" id="contactSection">
+<div class="search-section">
     <div class="search-container">
         <div class="search-tabs">
-            <div class="tab active" id="askTab">
+            <div class="tab active">
                 <h3>Đặt câu hỏi</h3>
                 <p>Đặt câu hỏi với chúng tôi</p>
-                @* <div class="underline"></div> *@
+                <div class="underline"></div>
             </div>
+
             <div class="tab" id="testTab" onclick="location.href='/Test/Index';" style="cursor: pointer;">
                 <h3>Kiểm tra sức khỏe nhanh</h3>
                 <p>Kiểm tra nhanh tâm lý của bạn</p>
             </div>
         </div>
-
+        
     </div>
 </div>
 
+<!-- Phần Podcast mới -->
+<section class="podcast-section">
+    <div class="podcast-main">
+        <h2>Podcast <span>cho bạn</span></h2>
+        <p class="description">Lắng nghe những câu chuyện truyền cảm hứng và lời khuyên hữu ích từ các chuyên gia.</p>
+    </div>
+
+    
+
+    <div class="view-more">
+        <a asp-controller="Podcast" asp-action="Index" class="view-more-btn">Xem thêm</a>
+    </div>
+    <div class="podcast-list-wrapper">
+        <div class="podcast-list">
+            @if (ViewBag.Podcasts != null)
+            {
+                @foreach (var podcast in ViewBag.Podcasts)
+                {
+                    <div class="podcast-card">
+                        <a asp-controller="Podcast" asp-action="Detail" asp-route-id="@podcast.Id">
+                            <img src="@podcast.ImageUrl" alt="@podcast.Title" class="podcast-image">
+                            <h4><strong>@podcast.Title</strong></h4>
+                            <p class="author">@podcast.Author</p>
+                            <p class="category">@podcast.Category</p>
+                            <div class="rating">
+                                <span>@podcast.Rating ★ (@podcast.RatingCount đánh giá)</span>
+                            </div>
+                            <p class="duration">@podcast.Duration</p>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
 
 <section class="doctor-section">
     <h2>Danh sách <span>Bác sĩ</span></h2>
     <p class="description">Chăm sóc sức khỏe giúp mọi người duy trì sức khỏe tốt và phòng ngừa bệnh tật...</p>
 
-   @*  <div class="slider-controls">
-        <button id="prevBtn">←</button>
-        <button id="nextBtn">→</button>
-    </div> *@
+   
 
     <div class="doctor-list-wrapper">
         <div class="doctor-list" id="doctorList">            
@@ -44,7 +80,6 @@
         </div>
     </div>
 </section>
-
 
 <!-- Contact Section -->
 <div class="contact-section" id="contact">
@@ -236,3 +271,4 @@
 
     
 </style>
+

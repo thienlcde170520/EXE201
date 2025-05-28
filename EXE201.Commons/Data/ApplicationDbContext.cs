@@ -48,18 +48,26 @@ namespace EXE201.Commons.Data
                 .HasForeignKey(pr => pr.PodcastID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Client)
                 .WithMany(u => u.ClientAppointments)
                 .HasForeignKey(a => a.Client_ID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Cấu hình cho MySQL
+            // Cấu hình kiểu dữ liệu decimal cho Price
+            modelBuilder.Entity<User>()
+                .Property(u => u.Price)
+                .HasColumnType("decimal(18,2)");
+
+
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Psychologist)
                 .WithMany(u => u.PsychologistAppointments)
                 .HasForeignKey(a => a.Psychologist_ID)
                 .OnDelete(DeleteBehavior.Restrict);
-            /*
+         
             modelBuilder.Entity<Psychologist>().HasData(
                 new Psychologist
                 {
@@ -116,7 +124,7 @@ namespace EXE201.Commons.Data
                     ProfilePictureUrl = "~image/Doctor/Kim_Nguan.png"
                 }
                 
-            );  */
+            ); 
         }
 
     }
