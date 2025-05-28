@@ -54,6 +54,8 @@ builder.Logging.AddDebug();   // Log vào Debug Window
 builder.Services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
                         .AddEntityFrameworkStores<ApplicationDbContext>()
                         .AddDefaultTokenProviders();
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -61,7 +63,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromDays(14); // giữ đăng nhập 14 ngày
         options.SlidingExpiration = true;
-    });
+    })
+    .AddGoogle(googleOptions =>
+     {
+         googleOptions.ClientId = builder.Configuration["GoogleKeys:ClientID"];
+         googleOptions.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+         googleOptions.SaveTokens = true;
+         // Đặt CallbackPath trùng với action controller
+         //googleOptions.CallbackPath = "/signin-google";
+     });
 
 builder.Services.AddAuthorization(); // Ensure authorization is added
 // Add services to the container.
@@ -71,6 +81,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Cho HTTPS
 });
 
 var app = builder.Build();
@@ -102,8 +115,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.MapHub<NotificationHub>("/notificationHub");
-
-app.UseStaticFiles();
 
 
 app.UseRouting();

@@ -44,16 +44,50 @@ namespace Serenity_Solution.Controllers
             var allDoctors = await _userManager.GetUsersInRoleAsync("Psychologist");
             var doctors = allDoctors.OrderBy(d => Guid.NewGuid()).Take(2).ToList();
 
-            var podcasts = await _context.Podcasts.ToListAsync(); // Giả sử bạn có DbSet<Podcast>
+            // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
+            var podcasts = PodcastController.GetPodcasts()
+                .OrderByDescending(p => p.Rating)
+                .Take(10)
+                .ToList(); // Giả sử bạn có DbSet<Podcast>
+
+            // Truyền danh sách podcast vào view bằng ViewBag
+            ViewBag.Podcasts = podcasts;
 
             var CurrentUser = await _userManager.GetUserAsync(User);
 
+            /*
+            var model = new CombinedViewModel
+            {
+                Contact = new ContactViewModel(), // Khởi tạo ContactViewModel
+                Podcast = new PodcastViewModel
+                {
+                    // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                    // Ví dụ:
+                    Title = "Life Update: Cuộc sống của mình sau pobcast",
+                    ImageUrl = "/image/Podcast/ThePresent2.png",
+                    AudioUrl = "/audio/podcast-audio.mp3",
+                    Rating = 4.6,
+                    RatingCount = 205,
+                    Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                }
+            };
+            */
             if (User.Identity.IsAuthenticated)
             {
-                var viewModelC = new HomeVM
+                var viewModelC = new CombinedViewModel
                 {
                     Doctors = doctors,
-                    Podcasts = podcasts,
+                    Podcast = new PodcastViewModel
+                    {
+                        // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                        // Ví dụ:
+                        Title = "Life Update: Cuộc sống của mình sau pobcast",
+                        ImageUrl = "/image/Podcast/ThePresent2.png",
+                        AudioUrl = "/audio/podcast-audio.mp3",
+                        Rating = 4.6,
+                        RatingCount = 205,
+                        Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                    },
                     Contact = new Contact(),
 
                     currentUser = CurrentUser.Id
@@ -61,10 +95,20 @@ namespace Serenity_Solution.Controllers
                 return View(viewModelC);
             }
 
-                var viewModel = new HomeVM
-            {
+                var viewModel = new CombinedViewModel
+                {
                 Doctors = doctors,
-                Podcasts = podcasts,
+                    Podcast = new PodcastViewModel
+                    {
+                        // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                        // Ví dụ:
+                        Title = "Life Update: Cuộc sống của mình sau pobcast",
+                        ImageUrl = "/image/Podcast/ThePresent2.png",
+                        AudioUrl = "/audio/podcast-audio.mp3",
+                        Rating = 4.6,
+                        RatingCount = 205,
+                        Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                    },
                 Contact = new Contact(),
               
                 //currentUser = CurrentUser.Id
@@ -86,13 +130,13 @@ namespace Serenity_Solution.Controllers
             if (!User.Identity.IsAuthenticated)
             {
                 TempData["Error"] = "Vui lòng đăng nhập để gửi yêu cầu!";
-                return RedirectToAction("Index");
+                return Redirect(returnUrl);
             }
             var EmailUserLogged = await _userManager.GetUserAsync(User);
             if (model.Contact.Email != EmailUserLogged.Email)
             {
                 TempData["Error"] = "Vui lòng nhập email bạn đã đăng ký!";
-                return RedirectToAction("Index");
+                return Redirect(returnUrl);
             }
             if (!ModelState.IsValid)
             {

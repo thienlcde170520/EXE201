@@ -67,20 +67,7 @@ namespace Serenity_Solution.Controllers
             var result = await _accountService.RegisterAsync(user, model.Password);
 
             if (result.Succeeded)
-            {
-                /*
-                var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
-                if (!roleResult.Succeeded)
-                {
-                    // Nếu thất bại, xoá user vừa tạo để tránh user không có role
-                    await _userManager.DeleteAsync(user);
-                    foreach (var error in roleResult.Errors)
-                    {
-                        ModelState.AddModelError("", "Role assignment failed: " + error.Description);
-                    }
-                    return View(model);
-                }
-                */
+            {               
                 TempData["SuccessMessage"] = "Registration successful! Please login.";
                 return RedirectToAction("Login");
             }
@@ -110,7 +97,6 @@ namespace Serenity_Solution.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var result = await _accountService.LoginAsync(viewModel.Email.Trim(), viewModel.Password.Trim());
                 
                 var result = await _accountService.LoginAsync(
                     viewModel.Email.Trim(),
@@ -127,7 +113,7 @@ namespace Serenity_Solution.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError("", "Invalid login attempt.");
+                ModelState.AddModelError("", "Thông tin không hợp lệ. Vui lòng nhập lại!!!.");
             }
             return View();
         }
@@ -705,13 +691,169 @@ namespace Serenity_Solution.Controllers
                     ProfilePictureUrl = user.ProfilePictureUrl,
                     CertificateUrl = user.CertificateUrl
                 },
-                RecentAppointments = appointments.Take(5).ToList(),
+
+
+               RecentAppointments = appointments.Take(5).ToList(),
+                
                 TotalAppointments = appointments.Count(),  // Thêm () để gọi phương thức Count()
                 
             };
             
             return View(dashboardViewModel);
         }
+
+        public IActionResult LoginWithGoogle()
+        {
+            var redirectUrl = Url.Action("GoogleResponse", "Account");
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return Challenge(properties, "Google");
+
+        }
+
+        // Nhận thông tin phản hồi từ Google sau khi đăng nhập thành công
+        /*
+        [HttpGet("/signin-google")]
+        public async Task<IActionResult> SignInGoogle()
+        {
+            return await GoogleResponse();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+
+            // Tìm xem user đã từng login bằng Google chưa
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Nếu chưa có, tạo user mới
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+            var user = new User
+            {
+                UserName = email,
+                Email = email,
+                Name = name,
+                DateOfBirth = DateTime.Now
+            };
+
+            var identityResult = await _userManager.CreateAsync(user);
+            if (identityResult.Succeeded)
+            {
+                identityResult = await _userManager.AddLoginAsync(user, info);
+                if (identityResult.Succeeded)
+                {
+                    // Thêm vai trò Customer nếu muốn
+                    await _userManager.AddToRoleAsync(user, "Customer");
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            // Nếu có lỗi
+            foreach (var error in identityResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return RedirectToAction("Login");
+        }
+        */
+        public async Task<IActionResult> GoogleResponse()
+        {
+            try
+            {
+                var info = await _signInManager.GetExternalLoginInfoAsync();
+                if (info == null)
+                {
+                    Console.WriteLine("External login info is null");
+                    return RedirectToAction("Login");
+                }
+
+                Console.WriteLine($"Login Provider: {info.LoginProvider}");
+                Console.WriteLine($"Provider Key: {info.ProviderKey}");
+
+                // Tìm xem user đã từng login bằng Google chưa
+                var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+                if (result.Succeeded)
+                {
+                    Console.WriteLine("User signed in successfully");
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Nếu chưa có, tạo user mới
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    Console.WriteLine("Email not found in Google response");
+                    return RedirectToAction("Login");
+                }
+
+                // Kiểm tra xem email đã tồn tại chưa
+                var existingUser = await _userManager.FindByEmailAsync(email);
+                if (existingUser != null)
+                {
+                    // User đã tồn tại nhưng chưa link với Google
+                    var addLoginResult = await _userManager.AddLoginAsync(existingUser, info);
+                    if (addLoginResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(existingUser, isPersistent: false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                else
+                {
+                    // Tạo user mới
+                    var user = new User
+                    {
+                        UserName = email,
+                        Email = email,
+                        Name = name,
+                        DateOfBirth = DateTime.Now,
+                        EmailConfirmed = true // Google email đã được verify
+                    };
+
+                    var identityResult = await _userManager.CreateAsync(user);
+                    if (identityResult.Succeeded)
+                    {
+                        identityResult = await _userManager.AddLoginAsync(user, info);
+                        if (identityResult.Succeeded)
+                        {
+                            // Thêm vai trò Customer
+                            await _userManager.AddToRoleAsync(user, "Customer");
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+
+                    // Log errors nếu có
+                    foreach (var error in identityResult.Errors)
+                    {
+                        Console.WriteLine($"Identity Error: {error.Description}");
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+
+                return RedirectToAction("Login");
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Lỗi khi đăng nhập bằng Google. Vui lòng thử lại sau.");
+                return RedirectToAction("Login");
+            }
+        }
+
 
     }
 }
