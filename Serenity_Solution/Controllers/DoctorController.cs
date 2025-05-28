@@ -35,6 +35,7 @@ namespace Serenity_Solution.Controllers
         public async Task<IActionResult> Index(string searchString, string filterType, int page = 1, int pageSize = 2)
         {
             var users = await _userManager.GetUsersInRoleAsync("Psychologist");
+
             var doctors = users.OfType<User>() // Lọc ra danh sách Customer
                 .Where(c => c.CertificateUrl != null && c.Price > 0) // Lọc ra những người có yêu cầu nâng cấp
                 .ToList();
@@ -84,7 +85,7 @@ namespace Serenity_Solution.Controllers
                      Price = s.Price,
                      Description = s.Description,
                      Experience = s.Experience,
-                     ProfilePictureUrl = s.ProfilePictureUrl,                  
+                     ProfilePictureUrl = s.ProfilePictureUrl,
                  })
                  .ToList();
             int totalUsers = DoctorList.Count();
@@ -95,7 +96,7 @@ namespace Serenity_Solution.Controllers
             // Gửi danh sách Staff kèm ID (dùng ViewBag nếu cần)
             ViewBag.SearchString = searchString;
 
-            
+            ViewBag.StaffIds = doctors.ToDictionary(s => s.Email, s => s.Id);
 
             return View(pagedUsers);
 
@@ -117,11 +118,9 @@ namespace Serenity_Solution.Controllers
                 Experience = user.Experience,
                 Price = user.Price,
                 ProfilePictureUrl = user.ProfilePictureUrl,// hoặc null để dùng ảnh mặc định
-                Major = user.Major,
-                Contact = new Contact()
+                Major = user.Major
             };
-            var currentUser = await _userManager.GetUserAsync(User);
-            ViewBag.UserId = currentUser.Id;
+
             return View(psychologist);
         }
 

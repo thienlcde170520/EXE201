@@ -1,4 +1,6 @@
-﻿@model Serenity_Solution.Models.DASSTestModel
+
+@model Serenity_Solution.Models.DASSTestModel
+
 @{
     ViewData["Title"] = "Bài Test Lo âu - Trầm cảm - Stress (DASS 21)";
 }
@@ -16,7 +18,9 @@
         </div>
     </div>
 
-    <form asp-action="DASS21" method="post" class="test-form">
+
+    <form asp-action="DASS21" method="post" id="dassForm" class="test-form">
+
         <div id="question-container">
             <!-- Câu hỏi 1 - Mặc định hiển thị -->
             <div class="question-item active" data-question="1">
@@ -89,9 +93,11 @@
         padding: 20px;
     }
 
+    
     .test-progress-bar {
         margin-bottom: 20px;
     }
+    
 
     .progress-text {
         font-size: 14px;
@@ -130,16 +136,17 @@
         padding: 30px;
         box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-
+    
     .question-item {
         margin-bottom: 20px;
     }
-
-        .question-item h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #333;
-        }
+    
+    .question-item h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
 
     .question-text {
         font-size: 16px;
@@ -160,18 +167,19 @@
         cursor: pointer;
         transition: background-color 0.2s;
     }
-
-        .option-label:hover {
-            background-color: #e9ecef;
-        }
-
-        .option-label.selected {
-            background-color: #cce5ff;
-        }
-
-        .option-label input[type="radio"] {
-            margin-right: 10px;
-        }
+    
+    .option-label:hover {
+        background-color: #e9ecef;
+    }
+    
+    .option-label.selected {
+        background-color: #cce5ff;
+    }
+    
+    .option-label input[type="radio"] {
+        margin-right: 10px;
+    }
+    
 
     .navigation-buttons {
         display: flex;
@@ -214,6 +222,11 @@
         let currentQuestion = 1;
         const totalQuestions = 21;
 
+        
+        // Biến theo dõi câu hỏi đã trả lời
+        const answeredQuestions = new Array(totalQuestions + 1).fill(false);
+        
+
         // DOM Elements
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
@@ -221,9 +234,11 @@
         const progressFill = document.querySelector('.progress-fill');
         const progressCount = document.querySelector('.progress-count');
 
+        
         // Tạo mảng chứa nội dung câu hỏi
         const questionTexts = [
-            "Tôi thấy khó mà thoải mái được",
+            "Tôi thấy khó mà thoải mái được", 
+
             "Tôi bị khô miệng",
             "Tôi không thấy có chút cảm xúc tích cực nào",
             "Tôi bị rối loạn nhịp thở (thở gấp, khó thở dù chẳng làm việc gì nặng)",
@@ -246,9 +261,11 @@
             "Tôi thấy cuộc sống vô nghĩa"
         ];
 
+        
         // Tạo mẫu HTML cho các câu hỏi còn lại từ 3-21
         function createQuestions() {
             const questionContainer = document.getElementById('question-container');
+            
 
             // Tạo các câu hỏi từ 3-21
             for (let i = 3; i <= 21; i++) {
@@ -279,10 +296,11 @@
                         </label>
                     </div>
                 `;
-
+                
                 questionContainer.appendChild(questionDiv);
             }
         }
+        
 
         // Hàm hiển thị câu hỏi theo số
         function showQuestion(questionNum) {
@@ -296,13 +314,14 @@
             if (currentQuestionEl) {
                 currentQuestionEl.style.display = 'block';
             }
-
+            
             // Cập nhật progress bar
             progressFill.style.width = `${(questionNum / totalQuestions) * 100}%`;
             progressCount.textContent = `${questionNum}/${totalQuestions}`;
-
+            
             // Cập nhật nút điều hướng
             prevBtn.disabled = (questionNum === 1);
+            
 
             if (questionNum === totalQuestions) {
                 nextBtn.style.display = 'none';
@@ -312,9 +331,10 @@
                 submitBtn.style.display = 'none';
             }
         }
-
+        
         // Tạo các câu hỏi từ 3-21
         createQuestions();
+        
 
         // Thêm sự kiện click cho tất cả các option-label
         function setupOptionHandlers() {
@@ -325,12 +345,16 @@
                     questionItem.querySelectorAll('.option-label').forEach(l => {
                         l.classList.remove('selected');
                     });
-
+                    
                     // Thêm class selected cho option được chọn
                     this.classList.add('selected');
-
-                    // Tự động chuyển sang câu tiếp theo sau khi chọn đáp án
+                    
+                    // Đánh dấu câu hỏi đã được trả lời
                     const currentQuestionNum = parseInt(questionItem.getAttribute('data-question'));
+                    answeredQuestions[currentQuestionNum] = true;
+                    
+                    // Tự động chuyển sang câu tiếp theo sau khi chọn đáp án
+
                     if (currentQuestionNum < totalQuestions) {
                         setTimeout(() => {
                             currentQuestion = currentQuestionNum + 1;
@@ -340,9 +364,10 @@
                 });
             });
         }
-
+        
         // Thiết lập xử lý sự kiện
         setupOptionHandlers();
+        
 
         // Xử lý sự kiện nút Next
         nextBtn.addEventListener('click', function() {
@@ -359,8 +384,36 @@
                 showQuestion(currentQuestion);
             }
         });
-
+        
         // Hiển thị câu hỏi đầu tiên khi trang được tải
         showQuestion(1);
+        
+        // Thêm trường ẩn để lưu trạng thái câu hỏi đã trả lời khi submit
+        document.getElementById('dassForm').addEventListener('submit', function(e) {
+            // Kiểm tra xem có câu hỏi nào chưa được trả lời không
+            const unansweredCount = answeredQuestions.slice(1).filter(answered => !answered).length;
+            
+            // Tạo hidden input để lưu dữ liệu trả lời
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'AnsweredQuestions';
+            hiddenInput.value = JSON.stringify(answeredQuestions.slice(1));
+            this.appendChild(hiddenInput);
+            
+            // Tạo hidden input để lưu số câu hỏi đã trả lời
+            const answeredCountInput = document.createElement('input');
+            answeredCountInput.type = 'hidden';
+            answeredCountInput.name = 'AnsweredCount';
+            answeredCountInput.value = totalQuestions - unansweredCount;
+            this.appendChild(answeredCountInput);
+            
+            // Nếu có câu hỏi chưa trả lời, thông báo cho người dùng
+            if (unansweredCount > 0) {
+                if (!confirm(`Bạn còn ${unansweredCount} câu hỏi chưa trả lời. Bạn có chắc chắn muốn nộp bài?`)) {
+                    e.preventDefault();
+                }
+            }
+        });
+
     });
 </script> 

@@ -1,12 +1,5 @@
-﻿using CloudinaryDotNet;
-using EXE201.Commons.Data;
-using EXE201.Commons.Models;
-using EXE201.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Serenity_Solution.Models;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+
 namespace Serenity_Solution.Controllers
 {
     public class ContactController : Controller

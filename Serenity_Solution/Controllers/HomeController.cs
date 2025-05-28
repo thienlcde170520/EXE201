@@ -6,7 +6,6 @@ using EXE201.Commons.Models;
 using EXE201.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Serenity_Solution.Models;
 
 namespace Serenity_Solution.Controllers
@@ -21,18 +20,19 @@ namespace Serenity_Solution.Controllers
         private readonly IEmailService _emailService;
 
 
-        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager, IAccountService accountService, 
-            IEmailService emailService, 
+        public HomeController(ILogger<HomeController> logger,UserManager<User> userManager, IAccountService accountService,
+            IEmailService emailService,
             SignInManager<User> signInManager,
             ApplicationDbContext context)
         {           
             _logger = logger;
+
             _accountService = accountService;
             _userManager = userManager;
             _emailService = emailService;
             _signInManager = signInManager;
             _context = context;
-        }       
+
 
         public async Task<IActionResult> Index()
         {
@@ -41,11 +41,38 @@ namespace Serenity_Solution.Controllers
                 // Redirect đến trang chính của Manager
                 return RedirectToAction("Index", "Manager");
             }
+
+
+            // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
+            var podcasts = PodcastController.GetPodcasts()
+                .OrderByDescending(p => p.Rating)
+                .Take(10)
+                .ToList();
+
             var allDoctors = await _userManager.GetUsersInRoleAsync("Psychologist");
             var doctors = allDoctors.OrderBy(d => Guid.NewGuid()).Take(2).ToList();
 
-            var podcasts = await _context.Podcasts.ToListAsync(); // Giả sử bạn có DbSet<Podcast>
 
+            // Truyền danh sách podcast vào view bằng ViewBag
+            ViewBag.Podcasts = podcasts;
+
+            //podcast from thih
+            // Tạo CombinedViewModel để truyền vào view
+            var model = new CombinedViewModel
+            {
+                Contact = new ContactViewModel(), // Khởi tạo ContactViewModel
+                Podcast = new PodcastViewModel
+                {
+                    // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                    // Ví dụ:
+                    Title = "Life Update: Cuộc sống của mình sau pobcast",
+                    ImageUrl = "/image/Podcast/ThePresent2.png",
+                    AudioUrl = "/audio/podcast-audio.mp3",
+                    Rating = 4.6,
+                    RatingCount = 205,
+                    Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                }
+            //end podcast from thinh
             var CurrentUser = await _userManager.GetUserAsync(User);
 
             if (User.Identity.IsAuthenticated)
@@ -70,8 +97,7 @@ namespace Serenity_Solution.Controllers
                 //currentUser = CurrentUser.Id
             };
 
-            return View(viewModel);
-
+            return View(model); // an cua thih
         }
 
         [HttpPost]
@@ -108,6 +134,8 @@ namespace Serenity_Solution.Controllers
             return RedirectToAction("Index");
 
         }
+
+
 
 
         public IActionResult Privacy()

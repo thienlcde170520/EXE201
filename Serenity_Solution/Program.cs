@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Serenity_Solution.Seeders;
 using Serenity_Solution.Unity;
 
@@ -21,8 +22,13 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
+// Sử dụng MySQL thay vì SQL Server
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseMySql(connectionString, serverVersion)
+        .LogTo(Console.WriteLine, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors());
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //add service and repository
@@ -75,6 +81,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// Ensure database is created
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -91,6 +98,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
