@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@model Serenity_Solution.Models.HomeVM
+=======
+﻿@model  Serenity_Solution.Models.CombinedViewModel
+>>>>>>> Stashed changes
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -20,6 +24,41 @@
     </div>
 </div>
 
+<!-- Phần Podcast mới -->
+<section class="podcast-section">
+    <div class="podcast-main">
+        <h2>Podcast <span>cho bạn</span></h2>
+        <p class="description">Lắng nghe những câu chuyện truyền cảm hứng và lời khuyên hữu ích từ các chuyên gia.</p>
+    </div>
+
+    
+
+    <div class="view-more">
+        <a asp-controller="Podcast" asp-action="Index" class="view-more-btn">Xem thêm</a>
+    </div>
+    <div class="podcast-list-wrapper">
+        <div class="podcast-list">
+            @if (ViewBag.Podcasts != null)
+            {
+                @foreach (var podcast in ViewBag.Podcasts)
+                {
+                    <div class="podcast-card">
+                        <a asp-controller="Podcast" asp-action="Detail" asp-route-id="@podcast.Id">
+                            <img src="@podcast.ImageUrl" alt="@podcast.Title" class="podcast-image">
+                            <h4><strong>@podcast.Title</strong></h4>
+                            <p class="author">@podcast.Author</p>
+                            <p class="category">@podcast.Category</p>
+                            <div class="rating">
+                                <span>@podcast.Rating ★ (@podcast.RatingCount đánh giá)</span>
+                            </div>
+                            <p class="duration">@podcast.Duration</p>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
 
 <section class="doctor-section">
     <h2>Danh sách <span>Bác sĩ</span></h2>

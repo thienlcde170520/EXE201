@@ -1,0 +1,399 @@
+@model Serenity_Solution.Models.DASSTestModel
+@{
+    ViewData["Title"] = "Bài Test Lo âu - Trầm cảm - Stress (DASS 21)";
+}
+
+<link rel="stylesheet" href="~/css/test.css" />
+
+<div class="test-container">
+    <div class="test-progress-bar">
+        <div class="progress-text">Trạng thái hoàn thành</div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 5%;"></div>
+            </div>
+            <div class="progress-count">1/21</div>
+        </div>
+    </div>
+
+    <form asp-action="DASS21" method="post" id="dassForm" class="test-form">
+        <div id="question-container">
+            <!-- Câu hỏi 1 - Mặc định hiển thị -->
+            <div class="question-item active" data-question="1">
+                <h2>Câu 1</h2>
+                <p class="question-text">Tôi thấy khó mà thoải mái được</p>
+                <div class="options-container">
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question1" value="0" />
+                        <span class="option-text">Không đúng với tôi chút nào cả</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question1" value="1" />
+                        <span class="option-text">Đúng với tôi một phần, hoặc thỉnh thoảng mới đúng</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question1" value="2" />
+                        <span class="option-text">Đúng với tôi phần nhiều, hoặc phần lớn thời gian là đúng</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question1" value="3" />
+                        <span class="option-text">Hoàn toàn đúng với tôi, hoặc hầu hết thời gian là đúng</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu hỏi 2 - Ẩn đi -->
+            <div class="question-item" data-question="2" style="display: none;">
+                <h2>Câu 2</h2>
+                <p class="question-text">Tôi bị khô miệng</p>
+                <div class="options-container">
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question2" value="0" />
+                        <span class="option-text">Không đúng với tôi chút nào cả</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question2" value="1" />
+                        <span class="option-text">Đúng với tôi một phần, hoặc thỉnh thoảng mới đúng</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question2" value="2" />
+                        <span class="option-text">Đúng với tôi phần nhiều, hoặc phần lớn thời gian là đúng</span>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" asp-for="Question2" value="3" />
+                        <span class="option-text">Hoàn toàn đúng với tôi, hoặc hầu hết thời gian là đúng</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tiếp tục cho các câu hỏi 3-21, sẽ được thêm tự động qua JavaScript -->
+        </div>
+
+        <div class="navigation-buttons">
+            <button type="button" id="prev-btn" class="nav-btn prev-btn" disabled>TRƯỚC ĐÓ</button>
+            <button type="button" id="next-btn" class="nav-btn next-btn">TIẾP</button>
+            <button type="submit" id="submit-btn" style="display: none;" class="nav-btn submit-btn">GỬI KẾT QUẢ</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    
+    .test-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .test-progress-bar {
+        margin-bottom: 20px;
+    }
+    
+    .progress-text {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .progress-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    .progress-bar {
+        flex: 1;
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin-right: 10px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background-color: #007bff;
+        transition: width 0.3s ease;
+    }
+    
+    .progress-count {
+        font-size: 14px;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .test-form {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    
+    .question-item {
+        margin-bottom: 20px;
+    }
+    
+    .question-item h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .question-text {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .option-label {
+        display: block;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .option-label:hover {
+        background-color: #e9ecef;
+    }
+    
+    .option-label.selected {
+        background-color: #cce5ff;
+    }
+    
+    .option-label input[type="radio"] {
+        margin-right: 10px;
+    }
+    
+    .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+    
+    .nav-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .prev-btn {
+        background-color: #e9ecef;
+        color: #495057;
+    }
+    
+    .next-btn {
+        background-color: #007bff;
+        color: #fff;
+    }
+    
+    .submit-btn {
+        background-color: #28a745;
+        color: #fff;
+    }
+    
+    .nav-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Biến theo dõi câu hỏi hiện tại
+        let currentQuestion = 1;
+        const totalQuestions = 21;
+        
+        // Biến theo dõi câu hỏi đã trả lời
+        const answeredQuestions = new Array(totalQuestions + 1).fill(false);
+        
+        // DOM Elements
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressFill = document.querySelector('.progress-fill');
+        const progressCount = document.querySelector('.progress-count');
+        
+        // Tạo mảng chứa nội dung câu hỏi
+        const questionTexts = [
+            "Tôi thấy khó mà thoải mái được", 
+            "Tôi bị khô miệng",
+            "Tôi không thấy có chút cảm xúc tích cực nào",
+            "Tôi bị rối loạn nhịp thở (thở gấp, khó thở dù chẳng làm việc gì nặng)",
+            "Tôi thấy khó bắt tay vào công việc",
+            "Tôi phản ứng thái quá với mọi tình huống",
+            "Tôi bị ra mồ hôi (chẳng hạn như mồ hôi tay…)",
+            "Tôi cảm thấy sợ hãi",
+            "Tôi lo lắng về những tình huống có thể khiến tôi hoảng sợ hoặc biến tôi thành trò cười",
+            "Tôi thấy mình chẳng có gì để mong đợi cả",
+            "Tôi thấy bản thân dễ bị kích động",
+            "Tôi thấy khó thư giãn được",
+            "Tôi cảm thấy chán nản, thất vọng",
+            "Tôi không chấp nhận được việc có cái gì đó xen vào cản trở việc tôi đang làm",
+            "Tôi thấy mình gần như hoảng loạn",
+            "Tôi không thấy hăng hái với bất kỳ việc gì nữa",
+            "Tôi cảm thấy mình chẳng đáng làm người",
+            "Tôi thấy mình khá dễ phật ý, tự ái",
+            "Tôi nghe thấy rõ tiếng nhịp tim dù chẳng làm việc gì cả (ví dụ, tiếng nhịp tim tăng, tiếng tim loạn nhịp)",
+            "Tôi hay sợ vô cớ",
+            "Tôi thấy cuộc sống vô nghĩa"
+        ];
+        
+        // Tạo mẫu HTML cho các câu hỏi còn lại từ 3-21
+        function createQuestions() {
+            const questionContainer = document.getElementById('question-container');
+            
+            // Tạo các câu hỏi từ 3-21
+            for (let i = 3; i <= 21; i++) {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.setAttribute('data-question', i);
+                questionDiv.style.display = 'none';
+                
+                questionDiv.innerHTML = `
+                    <h2>Câu ${i}</h2>
+                    <p class="question-text">${questionTexts[i-1]}</p>
+                    <div class="options-container">
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="0" />
+                            <span class="option-text">Không đúng với tôi chút nào cả</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="1" />
+                            <span class="option-text">Đúng với tôi một phần, hoặc thỉnh thoảng mới đúng</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="2" />
+                            <span class="option-text">Đúng với tôi phần nhiều, hoặc phần lớn thời gian là đúng</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="3" />
+                            <span class="option-text">Hoàn toàn đúng với tôi, hoặc hầu hết thời gian là đúng</span>
+                        </label>
+                    </div>
+                `;
+                
+                questionContainer.appendChild(questionDiv);
+            }
+        }
+        
+        // Hàm hiển thị câu hỏi theo số
+        function showQuestion(questionNum) {
+            // Ẩn tất cả câu hỏi
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.style.display = 'none';
+            });
+            
+            // Hiện câu hỏi hiện tại
+            const currentQuestionEl = document.querySelector(`.question-item[data-question="${questionNum}"]`);
+            if (currentQuestionEl) {
+                currentQuestionEl.style.display = 'block';
+            }
+            
+            // Cập nhật progress bar
+            progressFill.style.width = `${(questionNum / totalQuestions) * 100}%`;
+            progressCount.textContent = `${questionNum}/${totalQuestions}`;
+            
+            // Cập nhật nút điều hướng
+            prevBtn.disabled = (questionNum === 1);
+            
+            if (questionNum === totalQuestions) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+        }
+        
+        // Tạo các câu hỏi từ 3-21
+        createQuestions();
+        
+        // Thêm sự kiện click cho tất cả các option-label
+        function setupOptionHandlers() {
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', function() {
+                    // Xóa class selected cho tất cả option trong cùng một câu hỏi
+                    const questionItem = this.closest('.question-item');
+                    questionItem.querySelectorAll('.option-label').forEach(l => {
+                        l.classList.remove('selected');
+                    });
+                    
+                    // Thêm class selected cho option được chọn
+                    this.classList.add('selected');
+                    
+                    // Đánh dấu câu hỏi đã được trả lời
+                    const currentQuestionNum = parseInt(questionItem.getAttribute('data-question'));
+                    answeredQuestions[currentQuestionNum] = true;
+                    
+                    // Tự động chuyển sang câu tiếp theo sau khi chọn đáp án
+                    if (currentQuestionNum < totalQuestions) {
+                        setTimeout(() => {
+                            currentQuestion = currentQuestionNum + 1;
+                            showQuestion(currentQuestion);
+                        }, 500);
+                    }
+                });
+            });
+        }
+        
+        // Thiết lập xử lý sự kiện
+        setupOptionHandlers();
+        
+        // Xử lý sự kiện nút Next
+        nextBtn.addEventListener('click', function() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        // Xử lý sự kiện nút Previous
+        prevBtn.addEventListener('click', function() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        // Hiển thị câu hỏi đầu tiên khi trang được tải
+        showQuestion(1);
+        
+        // Thêm trường ẩn để lưu trạng thái câu hỏi đã trả lời khi submit
+        document.getElementById('dassForm').addEventListener('submit', function(e) {
+            // Kiểm tra xem có câu hỏi nào chưa được trả lời không
+            const unansweredCount = answeredQuestions.slice(1).filter(answered => !answered).length;
+            
+            // Tạo hidden input để lưu dữ liệu trả lời
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'AnsweredQuestions';
+            hiddenInput.value = JSON.stringify(answeredQuestions.slice(1));
+            this.appendChild(hiddenInput);
+            
+            // Tạo hidden input để lưu số câu hỏi đã trả lời
+            const answeredCountInput = document.createElement('input');
+            answeredCountInput.type = 'hidden';
+            answeredCountInput.name = 'AnsweredCount';
+            answeredCountInput.value = totalQuestions - unansweredCount;
+            this.appendChild(answeredCountInput);
+            
+            // Nếu có câu hỏi chưa trả lời, thông báo cho người dùng
+            if (unansweredCount > 0) {
+                if (!confirm(`Bạn còn ${unansweredCount} câu hỏi chưa trả lời. Bạn có chắc chắn muốn nộp bài?`)) {
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+</script> 

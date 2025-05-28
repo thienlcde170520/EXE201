@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Serenity_Solution.Seeders;
 using Serenity_Solution.Unity;
 
@@ -21,8 +22,13 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = Environment.GetEnvironmentVariable("DefaultConnection")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
+// Sử dụng MySQL thay vì SQL Server
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseMySql(connectionString, serverVersion)
+        .LogTo(Console.WriteLine, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors());
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //add service and repository
@@ -75,13 +81,39 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// Ensure database is created
 using (var scope = app.Services.CreateScope())
 {
+<<<<<<< Updated upstream
     var serviceProvider = scope.ServiceProvider;
 
     await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
     await IdentitySeeder.SeedDataPsychologist(serviceProvider); // them
+=======
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
+    try
+    {
+        // Xóa database cũ nếu tồn tại và tạo mới
+        logger.LogInformation("Đang xóa và tạo lại database...");
+        // dbContext.Database.EnsureDeleted();
+        dbContext.Database.EnsureCreated();
+        
+        // Seed dữ liệu
+        logger.LogInformation("Đang seed dữ liệu...");
+        var serviceProvider = services;
+    // await IdentitySeeder.SeedRolesAndAdminAsync(serviceProvider);
+        logger.LogInformation("Seed dữ liệu thành công!");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+>>>>>>> Stashed changes
 }
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -68,7 +68,6 @@ namespace Serenity_Solution.Controllers
 
             if (result.Succeeded)
             {
-                /*
                 var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
                 if (!roleResult.Succeeded)
                 {
@@ -80,7 +79,7 @@ namespace Serenity_Solution.Controllers
                     }
                     return View(model);
                 }
-                */
+                
                 TempData["SuccessMessage"] = "Registration successful! Please login.";
                 return RedirectToAction("Login");
             }
@@ -589,6 +588,7 @@ namespace Serenity_Solution.Controllers
             return View(model);
         }
 
+<<<<<<< Updated upstream
         [HttpGet]
         public async Task<IActionResult> Scheduled_Appointments(int page = 1, int pageSize = 5)
         {
@@ -676,5 +676,41 @@ namespace Serenity_Solution.Controllers
             return RedirectToAction(nameof(Scheduled_Appointments));
         }
         
+=======
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CustomerDashboard()
+        {
+            var user = await _userManager.GetUserAsync(User); 
+            if (user == null) return NotFound();
+
+            // Lấy các dữ liệu cần thiết cho dashboard
+            var appointments = _context.Appointments
+                .Include(a => a.Psychologist)
+                .Where(a => a.Client_ID == user.Id)  // Sửa CustomerId thành Client_ID
+                .OrderByDescending(a => a.Scheduled_time)  // Sửa AppointmentDate thành Scheduled_time
+                .ToList();
+
+            // Tạo ViewModel cho dashboard
+            var dashboardViewModel = new CustomerDashboardViewModel
+            {
+                Customer = new CustomerViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.Name,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber,
+                    DateOfBirth = user.DateOfBirth,
+                    Gender = user.Gender,
+                    Address = user.Address,
+                    ProfilePictureUrl = user.ProfilePictureUrl,
+                    CertificateUrl = user.CertificateUrl
+                },
+                RecentAppointments = appointments.Take(5).ToList(),
+                TotalAppointments = appointments.Count()  // Thêm () để gọi phương thức Count()
+            };
+
+            return View(dashboardViewModel);
+        }
+>>>>>>> Stashed changes
     }
 }

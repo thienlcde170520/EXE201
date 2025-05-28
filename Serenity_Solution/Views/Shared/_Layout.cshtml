@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Serenity Solution</title>
     <link rel="stylesheet" href="@Url.Content("~/css/HomePage.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/chatbot.css")" />
     <!-- FontIcons (ví dụ: https://fontisto.com hoặc fonticon.io) -->
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Thêm Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
 
@@ -43,6 +46,7 @@
                             }
                             else if (User.IsInRole("Customer"))
                             {
+                                <a asp-controller="Account" asp-action="CustomerDashboard" class="dropdown-item">Dashboard</a>
                                 <a asp-controller="Account" asp-action="CustomerProfile" class="dropdown-item">Tài khoản của bạn</a>
                             }
                             <div class="dropdown-divider"></div>
@@ -62,6 +66,9 @@
         <main role="main" class="pb-3"> *@
     @RenderBody()
     @RenderSection("Scripts", required: false)
+
+    @* Chatbot Component *@
+    <partial name="_ChatbotPartial" />
 
     @*  </main>
     </div> *@
@@ -116,6 +123,8 @@
       Copyright Serenity Solution 2025
     </div>
   </footer>
+  
+  <script src="@Url.Content("~/js/chatbot.js")"></script>
 </body>
 </html>
 

@@ -27,12 +27,16 @@ namespace Serenity_Solution.Controllers
             ApplicationDbContext context)
         {           
             _logger = logger;
+<<<<<<< Updated upstream
             _accountService = accountService;
             _userManager = userManager;
             _emailService = emailService;
             _signInManager = signInManager;
             _context = context;
         }       
+=======
+        }
+>>>>>>> Stashed changes
 
         public async Task<IActionResult> IndexAsync()
         {
@@ -42,6 +46,7 @@ namespace Serenity_Solution.Controllers
                 return RedirectToAction("Index", "Manager");
             }
 
+<<<<<<< Updated upstream
             var doctors = await _userManager.GetUsersInRoleAsync("Psychologist");
 
             var podcasts = await _context.Podcasts.ToListAsync(); // Giả sử bạn có DbSet<Podcast>
@@ -90,6 +95,37 @@ namespace Serenity_Solution.Controllers
 
         }
 
+=======
+            // Lấy 4 podcast có đánh giá cao nhất từ PodcastController
+            var podcasts = PodcastController.GetPodcasts()
+                .OrderByDescending(p => p.Rating)
+                .Take(10)
+                .ToList();
+
+            // Truyền danh sách podcast vào view bằng ViewBag
+            ViewBag.Podcasts = podcasts;
+
+            // Tạo CombinedViewModel để truyền vào view
+            var model = new CombinedViewModel
+            {
+                Contact = new ContactViewModel(), // Khởi tạo ContactViewModel
+                Podcast = new PodcastViewModel
+                {
+                    // Nếu bạn muốn hiển thị một podcast cụ thể, hãy khởi tạo dữ liệu ở đây
+                    // Ví dụ:
+                    Title = "Life Update: Cuộc sống của mình sau pobcast",
+                    ImageUrl = "/image/Podcast/ThePresent2.png",
+                    AudioUrl = "/audio/podcast-audio.mp3",
+                    Rating = 4.6,
+                    RatingCount = 205,
+                    Description = "Giới thiệu: Cuộc đời không có sẵn hướng dẫn, nhưng chúng ta có thể học hỏi từ kinh nghiệm của người khác. Podcast này tập hợp những lời khuyên và hướng dẫn quý giá cho cuộc sống."
+                }
+            };
+
+            return View(model);
+        }
+
+>>>>>>> Stashed changes
 
         public IActionResult Privacy()
         {

@@ -48,11 +48,19 @@ namespace EXE201.Commons.Data
                 .HasForeignKey(pr => pr.PodcastID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+<<<<<<< Updated upstream
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Client)
                 .WithMany(u => u.ClientAppointments)
                 .HasForeignKey(a => a.Client_ID)
                 .OnDelete(DeleteBehavior.Restrict);
+=======
+            // Cấu hình cho MySQL
+            // Cấu hình kiểu dữ liệu decimal cho Price
+            modelBuilder.Entity<User>()
+                .Property(u => u.Price)
+                .HasColumnType("decimal(18,2)");
+>>>>>>> Stashed changes
 
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Psychologist)
