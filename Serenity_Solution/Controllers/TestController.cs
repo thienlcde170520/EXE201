@@ -47,9 +47,14 @@ namespace Serenity_Solution.Controllers
                 if (!string.IsNullOrEmpty(AnsweredQuestions))
                 {
                     model.AnsweredQuestions = JsonSerializer.Deserialize<List<bool>>(AnsweredQuestions);
+                    // Đảm bảo AnsweredCount khớp với số lượng câu hỏi đã trả lời
+                    model.AnsweredCount = model.AnsweredQuestions.Count(q => q);
                 }
-                
-                model.AnsweredCount = AnsweredCount;
+                else
+                {
+                    model.AnsweredQuestions = new List<bool>();
+                    model.AnsweredCount = 0;
+                }
                 
                 // Tính toán điểm số
                 model.CalculateScores();
@@ -60,6 +65,10 @@ namespace Serenity_Solution.Controllers
                     var user = await _userManager.GetUserAsync(User);
                     model.UserId = user.Id;
                 }
+
+                // Log để debug
+                System.Diagnostics.Debug.WriteLine($"Total questions answered: {model.AnsweredCount}");
+                System.Diagnostics.Debug.WriteLine($"Answered questions array: {string.Join(", ", model.AnsweredQuestions)}");
 
                 // Chuyển đến trang kết quả với các tham số cần thiết
                 return RedirectToAction("DASS21Result", new 
@@ -78,6 +87,7 @@ namespace Serenity_Solution.Controllers
             {
                 // Log lỗi nếu có
                 System.Diagnostics.Debug.WriteLine("Lỗi khi xử lý form DASS21: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Stack trace: " + ex.StackTrace);
                 return View(model);
             }
         }
