@@ -41,15 +41,20 @@ namespace Serenity_Solution.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DASS21(DASSTestModel model, string AnsweredQuestions, int AnsweredCount)
         {
-            if (ModelState.IsValid)
+            try
             {
                 // Chuyển đổi chuỗi JSON thành danh sách bool
                 if (!string.IsNullOrEmpty(AnsweredQuestions))
                 {
                     model.AnsweredQuestions = JsonSerializer.Deserialize<List<bool>>(AnsweredQuestions);
+                    // Đảm bảo AnsweredCount khớp với số lượng câu hỏi đã trả lời
+                    model.AnsweredCount = model.AnsweredQuestions.Count(q => q);
                 }
-
-                model.AnsweredCount = AnsweredCount;
+                else
+                {
+                    model.AnsweredQuestions = new List<bool>();
+                    model.AnsweredCount = 0;
+                }
 
                 // Tính toán điểm số
                 model.CalculateScores();
@@ -59,10 +64,13 @@ namespace Serenity_Solution.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     model.UserId = user.Id;
-                    // Lưu vào database nếu cần
                 }
 
-                // Chuyển đến trang kết quả
+                // Log để debug
+                System.Diagnostics.Debug.WriteLine($"Total questions answered: {model.AnsweredCount}");
+                System.Diagnostics.Debug.WriteLine($"Answered questions array: {string.Join(", ", model.AnsweredQuestions)}");
+
+                // Chuyển đến trang kết quả với các tham số cần thiết
                 return RedirectToAction("DASS21Result", new
                 {
                     depression = model.DepressionScore,
@@ -75,8 +83,13 @@ namespace Serenity_Solution.Controllers
                     answeredQuestions = AnsweredQuestions
                 });
             }
-
-            return View(model);
+            catch (Exception ex)
+            {
+                // Log lỗi nếu có
+                System.Diagnostics.Debug.WriteLine("Lỗi khi xử lý form DASS21: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Stack trace: " + ex.StackTrace);
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -117,3 +130,4 @@ namespace Serenity_Solution.Controllers
         }
     }
 }
+

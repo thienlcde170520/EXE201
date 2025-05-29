@@ -10,12 +10,12 @@ namespace Serenity_Solution.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
+        [MinLength(6, ErrorMessage = "Mậu khẩu phải có ít nhất 6 ký tự.")]
         public string NewPassword { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Mật khẩu không giống nhau.")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

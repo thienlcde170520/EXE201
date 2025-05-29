@@ -18,7 +18,7 @@ namespace Serenity_Solution.Models
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
-        [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Mật khẩu không giống nhau.")]
         public string ConfirmPassword { get; set; }
     }
 }

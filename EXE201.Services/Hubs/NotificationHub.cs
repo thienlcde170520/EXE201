@@ -47,7 +47,7 @@ namespace EXE201.Services.Hubs
         {
             if (await IsUserStaff(userId)) // Now calling the async method
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, "Staff");
+                await Groups.AddToGroupAsync(Context.ConnectionId, "Psychologist");
             }
         }
 
@@ -72,7 +72,7 @@ namespace EXE201.Services.Hubs
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            return roles.Contains("Staff");
+            return roles.Contains("Psychologist");
         }
 
         public override async Task OnConnectedAsync()
