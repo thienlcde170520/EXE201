@@ -17,9 +17,7 @@
         </div>
     </div>
 
-
     <form asp-action="DASS21" method="post" id="dassForm" class="test-form">
-
         <div id="question-container">
             <!-- Câu hỏi 1 - Mặc định hiển thị -->
             <div class="question-item active" data-question="1">
@@ -77,8 +75,150 @@
             <button type="button" id="next-btn" class="nav-btn next-btn">TIẾP</button>
             <button type="submit" id="submit-btn" style="display: none;" class="nav-btn submit-btn">GỬI KẾT QUẢ</button>
         </div>
+
+        <input type="hidden" id="answeredQuestions" name="AnsweredQuestions" value="[]" />
+        <input type="hidden" id="answeredCount" name="AnsweredCount" value="0" />
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        const questions = [
+            "Tôi thấy khó mà thoải mái được",
+            "Tôi bị khô miệng",
+            "Tôi không thể cảm nhận được cảm xúc tích cực nào",
+            "Tôi thấy khó thở",
+            "Tôi thấy khó khăn trong việc bắt đầu làm việc",
+            "Tôi có xu hướng phản ứng thái quá với tình huống",
+            "Tôi cảm thấy run rẩy (ví dụ như ở tay)",
+            "Tôi cảm thấy mình đang sử dụng quá nhiều năng lượng",
+            "Tôi lo lắng về những tình huống có thể khiến tôi hoảng loạn và làm tôi trông ngớ ngẩn",
+            "Tôi cảm thấy không còn gì để mong đợi",
+            "Tôi cảm thấy bồn chồn",
+            "Tôi cảm thấy khó thư giãn",
+            "Tôi cảm thấy chán nản và buồn bã",
+            "Tôi không thể chịu đựng được những thứ ngăn cản tôi tiếp tục công việc",
+            "Tôi cảm thấy sắp hoảng loạn",
+            "Tôi không thể nhiệt tình với bất cứ điều gì",
+            "Tôi cảm thấy mình không đáng giá",
+            "Tôi cảm thấy quá nhạy cảm",
+            "Tôi nhận thấy sự thay đổi trong nhịp tim của mình",
+            "Tôi cảm thấy sợ hãi mà không có lý do rõ ràng",
+            "Tôi cảm thấy cuộc sống không có ý nghĩa"
+        ];
+
+        let currentQuestion = 1;
+        const totalQuestions = questions.length;
+        let answeredQuestions = new Array(totalQuestions).fill(false);
+
+        // Tạo các câu hỏi còn lại
+        function createQuestions() {
+            const container = document.getElementById('question-container');
+            for (let i = 2; i <= totalQuestions; i++) {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.dataset.question = i;
+                questionDiv.style.display = 'none';
+
+                questionDiv.innerHTML = `
+                    <h2>Câu ${i}</h2>
+                    <p class="question-text">${questions[i-1]}</p>
+                    <div class="options-container">
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="0" />
+                            <span class="option-text">Không đúng với tôi chút nào cả</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="1" />
+                            <span class="option-text">Đúng với tôi một phần, hoặc thỉnh thoảng mới đúng</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="2" />
+                            <span class="option-text">Đúng với tôi phần nhiều, hoặc phần lớn thời gian là đúng</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="Question${i}" value="3" />
+                            <span class="option-text">Hoàn toàn đúng với tôi, hoặc hầu hết thời gian là đúng</span>
+                        </label>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            }
+        }
+
+        // Cập nhật trạng thái câu hỏi đã trả lời
+        function updateAnsweredQuestions() {
+            const answeredCount = answeredQuestions.filter(q => q).length;
+            document.getElementById('answeredCount').value = answeredCount;
+            document.getElementById('answeredQuestions').value = JSON.stringify(answeredQuestions);
+
+            // Cập nhật thanh tiến trình
+            const progress = (answeredCount / totalQuestions) * 100;
+            document.querySelector('.progress-fill').style.width = `${progress}%`;
+            document.querySelector('.progress-count').textContent = `${answeredCount}/${totalQuestions}`;
+        }
+
+        // Xử lý sự kiện khi chọn đáp án
+        function handleOptionSelection(questionNumber, isAnswered) {
+            answeredQuestions[questionNumber - 1] = isAnswered;
+            updateAnsweredQuestions();
+        }
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            createQuestions();
+
+            // Thêm sự kiện cho các radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const questionNumber = parseInt(this.closest('.question-item').dataset.question);
+                    handleOptionSelection(questionNumber, true);
+                });
+            });
+
+            // Xử lý nút Next
+            document.getElementById('next-btn').addEventListener('click', function() {
+                if (currentQuestion < totalQuestions) {
+                    document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
+                    currentQuestion++;
+                    document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'block';
+
+                    // Cập nhật trạng thái nút
+                    document.getElementById('prev-btn').disabled = false;
+                    if (currentQuestion === totalQuestions) {
+                        this.style.display = 'none';
+                        document.getElementById('submit-btn').style.display = 'inline-block';
+                    }
+                }
+            });
+
+            // Xử lý nút Previous
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                if (currentQuestion > 1) {
+                    document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
+                    currentQuestion--;
+                    document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'block';
+
+                    // Cập nhật trạng thái nút
+                    document.getElementById('next-btn').style.display = 'inline-block';
+                    document.getElementById('submit-btn').style.display = 'none';
+                    if (currentQuestion === 1) {
+                        this.disabled = true;
+                    }
+                }
+            });
+
+            // Xử lý submit form
+            document.getElementById('dassForm').addEventListener('submit', function(e) {
+                const answeredCount = answeredQuestions.filter(q => q).length;
+                if (answeredCount < totalQuestions) {
+                    e.preventDefault();
+                    alert('Vui lòng trả lời tất cả các câu hỏi trước khi gửi!');
+                }
+            });
+        });
+    </script>
+}
 
 <style>
     body {
@@ -213,206 +353,4 @@
         opacity: 0.6;
         cursor: not-allowed;
     }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Biến theo dõi câu hỏi hiện tại
-        let currentQuestion = 1;
-        const totalQuestions = 21;
-
-
-        // Biến theo dõi câu hỏi đã trả lời
-        const answeredQuestions = new Array(totalQuestions + 1).fill(false);
-
-
-        // DOM Elements
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const progressFill = document.querySelector('.progress-fill');
-        const progressCount = document.querySelector('.progress-count');
-
-
-        // Tạo mảng chứa nội dung câu hỏi
-        const questionTexts = [
-            "Tôi thấy khó mà thoải mái được",
-
-            "Tôi bị khô miệng",
-            "Tôi không thấy có chút cảm xúc tích cực nào",
-            "Tôi bị rối loạn nhịp thở (thở gấp, khó thở dù chẳng làm việc gì nặng)",
-            "Tôi thấy khó bắt tay vào công việc",
-            "Tôi phản ứng thái quá với mọi tình huống",
-            "Tôi bị ra mồ hôi (chẳng hạn như mồ hôi tay…)",
-            "Tôi cảm thấy sợ hãi",
-            "Tôi lo lắng về những tình huống có thể khiến tôi hoảng sợ hoặc biến tôi thành trò cười",
-            "Tôi thấy mình chẳng có gì để mong đợi cả",
-            "Tôi thấy bản thân dễ bị kích động",
-            "Tôi thấy khó thư giãn được",
-            "Tôi cảm thấy chán nản, thất vọng",
-            "Tôi không chấp nhận được việc có cái gì đó xen vào cản trở việc tôi đang làm",
-            "Tôi thấy mình gần như hoảng loạn",
-            "Tôi không thấy hăng hái với bất kỳ việc gì nữa",
-            "Tôi cảm thấy mình chẳng đáng làm người",
-            "Tôi thấy mình khá dễ phật ý, tự ái",
-            "Tôi nghe thấy rõ tiếng nhịp tim dù chẳng làm việc gì cả (ví dụ, tiếng nhịp tim tăng, tiếng tim loạn nhịp)",
-            "Tôi hay sợ vô cớ",
-            "Tôi thấy cuộc sống vô nghĩa"
-        ];
-
-
-        // Tạo mẫu HTML cho các câu hỏi còn lại từ 3-21
-        function createQuestions() {
-            const questionContainer = document.getElementById('question-container');
-
-
-            // Tạo các câu hỏi từ 3-21
-            for (let i = 3; i <= 21; i++) {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question-item';
-                questionDiv.setAttribute('data-question', i);
-                questionDiv.style.display = 'none';
-
-                questionDiv.innerHTML = `
-                    <h2>Câu ${i}</h2>
-                    <p class="question-text">${questionTexts[i-1]}</p>
-                    <div class="options-container">
-                        <label class="option-label">
-                            <input type="radio" name="Question${i}" value="0" />
-                            <span class="option-text">Không đúng với tôi chút nào cả</span>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="Question${i}" value="1" />
-                            <span class="option-text">Đúng với tôi một phần, hoặc thỉnh thoảng mới đúng</span>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="Question${i}" value="2" />
-                            <span class="option-text">Đúng với tôi phần nhiều, hoặc phần lớn thời gian là đúng</span>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="Question${i}" value="3" />
-                            <span class="option-text">Hoàn toàn đúng với tôi, hoặc hầu hết thời gian là đúng</span>
-                        </label>
-                    </div>
-                `;
-
-                questionContainer.appendChild(questionDiv);
-            }
-        }
-
-
-        // Hàm hiển thị câu hỏi theo số
-        function showQuestion(questionNum) {
-            // Ẩn tất cả câu hỏi
-            document.querySelectorAll('.question-item').forEach(item => {
-                item.style.display = 'none';
-            });
-
-            // Hiện câu hỏi hiện tại
-            const currentQuestionEl = document.querySelector(`.question-item[data-question="${questionNum}"]`);
-            if (currentQuestionEl) {
-                currentQuestionEl.style.display = 'block';
-            }
-
-            // Cập nhật progress bar
-            progressFill.style.width = `${(questionNum / totalQuestions) * 100}%`;
-            progressCount.textContent = `${questionNum}/${totalQuestions}`;
-
-            // Cập nhật nút điều hướng
-            prevBtn.disabled = (questionNum === 1);
-
-
-            if (questionNum === totalQuestions) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'block';
-            } else {
-                nextBtn.style.display = 'block';
-                submitBtn.style.display = 'none';
-            }
-        }
-
-        // Tạo các câu hỏi từ 3-21
-        createQuestions();
-
-
-        // Thêm sự kiện click cho tất cả các option-label
-        function setupOptionHandlers() {
-            document.querySelectorAll('.option-label').forEach(label => {
-                label.addEventListener('click', function() {
-                    // Xóa class selected cho tất cả option trong cùng một câu hỏi
-                    const questionItem = this.closest('.question-item');
-                    questionItem.querySelectorAll('.option-label').forEach(l => {
-                        l.classList.remove('selected');
-                    });
-
-                    // Thêm class selected cho option được chọn
-                    this.classList.add('selected');
-
-                    // Đánh dấu câu hỏi đã được trả lời
-                    const currentQuestionNum = parseInt(questionItem.getAttribute('data-question'));
-                    answeredQuestions[currentQuestionNum] = true;
-
-                    // Tự động chuyển sang câu tiếp theo sau khi chọn đáp án
-
-                    if (currentQuestionNum < totalQuestions) {
-                        setTimeout(() => {
-                            currentQuestion = currentQuestionNum + 1;
-                            showQuestion(currentQuestion);
-                        }, 500);
-                    }
-                });
-            });
-        }
-
-        // Thiết lập xử lý sự kiện
-        setupOptionHandlers();
-
-
-        // Xử lý sự kiện nút Next
-        nextBtn.addEventListener('click', function() {
-            if (currentQuestion < totalQuestions) {
-                currentQuestion++;
-                showQuestion(currentQuestion);
-            }
-        });
-
-        // Xử lý sự kiện nút Previous
-        prevBtn.addEventListener('click', function() {
-            if (currentQuestion > 1) {
-                currentQuestion--;
-                showQuestion(currentQuestion);
-            }
-        });
-
-        // Hiển thị câu hỏi đầu tiên khi trang được tải
-        showQuestion(1);
-
-        // Thêm trường ẩn để lưu trạng thái câu hỏi đã trả lời khi submit
-        document.getElementById('dassForm').addEventListener('submit', function(e) {
-            // Kiểm tra xem có câu hỏi nào chưa được trả lời không
-            const unansweredCount = answeredQuestions.slice(1).filter(answered => !answered).length;
-
-            // Tạo hidden input để lưu dữ liệu trả lời
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'AnsweredQuestions';
-            hiddenInput.value = JSON.stringify(answeredQuestions.slice(1));
-            this.appendChild(hiddenInput);
-
-            // Tạo hidden input để lưu số câu hỏi đã trả lời
-            const answeredCountInput = document.createElement('input');
-            answeredCountInput.type = 'hidden';
-            answeredCountInput.name = 'AnsweredCount';
-            answeredCountInput.value = totalQuestions - unansweredCount;
-            this.appendChild(answeredCountInput);
-
-            // Nếu có câu hỏi chưa trả lời, thông báo cho người dùng
-            if (unansweredCount > 0) {
-                if (!confirm(`Bạn còn ${unansweredCount} câu hỏi chưa trả lời. Bạn có chắc chắn muốn nộp bài?`)) {
-                    e.preventDefault();
-                }
-            }
-        });
-
-    });
-</script> 
+</style> 

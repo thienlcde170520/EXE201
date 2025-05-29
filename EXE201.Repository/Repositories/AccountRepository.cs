@@ -54,7 +54,7 @@ namespace EXE201.Repository.Repositories
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
             if (existingUser != null)
             {
-                return IdentityResult.Failed(new IdentityError { Description = "Email have been used." });
+                return IdentityResult.Failed(new IdentityError { Description = "Email đã được sử dụng." });
             }
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
@@ -68,7 +68,7 @@ namespace EXE201.Repository.Repositories
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
             if (existingUser != null)
             {
-                return IdentityResult.Failed(new IdentityError { Description = "Email have been used." });
+                return IdentityResult.Failed(new IdentityError { Description = "Email đã được sử dụng." });
             }
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
