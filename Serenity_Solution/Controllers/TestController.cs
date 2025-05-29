@@ -41,7 +41,7 @@ namespace Serenity_Solution.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DASS21(DASSTestModel model, string AnsweredQuestions, int AnsweredCount)
         {
-            if (ModelState.IsValid)
+            try
             {
                 // Chuyển đổi chuỗi JSON thành danh sách bool
                 if (!string.IsNullOrEmpty(AnsweredQuestions))
@@ -59,10 +59,9 @@ namespace Serenity_Solution.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     model.UserId = user.Id;
-                    // Lưu vào database nếu cần
                 }
-                
-                // Chuyển đến trang kết quả
+
+                // Chuyển đến trang kết quả với các tham số cần thiết
                 return RedirectToAction("DASS21Result", new 
                 { 
                     depression = model.DepressionScore,
@@ -75,8 +74,12 @@ namespace Serenity_Solution.Controllers
                     answeredQuestions = AnsweredQuestions
                 });
             }
-            
-            return View(model);
+            catch (Exception ex)
+            {
+                // Log lỗi nếu có
+                System.Diagnostics.Debug.WriteLine("Lỗi khi xử lý form DASS21: " + ex.Message);
+                return View(model);
+            }
         }
 
         [HttpGet]
